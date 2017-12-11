@@ -1,0 +1,168 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    ViewBag.Title = "Map page";
+}
+
+
+<html>
+<head>
+    <style>
+
+        #cont, #map {
+            width: auto;
+            background-color: lightgray;
+            border: 2px solid black;
+            height: 500px;
+        }
+
+        .form-control {
+            border: 1px solid black;
+        }
+    </style>
+</head>
+<body>
+    <br /><br />
+    <div class="row">
+        <div class="col-lg-3">
+            <div class="container" id="cont" style="border-radius:6px;">
+                <br />
+                <p>Address:</p>
+                <input id="address" type="text" class="form-control" placeholder="Postcode,Address,City...">
+                <br />
+                <p>Time period</p>
+                <label class="radio-inline"><input type="radio" name="optradio">2016</label>
+                <label class="radio-inline"><input type="radio" name="optradio">2017</label>
+                <label class="radio-inline"><input type="radio" name="optradio">Both</label>
+                <br /><br />
+                <p>Type of crime</p>
+                <select class="form-control">
+                    <option selected>No filter</option>
+                    <option>Drugs</option>
+                    <option>Sexual offences</option>
+                    <option>Violence</option>
+                </select>
+                <br />
+                <input id="submit" type="button" class="btn btn-default" value="Search" style="float:left; border: 1px solid black; font-size:15px">
+                <button class="btn-xs btn-default" style="float:right; border: 1px solid black; font-size:12px; background-color:lightcoral">Reset filters</button>
+
+            </div>
+        </div>
+        <div class="col-lg-9">
+            <div id="map"></div>
+        </div>
+    </div>
+
+
+
+
+    <script> 
+
+        function initializeMap(position) {            
+            var center = { lat: 51.502775, lng: -0.119927 }; 
+
+            if (position != null) {
+                var center = { lat: position.coords.latitude, lng: position.coords.longitude };
+            }
+
+            var mapOptions = {
+                center: center,
+                zoom: 16,
+                marker: true
+            };
+
+            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+            var marker = new google.maps.Marker({
+                position: center,
+                map: map
+            });
+
+            var geocoder = new google.maps.Geocoder();
+            document.getElementById('submit').addEventListener('click', function () {
+                geocodeAddress(geocoder, map);
+            });
+
+        };
+
+
+        function requestLocation() {
+            navigator.geolocation.getCurrentPosition(initializeMap);
+
+        }
+
+        function geocodeAddress(geocoder, resultsMap) {
+            var address = document.getElementById('address').value;
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === 'OK') {
+                    resultsMap.setCenter(results[0].geometry.location);                    
+                    var marker = new google.maps.Marker({
+                        position: results[0].geometry.location,
+                        map: resultsMap
+                    });
+                    
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+
+    </script>
+    <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI&callback=requestLocation">
+    </script>
+
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+        @*function initMap() {
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 6,
+                center: { lat: -34.397, lng: 150.644 }
+            });
+
+
+            var geocoder = new google.maps.Geocoder();
+            document.getElementById('submit').addEventListener('click', function () {
+                geocodeAddress(geocoder, map);
+            });
+        }
+
+        function geocodeAddress(geocoder, resultsMap) {
+            var address = document.getElementById('address').value;
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === 'OK') {
+                    resultsMap.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: resultsMap,
+                        position: results[0].geometry.location
+                    });
+                } else {
+                    alert('Geocode was not successful for the following reason: ' + status);
+                }
+            });
+        }
+
+        function success(pos) {
+            var crd = pos.coords;
+
+            console.log('Your current position is:');
+            console.log(`Latitude : ${crd.latitude}`);
+            console.log(`Longitude: ${crd.longitude}`);
+            console.log(`More or less ${crd.accuracy} meters.`);
+        };
+
+        function error(err) {
+            console.warn(`ERROR(${err.code}): ${err.message}`);
+        };
+
+        navigator.geolocation.getCurrentPosition(success, error);*@

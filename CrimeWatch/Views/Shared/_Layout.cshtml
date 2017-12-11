@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+
+    <style>
+        #layoutBtn {
+            color: black;
+            font-size: 17px;
+            border: 1px solid white;
+        }
+
+        #layoutBtn:hover{
+            color: black;
+            background-color:orange;
+            border: 1px solid black;
+            font-size: 17px;
+        }
+
+    </style>
+
+</head>
+<body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:white; border-top:20px solid black">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("CrimeWatch", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @id= "layoutBtn" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home", null, new { @id = "layoutBtn" }) </li>
+                    <li>@Html.ActionLink("Map", "Index", "Map", null, new { @id = "layoutBtn" })</li>
+                    <li>@Html.ActionLink("About", "About", "Home", null, new { @id = "layoutBtn" })</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home", null, new { @id = "layoutBtn" })</li>
+                </ul>
+                <img resource=""/>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="container body-content">
+        @RenderBody()        
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>
+
