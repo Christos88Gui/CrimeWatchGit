@@ -23,5 +23,6 @@ namespace CrimeWatch.Models
         public string LSOA_Code { get; set; }
         public string LSOA_Name { get; set; }
         public string Outcome { get; set; }
+        public string Crime_Type { get; set; }
     }
 }

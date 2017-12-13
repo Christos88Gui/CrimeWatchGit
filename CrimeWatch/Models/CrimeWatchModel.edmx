@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="Model.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="__MigrationHistory">
           <Key>
             <PropertyRef Name="MigrationId" />
@@ -70,7 +70,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Date" Type="datetime" Nullable="false" />
           <Property Name="Police_Department" Type="varchar" MaxLength="50" />
           <Property Name="Latitude" Type="real" Nullable="false" />
@@ -78,6 +78,7 @@
           <Property Name="Location" Type="varchar(max)" />
           <Property Name="LSOA_Code" Type="varchar" MaxLength="50" />
           <Property Name="LSOA_Name" Type="varchar" MaxLength="50" />
+          <Property Name="Crime_Type" Type="varchar(max)" />
           <Property Name="Outcome" Type="varchar(max)" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
@@ -161,8 +162,7 @@
             <End Role="AspNetUserRoles" EntitySet="AspNetUserRoles" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -238,6 +238,7 @@
           <Property Name="LSOA_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="LSOA_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Outcome" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Crime_Type" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
@@ -355,6 +356,7 @@
           <EntitySetMapping Name="Crimes">
             <EntityTypeMapping TypeName="Model.Crime">
               <MappingFragment StoreEntitySet="Crimes">
+                <ScalarProperty Name="Crime_Type" ColumnName="Crime_Type" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Police_Department" ColumnName="Police_Department" />

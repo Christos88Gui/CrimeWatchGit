@@ -4,26 +4,24 @@
 @{
     ViewBag.Title = "Map page";
 }
+@model List<CrimeWatch.Models.Crime>
 
 
-<html>
-<head>
     <style>
-
         #cont, #map {
             width: auto;
             background-color: lightgray;
             border: 2px solid black;
             height: 500px;
+            color: black;
         }
 
         .form-control {
             border: 1px solid black;
         }
     </style>
-</head>
-<body>
     <br /><br />
+
     <div class="row">
         <div class="col-lg-3">
             <div class="container" id="cont" style="border-radius:6px;">
@@ -56,35 +54,130 @@
 
 
 
+<br /><br />
+        <table class="table-bordered" id="tbl">
+            <tr>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Department
+                </th>
+                <th>
+                    Crime type
+                </th>
+                <th>
+                    Latitude
+                </th>
+                <th>
+                    Longitude
+                </th>
+                <th>
+                    Location
+                </th>
+                <th>
+                    Outcome
+                </th>
+            </tr>
+            @foreach (var crime in Model) {
+            <tr>
+                <td>
+                    @crime.Date
+                </td>
+                <td>
+                    @crime.Police_Department
+                </td>
+                <td>
+                    @crime.Crime_Type
+                </td>
+                <td>
+                    @crime.Latitude
+                </td>
+                <td>
+                    @crime.Longitude
+                </td>
+                <td>
+                    @crime.Location
+                </td>
+                <td>
+                    @crime.Outcome
+                </td>
+            </tr>
 
-    <script> 
-
-        function initializeMap(position) {            
-            var center = { lat: 51.502775, lng: -0.119927 }; 
-
-            if (position != null) {
-                var center = { lat: position.coords.latitude, lng: position.coords.longitude };
             }
 
-            var mapOptions = {
-                center: center,
-                zoom: 16,
-                marker: true
-            };
+            </table>
 
-            var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-            var marker = new google.maps.Marker({
-                position: center,
-                map: map
-            });
 
-            var geocoder = new google.maps.Geocoder();
-            document.getElementById('submit').addEventListener('click', function () {
-                geocodeAddress(geocoder, map);
-            });
 
-        };
+
+
+        <script>
+
+
+            function initializeMap(position) {
+                var center = { lat: 51.502775, lng: -0.119927 };
+
+                if (position != null) {
+                    var center = { lat: position.coords.latitude, lng: position.coords.longitude };
+                }
+
+                var mapOptions = {
+                    center: center,
+                    zoom: 10,
+                };
+
+                var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+
+                var marker = new google.maps.Marker({
+                    position: center,
+                    animation: google.maps.Animation.DROP,
+                    map: map
+                });
+
+                var infowindow = new google.maps.InfoWindow({
+                    content: "<p><b>Your location!</></p>"
+                });
+
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
+
+                var geocoder = new google.maps.Geocoder();
+                document.getElementById('submit').addEventListener('click', function () {
+                    geocodeAddress(geocoder, map);
+                });
+
+                addMarkers(map)
+            }
+
+
+            function addMarkers(map) {
+
+                var marker = [@Model.Count];
+                var infowindow = [@Model.Count];
+                var x = 1;
+                @foreach (var crime in Model) {
+
+                    @: marker = new google.maps.Marker({
+                    @: position: { lat: @crime.Latitude, lng: @crime.Longitude },
+                    @: map: map
+                    @: });
+
+
+                    @: var infowindow = new google.maps.InfoWindow({
+                    @: content: "<br><p><b>Crime Type: </b> @crime.Crime_Type </p><p><b>Date: </b> @crime.Date</p><p><b>Department </b> @crime.Police_Department</p><p><b>Exact Location: </b> @crime.Location<p><b>Outcome: </b> @crime.Outcome"
+                    @: });             
+
+
+                    @: marker.addListener('click', function() {
+                    @: infowindow.open(map, marker);
+                    @: });                    
+                }
+
+            }
+
 
 
         function requestLocation() {
@@ -96,26 +189,22 @@
             var address = document.getElementById('address').value;
             geocoder.geocode({ 'address': address }, function (results, status) {
                 if (status === 'OK') {
-                    resultsMap.setCenter(results[0].geometry.location);                    
+                    resultsMap.setCenter(results[0].geometry.location);
                     var marker = new google.maps.Marker({
                         position: results[0].geometry.location,
                         map: resultsMap
                     });
-                    
+
                 } else {
                     alert('Geocode was not successful for the following reason: ' + status);
                 }
             });
         }
 
-    </script>
-    <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI&callback=requestLocation">
-    </script>
-
-
-</body>
-</html>
+        </script>
+        <script async defer
+                src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI&callback=requestLocation">
+        </script>
 
 
 
@@ -124,45 +213,46 @@
 
 
 
-        @*function initMap() {
-            var map = new google.maps.Map(document.getElementById('map'), {
-                zoom: 6,
-                center: { lat: -34.397, lng: 150.644 }
-            });
+
+@*function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 6,
+            center: { lat: -34.397, lng: 150.644 }
+        });
 
 
-            var geocoder = new google.maps.Geocoder();
-            document.getElementById('submit').addEventListener('click', function () {
-                geocodeAddress(geocoder, map);
-            });
-        }
+        var geocoder = new google.maps.Geocoder();
+        document.getElementById('submit').addEventListener('click', function () {
+            geocodeAddress(geocoder, map);
+        });
+    }
 
-        function geocodeAddress(geocoder, resultsMap) {
-            var address = document.getElementById('address').value;
-            geocoder.geocode({ 'address': address }, function (results, status) {
-                if (status === 'OK') {
-                    resultsMap.setCenter(results[0].geometry.location);
-                    var marker = new google.maps.Marker({
-                        map: resultsMap,
-                        position: results[0].geometry.location
-                    });
-                } else {
-                    alert('Geocode was not successful for the following reason: ' + status);
-                }
-            });
-        }
+    function geocodeAddress(geocoder, resultsMap) {
+        var address = document.getElementById('address').value;
+        geocoder.geocode({ 'address': address }, function (results, status) {
+            if (status === 'OK') {
+                resultsMap.setCenter(results[0].geometry.location);
+                var marker = new google.maps.Marker({
+                    map: resultsMap,
+                    position: results[0].geometry.location
+                });
+            } else {
+                alert('Geocode was not successful for the following reason: ' + status);
+            }
+        });
+    }
 
-        function success(pos) {
-            var crd = pos.coords;
+    function success(pos) {
+        var crd = pos.coords;
 
-            console.log('Your current position is:');
-            console.log(`Latitude : ${crd.latitude}`);
-            console.log(`Longitude: ${crd.longitude}`);
-            console.log(`More or less ${crd.accuracy} meters.`);
-        };
+        console.log('Your current position is:');
+        console.log(`Latitude : ${crd.latitude}`);
+        console.log(`Longitude: ${crd.longitude}`);
+        console.log(`More or less ${crd.accuracy} meters.`);
+    };
 
-        function error(err) {
-            console.warn(`ERROR(${err.code}): ${err.message}`);
-        };
+    function error(err) {
+        console.warn(`ERROR(${err.code}): ${err.message}`);
+    };
 
-        navigator.geolocation.getCurrentPosition(success, error);*@
+    navigator.geolocation.getCurrentPosition(success, error);*@
