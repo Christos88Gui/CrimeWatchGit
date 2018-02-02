@@ -15,14 +15,14 @@ namespace CrimeWatch.Models
     public partial class Crime
     {
         public int Id { get; set; }
-        public System.DateTime Date { get; set; }
+        public Nullable<System.DateTime> Date { get; set; }
+        public string Type { get; set; }
         public string Police_Department { get; set; }
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
+        public Nullable<double> Latitude { get; set; }
+        public Nullable<double> Longitude { get; set; }
         public string Location { get; set; }
         public string LSOA_Code { get; set; }
         public string LSOA_Name { get; set; }
         public string Outcome { get; set; }
-        public string Crime_Type { get; set; }
     }
 }

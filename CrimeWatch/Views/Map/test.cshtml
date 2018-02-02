@@ -3,16 +3,5 @@
     ViewBag.Title = "test";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <br /><br />
-@*@using (Html.BeginForm("Import", "Map", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    
-
-    <span>Excel File</span><input type="file" name="excelFile" />
-    <br />
-    <input type="submit" value="Import" />
-}*@
-
       <h2>@ViewBag.records</h2>
-<input type="button" value="ImportIt" onclick="location.href='@Url.Action("ImportIt", "Map")'" />

@@ -1,6 +1,7 @@
 ﻿using CrimeWatch.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -10,116 +11,100 @@ namespace CrimeWatch.Controllers
 {
     public class MapController : Controller
     {
-        private DefaultDB db = new DefaultDB();
+        private CrimeWatchDBEntities db = new CrimeWatchDBEntities();
 
         // GET: Map
-        public ActionResult Index() => View(db.Crimes.ToList());
+        public ActionResult Index(String type)
+        {
+            List<Crime> crimes = db.Crimes.ToList();
+            if (!(type == "No filter" || String.IsNullOrEmpty(type)))
+            {
+                foreach (var crime in crimes.ToList())
+                {
+                    if (crime.Type != type)
+                    {
+                        crimes.Remove(crime);
+                    }
 
-        public ActionResult test() {
-            ViewBag.records = db.Crimes.Count();
-            return View();
+                }
+            }
+            return View(crimes);
         }
 
-       
-        public ActionResult ImportIt()
+        public ActionResult DeleteAll()
         {
-            string path = Server.MapPath("~/Content/excel_file.xlxs");
+            foreach (Crime crime in db.Crimes)
+            {
+                db.Crimes.Remove(crime);
+            }
+            db.SaveChanges();
+            return RedirectToAction("About", "Home");
+        }
+
+        [HttpPost]
+        public ActionResult Upload(HttpPostedFileBase excelfile)
+        {
+            if (excelfile != null && excelfile.ContentLength > 0)
+            {
+                string path = Server.MapPath("~/Content/" + excelfile.FileName);
+                if (System.IO.File.Exists(path))
+                {
+                    System.IO.File.Delete(path);
+                }
+
+                excelfile.SaveAs(path);
+                ImportExcel(path);
+            }
+
+            return RedirectToAction("About", "Home");
+        }
+
+        public void ImportExcel(String path)
+        {
             Excel.Application application = new Excel.Application();
             Excel.Workbook workbook = application.Workbooks.Open(path);
             Excel.Worksheet worksheet = workbook.ActiveSheet;
             Excel.Range range = worksheet.UsedRange;
-            List<Crime> crimes = new List<Crime>();
-
-            for (int row = 2; row < range.Rows.Count; row++)
+            try
             {
-
-                Crime crime = new Crime
+                for (int row = 2; row < range.Rows.Count; row++)
                 {
-                    Date = DateTime.Parse(((Excel.Range)range.Cells[row, 1]).Text),
-                    Police_Department = ((Excel.Range)range.Cells[row, 2]).Text,
-                    Longitude = float.Parse(((Excel.Range)range.Cells[row, 4]).Text),
-                    Latitude = float.Parse(((Excel.Range)range.Cells[row, 5]).Text),
-                    Location = ((Excel.Range)range.Cells[row, 6]).Text,
-                    LSOA_Code = ((Excel.Range)range.Cells[row, 7]).Text,
-                    LSOA_Name = ((Excel.Range)range.Cells[row, 8]).Text,
-                    Crime_Type = ((Excel.Range)range.Cells[row, 9]).Text,
-                    Outcome = ((Excel.Range)range.Cells[row, 10]).Text
-                };
-                db.Crimes.Add(crime);                
+                    DateTime Date = DateTime.Parse(((Excel.Range)range.Cells[row, 2]).Text);
+                    String Police_Department = ((Excel.Range)range.Cells[row, 4]).Text;
+                    float Longitude = float.Parse(((Excel.Range)range.Cells[row, 5]).Text);
+                    float Latitude = float.Parse(((Excel.Range)range.Cells[row, 6]).Text);
+                    String Location = ((Excel.Range)range.Cells[row, 7]).Text;
+                    String LSOA_Code = ((Excel.Range)range.Cells[row, 8]).Text;
+                    String LSOA_Name = ((Excel.Range)range.Cells[row, 9]).Text;
+                    String Type = ((Excel.Range)range.Cells[row, 10]).Text;
+                    String Outcome = ((Excel.Range)range.Cells[row, 11]).Text;
+
+                    Crime crime = new Crime
+                    {
+                        Date = Date,
+                        Police_Department = Police_Department,
+                        Longitude = Longitude,
+                        Latitude = Latitude,
+                        Location = Location,
+                        LSOA_Code = LSOA_Code,
+                        LSOA_Name = LSOA_Name,
+                        Type = Type,
+                        Outcome = Outcome
+                    };
+                    db.Crimes.Add(crime);
+                }
+                db.SaveChanges();
+                ViewBag.records = db.Crimes.Count();
+                workbook.Close(true);
+                application.Quit();
             }
-            db.SaveChanges();
-            ViewBag.records = db.Crimes.Count();
-            return View("test");
+            catch (Exception e)
+            {
+                workbook.Close(true);
+                application.Quit();
+            }
+
         }
 
-        [HttpPost]
-        public ActionResult Import(HttpPostedFileBase excelfile) {
-
-            if (excelfile == null)
-            {
-                ViewBag.Error = "Pick a file man!";
-            }
-            else {
-                if (excelfile.FileName.EndsWith("xls") || excelfile.FileName.EndsWith("xlsx"))
-                {
-                    
-                    string path = Server.MapPath("~/Content/text.xlxs");
-                    if (System.IO.File.Exists(path))
-                    System.IO.File.Delete(path);
-                    excelfile.SaveAs(path);
-
-                    Excel.Application application = new Excel.Application();
-                    Excel.Workbook workbook = application.Workbooks.Open(path);
-                    Excel.Worksheet worksheet = workbook.ActiveSheet;
-                    Excel.Range range = worksheet.UsedRange;
-                    List<Crime> crimes = new List<Crime>();
-
-                    for (int row = 2; row < range.Rows.Count; row++) {
-                        
-                        Crime crime = new Crime
-                        {
-                            Date = DateTime.Parse(((Excel.Range)range.Cells[row, 1]).Text),
-                            Police_Department = ((Excel.Range)range.Cells[row, 2]).Text,
-                            Longitude = float.Parse(((Excel.Range)range.Cells[row, 4]).Text),
-                            Latitude = float.Parse(((Excel.Range)range.Cells[row, 5]).Text),
-                            Location = ((Excel.Range)range.Cells[row, 6]).Text,
-                            LSOA_Code = ((Excel.Range)range.Cells[row, 7]).Text,
-                            LSOA_Name = ((Excel.Range)range.Cells[row, 8]).Text,
-                            Crime_Type = ((Excel.Range)range.Cells[row, 9]).Text,
-                            Outcome = ((Excel.Range)range.Cells[row, 10]).Text
-                            
-                        };
-                        ViewBag.Error = "Okay done boss!The records now are " + db.Crimes.Count();
-
-                    }
-                }
-                else
-                {
-                    ViewBag.Error = "didnt go well....";
-                }
-            }                            
-            return View("test");
-        }
-
-
-        //[HttpPost]
-        //public ActionResult FindLocation(String postcode) {
-            
-        //    string requestUri = string.Format("http://maps.googleapis.com/maps/api/geocode/xml?postcode={0}&sensor=false", Uri.EscapeDataString(postcode));
-            
-        //    WebRequest request = WebRequest.Create(requestUri);
-        //    WebResponse response = request.GetResponse();
-        //    XDocument xdoc = XDocument.Load(response.GetResponseStream());
-
-        //    XElement result = xdoc.Element("GeocodeResponse").Element("result");
-        //    XElement locationElement = result.Element("geometry").Element("location");
-        //    XElement lat = locationElement.Element("lat");
-        //    XElement lng = locationElement.Element("lng");
-
-        //    ViewBag.latitude = (int)lat;
-        //    ViewBag.longitude = (int)lng;
-
-        //    return View("Map");
-        //}
     }
 }

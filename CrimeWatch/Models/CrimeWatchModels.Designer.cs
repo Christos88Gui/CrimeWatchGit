@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'C:\Users\chris\OneDrive\Desktop\GitHub\CrimeWatchGit\CrimeWatch\Models\CrimeWatchModel.edmx'. 
+﻿// T4 code generation is enabled for model 'C:\Users\chris\source\repos\CrimeWatchGIT\CrimeWatch\Models\CrimeWatchModels.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

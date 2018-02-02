@@ -13,10 +13,10 @@ namespace CrimeWatch.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class DefaultDB : DbContext
+    public partial class CrimeWatchDBEntities : DbContext
     {
-        public DefaultDB()
-            : base("name=DefaultDB")
+        public CrimeWatchDBEntities()
+            : base("name=CrimeWatchDBEntities")
         {
         }
     
@@ -25,11 +25,6 @@ namespace CrimeWatch.Models
             throw new UnintentionalCodeFirstException();
         }
     
-        public virtual DbSet<C__MigrationHistory> C__MigrationHistory { get; set; }
-        public virtual DbSet<AspNetRole> AspNetRoles { get; set; }
-        public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
-        public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
-        public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Crime> Crimes { get; set; }
     }
 }
