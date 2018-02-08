@@ -225,17 +225,13 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\layoutLogo.png" />
+    <Content Include="Content\Images\progress_ring.gif" />
     <Content Include="Views\Map\icons\701557.svg" />
     <Content Include="Content\Images\logo.png" />
-    <Content Include="Content\Images\m\m1.png" />
-    <Content Include="Content\Images\m\m2.png" />
-    <Content Include="Content\Images\m\m3.png" />
-    <Content Include="Content\Images\m\m4.png" />
-    <Content Include="Content\Images\m\m5.png" />
     <Content Include="Content\Images\map.PNG" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="fonts\map-icons.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Models\CrimeWatchModels.Context.tt">
@@ -260,9 +256,6 @@
     <Content Include="Models\CrimeWatchModels.edmx.diagram">
       <DependentUpon>CrimeWatchModels.edmx</DependentUpon>
     </Content>
-    <Content Include="fonts\map-icons.eot" />
-    <Content Include="fonts\map-icons.ttf" />
-    <Content Include="fonts\map-icons.woff" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />

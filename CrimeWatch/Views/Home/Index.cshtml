@@ -1,43 +1,101 @@
 ﻿@{
     ViewBag.Title = "Home Page";
 }
+
+
 <br /><br />
-  
-      <div class="col-lg-4">
-          <div class="row">
-              <img src="~/Content/Images/logo.png" class="con" />
-          </div>
-         
-          <div class="row">
-              <div class="container con" style="float:left">                  
-                  <p style="text-align:justify; color:white">
-                      Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
-                  </p>
-                  <br>
-              </div>
-          </div>
-      </div>
+<br /><br />
 
-        <div class="col-lg-8">
-           <br />
-             <img src="~/Content/Images/map.png" style="width:800px; height:385px; border:2px solid lightblue;"/>
-                
-       
-        </div>
-   
-
-
-<div class="row">
+<div class="row cont" id="you">
     <div class="col-lg-6">
-       
+        <br />  <br />  <br />
+        <img src="~/Content/Images/map.png" id="bigLogo" />
+        <br />  <br />  <br />  <br />
     </div>
-
+    <div class="col-lg-6" style="text-align:center">
+        <div class="row">
+            <img src="~/Content/Images/logo.png" class="con" style="height:200px; width:360px; position:relative" />
+        </div>
+        <br /><br />
+        <div class="row">
+            <button class="btn loginBtns" onclick="location.href='@Url.Action("Login", "Account")'" style="position:relative"> Login </button>
+            <button class="btn loginBtns" onclick="location.href='@Url.Action("Register", "Account")'"> Register </button>
+        </div>
+    </div>
 </div>
 
+<br /><br />
+<br /><br /><br /><br />
+
+
+<div class="row" style="background: rgba(255, 255, 255, 0.8);color:black; text-align:justify;" id="one">
+    <div class="col-lg-6">
+        <h2>What is CrimeWatch?</h2>
+        <br />
+        <h4>
+            Crimewatch (formerly Crimewatch UK) was a British television programme produced by the BBC, that reconstructs major unsolved crimes in order to gain information from the public which may assist in solving the case. The programme was originally broadcast once a month on BBC One, although in more recent years it was usually broadcast roughly once every two months.
+
+            Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
+        </h4>
+    </div>
+</div>
+
+<br /><br />
+<br /><br />
+
+<div class="row" style="background-color:orange ;color:black; text-align:justify;" id="two">
+    <div class="col-lg-6">
+        <h2>How does it work ?</h2>
+        <br />
+        <h4>
+            Crimewatch (formerly Crimewatch UK) was a British television programme produced by the BBC, that reconstructs major unsolved crimes in order to gain information from the public which may assist in solving the case. The programme was originally broadcast once a month on BBC One, although in more recent years it was usually broadcast roughly once every two months.
+
+            Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
+        </h4>
+    </div>
+</div>
+
+<br /><br />
+<br /><br />
+
 <style>
+    .loginBtns {
+        position: relative;
+        width: 150px;
+        height: 40px;
+        font-size: 17px;
+        background-color: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .loginBtns:hover {
+        width: 150px;
+        height: 40px;
+        font-size: 17px;
+        background-color: white;
+        color: black;
+        border: 2px solid black;
+    }
+
     .con {
         border: 2px solid black;
         width: 300px;
+        background: black;
     }
 
+    .cont {
+        margin-top: 3%;
+        position: relative;
+        background:black;
+    }
+
+    #bigLogo {
+        width: 500px;
+        height: 250px;
+        margin-left: 10%;
+    }
+    body {
+    opacity:0.9;
+    }
 </style>

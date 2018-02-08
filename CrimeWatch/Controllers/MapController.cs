@@ -1,6 +1,7 @@
 ﻿using CrimeWatch.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
@@ -54,6 +55,7 @@ namespace CrimeWatch.Controllers
 
                 excelfile.SaveAs(path);
                 ImportExcel(path);
+                System.IO.File.Delete(path);
             }
 
             return RedirectToAction("About", "Home");
@@ -67,43 +69,60 @@ namespace CrimeWatch.Controllers
             Excel.Range range = worksheet.UsedRange;
             try
             {
-                for (int row = 2; row < range.Rows.Count; row++)
+                for (int row = 1; row <= range.Rows.Count; row++)
                 {
-                    DateTime Date = DateTime.Parse(((Excel.Range)range.Cells[row, 2]).Text);
-                    String Police_Department = ((Excel.Range)range.Cells[row, 4]).Text;
-                    float Longitude = float.Parse(((Excel.Range)range.Cells[row, 5]).Text);
-                    float Latitude = float.Parse(((Excel.Range)range.Cells[row, 6]).Text);
-                    String Location = ((Excel.Range)range.Cells[row, 7]).Text;
-                    String LSOA_Code = ((Excel.Range)range.Cells[row, 8]).Text;
-                    String LSOA_Name = ((Excel.Range)range.Cells[row, 9]).Text;
-                    String Type = ((Excel.Range)range.Cells[row, 10]).Text;
-                    String Outcome = ((Excel.Range)range.Cells[row, 11]).Text;
+                    if (IsRowValid(range.Rows[row]))
+                    {                       
+                        
+                        DateTime Date = DateTime.Parse(((Excel.Range)range.Cells[row, 2]).Text);                        
+                        String Police_Department = ((Excel.Range)range.Cells[row, 4]).Text;
+                        float Longitude = float.Parse(((Excel.Range)range.Cells[row, 5]).Text);
+                        float Latitude = float.Parse(((Excel.Range)range.Cells[row, 6]).Text);
+                        String Location = ((Excel.Range)range.Cells[row, 7]).Text;
+                        String LSOA_Code = ((Excel.Range)range.Cells[row, 8]).Text;
+                        String LSOA_Name = ((Excel.Range)range.Cells[row, 9]).Text;
+                        String Type = ((Excel.Range)range.Cells[row, 10]).Text;
+                        String Outcome = ((Excel.Range)range.Cells[row, 11]).Text;
 
-                    Crime crime = new Crime
-                    {
-                        Date = Date,
-                        Police_Department = Police_Department,
-                        Longitude = Longitude,
-                        Latitude = Latitude,
-                        Location = Location,
-                        LSOA_Code = LSOA_Code,
-                        LSOA_Name = LSOA_Name,
-                        Type = Type,
-                        Outcome = Outcome
-                    };
-                    db.Crimes.Add(crime);
+                        Crime crime = new Crime
+                        {
+                            Date = Date,
+                            Police_Department = Police_Department,
+                            Longitude = Longitude,
+                            Latitude = Latitude,
+                            Type = Type,
+                            Location = String.IsNullOrEmpty(Location) ? "Unknown" : Location,
+                            LSOA_Code = String.IsNullOrEmpty(LSOA_Code) ? "Unknown" : LSOA_Code,
+                            LSOA_Name = String.IsNullOrEmpty(LSOA_Name) ? "Unknown" : LSOA_Name,                            
+                            Outcome = String.IsNullOrEmpty(Outcome) ? "Unknown" : Outcome
+                        };
+                        db.Crimes.Add(crime);
+                    }
                 }
                 db.SaveChanges();
-                ViewBag.records = db.Crimes.Count();
                 workbook.Close(true);
                 application.Quit();
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 workbook.Close(true);
                 application.Quit();
             }
+        }
 
+        public bool IsRowValid(Excel.Range row)
+        {
+            String Date = row.Cells[2].Text;
+            String Police_Department = row.Cells[4].Text;
+            String Longitude = row.Cells[5].Text;
+            String Latitude = row.Cells[6].Text;
+            String Type = row.Cells[10].Text;
+
+            if (String.IsNullOrEmpty(Date) || String.IsNullOrEmpty(Police_Department) || String.IsNullOrEmpty(Longitude) || String.IsNullOrEmpty(Latitude) || String.IsNullOrEmpty(Type))
+            {
+                return false;
+            }
+            return true;
         }
 
     }

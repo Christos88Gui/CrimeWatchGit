@@ -2,24 +2,26 @@
     ViewBag.Title = "About";
 }
 <br /><br /><br />
-            <div class="container col-centered" style="text-align:center">
-                <h2>@ViewBag.Title.</h2>
-                <h3>@ViewBag.Message</h3>
+<div class="container col-centered" style="text-align:center; background-color:black">
+    <h2>@ViewBag.Title.</h2>
+    <h3>@ViewBag.Message</h3>
 
-                <p>Use this area to provide additional information.</p>
-                <br /><br />
-                <input type="button" value="Count Records" id="countRecords" />
-                <br /><br />
-                @*<input type="button" value="Import Excel" onclick="location.href='@Url.Action("ImportExcel", "Map")'" />
-                <br /><br />*@
-                <input type="button" value="Delete All" onclick="location.href='@Url.Action("DeleteAll", "Map")'" />
-                <br /><br />
-                @using (Html.BeginForm("Upload", "Map", FormMethod.Post, new { enctype = "multipart/form-data" }))
-                {
-                    <input type="file" name="excelfile" />
-                    <input type="submit" name="Submit" id="Submit" value="Upload" />
-                }
-            </div>
+    <p>Use this area to provide additional information.</p>
+    <br /><br />
+    <input type="button" value="Count Records" id="countRecords" />
+    <br /><br />
+    @*<input type="button" value="Import Excel" onclick="location.href='@Url.Action("ImportExcel", "Map")'" />
+        <br /><br />*@
+    <input type="button" value="Delete All" onclick="location.href='@Url.Action("DeleteAll", "Map")'" />
+    <br /><br />
+    @using (Html.BeginForm("Upload", "Map", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <input type="file" name="excelfile" />
+        <input type="submit" name="Submit" id="Submit" value="Upload" />
+    }
+
+    <br /><br /><br />
+</div>
 
 <script>
 

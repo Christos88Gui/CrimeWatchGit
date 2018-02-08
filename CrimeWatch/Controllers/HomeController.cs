@@ -31,13 +31,5 @@ namespace CrimeWatch.Controllers
 
             return View();
         }
-
-
-        public ActionResult ExampleDemo()
-        {
-            Thread.Sleep(1000);
-            string status = "Task Completed Successfully";
-            return Json(status, JsonRequestBehavior.AllowGet);
-        }
     }
 }

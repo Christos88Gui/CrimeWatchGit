@@ -1,6 +1,4 @@
-﻿<!DOCTYPE html>
-<html>
-<head>
+﻿<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
@@ -8,53 +6,147 @@
     @Scripts.Render("~/bundles/modernizr")
 
     <style>
-        #layoutBtn {
-            color: black;
+        .layoutBtn {
+            color: white;
             font-size: 17px;
-            border: 1px solid white;
+            border: none;
+            background: none;
+            position: relative;
+            margin-top: 3%;
         }
 
-        #layoutBtn:hover{
-            color: black;
-            background-color:orange;
-            border: 1px solid black;
-            font-size: 17px;
+        .layoutBtn:hover {
+            color: white;
+            text-shadow: 0px 0px 2px white;
+            outline: none;
         }
 
+        .layoutBtn:focus {
+            color: white;
+            outline: none;
+        }
+
+        .bar {
+            background-color: black;            
+            position: fixed;
+            height: auto;
+            border-bottom: 1px solid white;
+        }
+
+        #layoutLogo {
+            float: left;
+            position: relative;
+            height: 60px;
+            width: 110px;
+        }
+
+        #dropdownContainer {
+            position: absolute;
+            top: 50px;
+            color: black;
+        }
+
+        .dropdown-item {
+            font-size: 15px;
+            color: black;
+            display: block;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
+
+        .dropdown-item:hover {
+            font-size: 15px;
+            color: black;
+            display: block;
+            margin-top: 10px;
+            margin-left: 10px;
+        }
     </style>
-
 </head>
-<body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" style="background-color:white; border-top:20px solid black">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                @Html.ActionLink("CrimeWatch", "Index", "Home", new { area = "" }, new { @class = "navbar-brand", @id= "layoutBtn" })
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top bar">
+        <br />
+        <div class="container" style="width:90%; margin:0 auto;">
+            <div class="row">
+                <a href="#" onclick="location.href='@Url.Action("Index", "Home")'">
+
+                    <img href="#" src="~/Content/Images/layoutLogo.png" id="layoutLogo" />
+                </a>
+                <div style="float:right">
+                    <button class="btn layoutLogin" onclick="location.href='@Url.Action("Login", "Account")'"> Login </button>
+                    <p style="display:inline; position:relative;top:4px;">or</p>
+                    <button class="btn layoutLogin" onclick="location.href='@Url.Action("Register", "Account")'"> Register </button>
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">                
-                    <li>@Html.ActionLink("Map", "Index", "Map", null, new { @id = "layoutBtn" })</li>
-                    <li>@Html.ActionLink("About", "About", "Home", null, new { @id = "layoutBtn" })</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home", null, new { @id = "layoutBtn" })</li>
-                </ul>
-                <img resource=""/>
-                @Html.Partial("_LoginPartial")
+
+            <div class="row">
+                <div style="float:left">
+                    <a class="layoutBtn btn" id="hi">What is CrimeWatch ?</a>
+                    <a class="layoutBtn btn" id="ho">How does it work ?</a>
+                    <a class="layoutBtn btn" onclick="location.href='@Url.Action("Contact", "Home")'">Contact Us</a>
+                    <a class="layoutBtn btn" onclick="location.href='@Url.Action("Contact", "Home")'">FAQ</a>
+                </div>
+
+                @if (Request.IsAuthenticated)
+                {
+                        <div style="float:right">
+                            <a class="layoutBtn btn" onclick="location.href='@Url.Action("Index", "Map")'">Map</a>
+                            <div class="dropdown" style="display:inline">
+                                <button class="btn layoutBtn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    My Account
+                                </button>
+                                <div id="dropdownContainer" class="dropdown-menu container" aria-labelledby="dropdownMenuButton">
+                                    <a class="dropdown-item" href="#">Change Email</a>
+                                    <a class="dropdown-item" href="#">Change Password</a>
+                                    <a class="dropdown-item" style="padding-bottom:10px;" href="#">My Data</a>
+                                </div>
+                            </div>
+                        </div>
+                }
+
+            @*@Html.Partial("_LoginPartial")*@
             </div>
+
         </div>
     </div>
+
     <br />
     <div class="container body-content">
-        @RenderBody()        
+        @RenderBody()
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
-</html>
 
+<style>
+    .layoutLogin {
+        font-weight: 600;
+        color: #fff !important;
+        text-decoration: none;
+        font-size: 16px !important;
+        background-color: transparent;
+    }
+</style>
+
+
+<script> 
+
+    $("#hi").click(function () {
+        $('html, body').animate({
+            scrollTop: $("#one").offset().top - 190
+        }, 1000);
+    });
+
+    $("#ho").click(function () {
+        $('html, body').animate({
+            scrollTop: $("#two").offset().top
+        }, 1000);
+    });
+
+    $('.dropdown-toggle').click(function () {
+        $(this).next('.dropdown-menu').slideToggle(300);
+    });
+</script>

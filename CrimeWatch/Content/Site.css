@@ -1,9 +1,11 @@
 ﻿body {
     padding-top: 50px;
     padding-bottom: 20px;
-    background-color: black;
-    font-family: 'Century Gothic';
+    background-color: gray;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
     color: white;
+    background-image: url("Images/map.PNG");
+    max-height:none;
 }
 
 /* Set padding to keep content from hitting the edges */

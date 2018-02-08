@@ -21,7 +21,7 @@ namespace CrimeWatch.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection", throwIfV1Schema: false)
+            : base("data source=(LocalDB)\\MSSQLLocalDB;attachdbfilename=|DataDirectory|\\CrimeWatchDB.mdf;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework")
         {
         }
 
