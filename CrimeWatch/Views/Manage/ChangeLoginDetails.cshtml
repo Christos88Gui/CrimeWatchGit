@@ -1,0 +1,91 @@
+﻿@model CrimeWatch.Models.ChangeLoginDetailsViewModel
+@{
+    ViewBag.Title = "Change Login Details";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+}
+
+<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
+<br /><br /><br /><br />
+
+<div class="row">
+    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> Back to Dashboard</button>
+    <div class="container customCont">
+        <br />
+        @using (Html.BeginForm("ChangeLoginDetails", "Manage", FormMethod.Post, new { role = "form", name = "my-form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h3 style="font-family:'Allerta Stencil', sans-serif;">Change Login Details</h3>
+            <hr />
+            <div class="row">
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <div class="container" style="float:left">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OldPassword, new { @class = "control-label" })
+                        @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control", @placeholder = "Type your current password here.", @value = "" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.NewPassword, new { @class = "control-label" })
+                        @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control", @placeholder = "Type your new password here.", @value = "" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm your new password here.", @value = "" })
+                    </div>
+                </div>
+                <div class="container" style="float:right">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.OldEmail, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.OldEmail, new { @class = "form-control", @placeholder = "Type your current email here." })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.NewEmail, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.NewEmail, new { @class = "form-control", @placeholder = "Type your new email here." })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.ConfirmEmail, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.ConfirmEmail, new { @class = "form-control", @placeholder = "Confirm your new email here." })
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="submit" class="btn btn-success" id="sbmt">Change Password</button>
+            </div>
+        }
+    </div>
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<style>
+    .form-control {
+        height: 40px;
+        width: 350px;
+    }
+
+        .form-control:focus {
+            border-color: #d47e20;
+            outline: none;
+            box-shadow: inset 0 1px 2px rgba(212,126,32,0.7),0 0 0 0.2em rgba(212,126,32,0.4);
+        }
+
+    .customCont {
+        height: auto;
+        border: 1px solid #d8dee2;
+        border-radius: 5px;
+        background-color: white;
+        width: 650px;
+    }
+
+    body {
+        color: black;
+        background: #f4f4f4;
+        font-size: 15px;
+    }
+
+    p {
+        font-weight: 400;
+    }
+</style>

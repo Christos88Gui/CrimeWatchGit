@@ -13,7 +13,7 @@
     @*<input type="button" value="Import Excel" onclick="location.href='@Url.Action("ImportExcel", "Map")'" />
         <br /><br />*@
     <input type="button" value="Delete All" onclick="location.href='@Url.Action("DeleteAll", "Map")'" />
-    <br /><br />
+    <br /><br />    
     @using (Html.BeginForm("Upload", "Map", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <input type="file" name="excelfile" />
@@ -28,5 +28,4 @@
     document.getElementById('countRecords').onclick = function () {
         window.alert(@ViewBag.records);
     };
-
 </script>

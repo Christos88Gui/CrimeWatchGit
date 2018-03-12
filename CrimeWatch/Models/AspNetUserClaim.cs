@@ -12,19 +12,13 @@ namespace CrimeWatch.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Crime
+    public partial class AspNetUserClaim
     {
         public int Id { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
-        public string Type { get; set; }
-        public Nullable<double> Latitude { get; set; }
-        public Nullable<double> Longitude { get; set; }
-        public string Location { get; set; }
-        public string LSOA_Code { get; set; }
-        public string LSOA_Name { get; set; }
-        public string Outcome { get; set; }
-        public Nullable<int> Police_Department_Id { get; set; }
+        public string UserId { get; set; }
+        public string ClaimType { get; set; }
+        public string ClaimValue { get; set; }
     
-        public virtual Police_Department Police_Departments { get; set; }
+        public virtual AspNetUser AspNetUser { get; set; }
     }
 }

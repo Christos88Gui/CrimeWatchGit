@@ -39,14 +39,12 @@ namespace CrimeWatch.Models
         public string ConfirmPassword { get; set; }
     }
 
-    public class ChangePasswordViewModel
+    public class ChangeLoginDetailsViewModel
     {
-        [Required]
         [DataType(DataType.Password)]
         [Display(Name = "Current password")]
         public string OldPassword { get; set; }
-
-        [Required]
+  
         [StringLength(100, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 6)]
         [DataType(DataType.Password)]
         [Display(Name = "New password")]
@@ -56,6 +54,30 @@ namespace CrimeWatch.Models
         [Display(Name = "Confirm new password")]
         [Compare("NewPassword", ErrorMessage = "The new password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
+       
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Current email")]
+        public string OldEmail { get; set; }
+       
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "New email")]
+        public string NewEmail{ get; set; }
+        
+        [DataType(DataType.EmailAddress)]
+        [Display(Name = "Confirm new email")]
+        [Compare("NewEmail", ErrorMessage = "The emails you provided are not the same.")]
+        public string ConfirmEmail { get; set; }
+    }
+
+    public class ChangeContactDetailsViewModel
+    {
+        [DataType(DataType.Text)]
+        [Display(Name = "New full name")]
+        public string NewFullName { get; set; }
+
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "New phone number")]
+        public string NewPhoneNumber { get; set; }
     }
 
     public class AddPhoneNumberViewModel
@@ -82,5 +104,20 @@ namespace CrimeWatch.Models
     {
         public string SelectedProvider { get; set; }
         public ICollection<System.Web.Mvc.SelectListItem> Providers { get; set; }
+    }
+
+    public class MapParametersViewModel {
+        [Required]
+        [Display(Name = "Police Department *")]
+        public string Police_Department { get; set; }
+
+        [Required]
+        [Display(Name = "Time Period *")]
+        public string Date { get; set; }
+
+        [Required]
+        [Display(Name = "Crime Category")]
+        public string Type { get; set; }
+
     }
 }

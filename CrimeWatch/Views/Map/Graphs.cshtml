@@ -1,0 +1,276 @@
+﻿@model List<CrimeWatch.Models.Crime>
+@{
+    ViewBag.Title = "Graphs";
+    Layout = "";
+}
+<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+
+<div class="container" style="width:20%; float:left; position:fixed">
+    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> Back to Dashboard</button>
+    <br /><br /><br />
+    <div class="container customCont">
+        <br />
+        <form action="/Map/Graphs" method="post">
+            <div class="form-group">
+                <p>Police Department</p>
+                <select class="form-control" name="police_department">
+                    <option selected>@ViewBag.police_department</option>
+                    @if (ViewBag.police_department != "All Police Departments")
+                    {
+                        <option>All Police Departments</option>
+                    }
+                    <option>Avon and Somerset Constabulary</option>
+                    <option>Avon and Somerset Constabulary</option>
+                    <option>Bedfordshire Police</option>
+                    <option>British Transport Police</option>
+                    <option>Cambridgeshire Constabulary</option>
+                    <option>Cheshire Constabulary</option>
+                    <option>City of London Police</option>
+                    <option>Cleveland Police</option>
+                    <option>Cumbria Constabulary</option>
+                    <option>Derbyshire Constabulary</option>
+                    <option>Devon & Cornwall Police</option>
+                    <option>Dorset Police</option>
+                    <option>Durham Constabulary</option>
+                    <option>Dyfed-Powys Police</option>
+                    <option>Gloucestershire Constabulary</option>
+                    <option>Greater Manchester Police</option>
+                    <option>Gwent Police</option>
+                    <option>Hampshire Constabulary</option>
+                    <option>Hertfordshire Constabulary</option>
+                    <option>Humberside Police</option>
+                    <option>Kent Police</option>
+                    <option>Lancashire Constabulary</option>
+                    <option>Leicestershire Police</option>
+                    <option>Lincolnshire Police</option>
+                    <option>Merseyside Police</option>
+                    <option>Metropolitan Police Service</option>
+                    <option>Norfolk Constabulary</option>
+                    <option>North Wales Police</option>
+                    <option>North Yorkshire Police</option>
+                    <option>Northamptonshire Police</option>
+                    <option>Northumbria Police</option>
+                    <option>Nottinghamshire Police</option>
+                    <option>South Wales Police</option>
+                    <option>South Yorkshire Police</option>
+                    <option>Staffordshire Police</option>
+                    <option>Suffolk Constabulary</option>
+                    <option>Surrey Police</option>
+                    <option>Sussex Police</option>
+                    <option>Thames Valley Police</option>
+                    <option>Warwickshire Police</option>
+                    <option>West Mercia Police</option>
+                    <option>West Midlands Police</option>
+                    <option>West Yorkshire Police</option>
+                    <option>Wiltshire Police</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <p>Date</p>
+                <select class="form-control" name="date">                    
+                    @if (ViewBag.date == "All 2017")
+                    {
+                        <option selected>All 2017</option>
+                        <option>All 2018</option>
+                    }
+                    else {
+                        <option>All 2017</option>               
+                        <option selected>All 2018</option>
+                    }                    
+                </select>
+            </div>
+            <div class="form-group">
+                <p>Crime Categories</p>
+                <select class="form-control" name="category" style="width:100%">
+                    <option>@ViewBag.category</option>
+                    @if (ViewBag.category != "All Categories")
+                    {
+                        <option>All Categories</option>
+                    }
+                    <option>Anti-social behaviour</option>
+                    <option>Bicycle theft</option>
+                    <option>Burglary</option>
+                    <option>Criminal damage and arson</option>
+                    <option>Drugs</option>
+                    <option>Other crime</option>
+                    <option>Other theft</option>
+                    <option>Possession of weapons</option>
+                    <option>Public order</option>
+                    <option>Robbery</option>
+                    <option>Shoplifting</option>
+                    <option>Theft from the person</option>
+                    <option>Vehicle crime</option>
+                    <option>Violence and sexual offences</option>
+                </select>
+            </div>
+            <br />
+            <input type="submit" class="btn btn-default" value="Submit">
+            <button class="btn-xs btn-default" style="float:right; border: 1px solid black; font-size:12px; background-color:lightcoral" id="reset">Reset filters</button>
+            <br />
+        </form>
+    </div>
+</div>
+<div class="container" style="width:70%; margin-left:22%">
+    <h2 class="title" style="display:inline;">@ViewBag.police_department</h2>
+    <p class="title" style="font-size:17px; display:inline; float:right">@ViewBag.category | @ViewBag.date </p>
+    <br />
+    <br />
+    <div class="container customCont">
+        <br />
+        <div id="months_graph"></div>
+    </div>
+    @if (ViewBag.category == "All Categories")
+    {
+        <br />
+        <div class="container customCont">
+            <br />
+            <div id="pie_chart"></div>
+        </div>
+    }
+</div>
+
+
+<script type="text/javascript">
+    Highcharts.chart('months_graph', {
+        chart: {
+            type: 'area',
+            spacingBottom: 30
+        },
+        title: {
+            text: 'Total crimes: @Model.Count()'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            y: -10,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        xAxis: {
+            categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        },
+        yAxis: {
+            title: {
+                text: 'Incidents'
+            },
+            labels: {
+                formatter: function () {
+                    return this.value;
+                }
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                    this.x + ': ' + this.y;
+            }
+        },
+        plotOptions: {
+            area: {
+                fillOpacity: 0.5
+            }
+        },
+        series: [{
+            name: '@ViewBag.category',
+            data: [@ViewBag.crimes_per_month[0],@ViewBag.crimes_per_month[1],@ViewBag.crimes_per_month[2],@ViewBag.crimes_per_month[3],@ViewBag.crimes_per_month[4],@ViewBag.crimes_per_month[5],@ViewBag.crimes_per_month[6],@ViewBag.crimes_per_month[7],@ViewBag.crimes_per_month[8],@ViewBag.crimes_per_month[9],@ViewBag.crimes_per_month[10],@ViewBag.crimes_per_month[11]]
+        }]
+    });
+
+    Highcharts.chart('pie_chart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Crime Categories Comparisson'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            name: 'Percentage',
+            colorByPoint: true,
+            data: [{
+                name: 'Anti-social behaviour',
+                y: @Model.Where(x=>x.Type.Equals("Anti-social behaviour")).Count() / @Model.Count()
+            }, {
+                name: 'Bicycle theft',
+                y: @Model.Where(x=>x.Type.Equals("Bicycle theft")).Count() / @Model.Count()
+            }, {
+                name: 'Burglary',
+                y: @Model.Where(x=>x.Type.Equals("Burglary")).Count() / @Model.Count()
+            }, {
+                name: 'Criminal damage and arson',
+                y: @Model.Where(x=>x.Type.Equals("Criminal damage and arson")).Count() / @Model.Count()
+            }, {
+                name: 'Drugs',
+                y: @Model.Where(x=>x.Type.Equals("Drugs")).Count() / @Model.Count()
+            }, {
+                name: 'Possession of weapons',
+                y: @Model.Where(x=>x.Type.Equals("Possession of weapons")).Count() / @Model.Count()
+            }, {
+                name: 'Other crime',
+                y: @Model.Where(x=>x.Type.Equals("Other crime")).Count() / @Model.Count()
+            }, {
+                name: 'Other theft',
+                y: @Model.Where(x=>x.Type.Equals("Other theft")).Count() / @Model.Count()
+            }, {
+                name: 'Public order',
+                y: @Model.Where(x=>x.Type.Equals("Public order")).Count() / @Model.Count()
+            }, {
+                name: 'Robbery',
+                y: @Model.Where(x=>x.Type.Equals("Robbery")).Count() / @Model.Count()
+            }, {
+                name: 'Shoplifting',
+                y: @Model.Where(x=>x.Type.Equals("Shoplifting")).Count() / @Model.Count()
+            }, {
+                name: 'Theft from the person',
+                y: @Model.Where(x=>x.Type.Equals("Theft from the person")).Count() / @Model.Count()
+            }, {
+                name: 'Vehicle crime',
+                y: @Model.Where(x=>x.Type.Equals("Vehicle crime")).Count() / @Model.Count()
+            }, {
+                name: 'Violence and sexual offences',
+                y: @Model.Where(x=>x.Type.Equals("Violence and sexual offences")).Count() / @Model.Count()
+            }
+            ]
+        }]
+    });
+</script>
+
+<style>
+    li {
+        font-size: 17px;
+    }
+
+    body {
+        color: black;
+        background: #f4f4f4;
+        font-size: 15px;
+    }
+
+    .ddMenu {
+        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
+        border: 1px solid rgb(153, 153, 153);
+        background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+        padding: 5px 0px;
+    }
+</style>

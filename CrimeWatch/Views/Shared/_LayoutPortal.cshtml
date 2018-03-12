@@ -1,0 +1,33 @@
+﻿<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
+</head>
+
+
+
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <br />
+        <div class="container" style="width:90%; margin:0 auto;">
+            <div class="row">
+                <a href="#" onclick="location.href='@Url.Action("Index", "Home")'">
+                    <img src="~/Content/Images/layoutLogo.png" class="layoutLogo" />
+                </a>
+            </div>
+            <br />
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+
+

@@ -2,34 +2,128 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Excel = Microsoft.Office.Interop.Excel;
-
 namespace CrimeWatch.Controllers
 {
     public class MapController : Controller
     {
         private CrimeWatchDBEntities db = new CrimeWatchDBEntities();
 
-        // GET: Map
-        public ActionResult Index(String type)
+        public List<Crime> ApplyFilters(String category, String police_department, String date)
         {
             List<Crime> crimes = db.Crimes.ToList();
-            if (!(type == "No filter" || String.IsNullOrEmpty(type)))
+            foreach (var crime in crimes.ToList())
             {
-                foreach (var crime in crimes.ToList())
+                if (date.Contains("All "))
                 {
-                    if (crime.Type != type)
+                    if (crime.Date.Value.Year.ToString() != date.Split(' ')[1])
                     {
                         crimes.Remove(crime);
                     }
-
+                }
+                else {
+                    if (!(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(crime.Date.Value.Month).Equals(date.Split(' ')[0]) && crime.Date.Value.Year.ToString().Equals(date.Split(' ')[1])))
+                    {
+                        crimes.Remove(crime);
+                    }
+                }             
+                if (!category.Equals("All Categories"))
+                {
+                    if (crime.Type != category)
+                    {
+                        crimes.Remove(crime);
+                    }
+                }
+                if (!police_department.Equals("All Police Departments"))
+                {
+                    if (db.Police_Departments.Find(crime.Police_Department_Id).Name != police_department)
+                    {
+                        crimes.Remove(crime);
+                    }
                 }
             }
+            return crimes;
+        }
+
+
+        public String ReturnMonthName(String monthIndex) {        
+            switch (monthIndex)
+            {
+                default:
+                    return DateTime.Now.Month.ToString();
+                case "1":
+                    return "January";
+                case "2":
+                    return "February";
+                case "3":
+                    return "March";
+                case "4":
+                    return "April";
+                case "5":
+                    return "May";
+                case "6":
+                    return "June";
+                case "7":
+                    return "July";
+                case "8":
+                    return "August";
+                case "9":
+                    return "September";
+                case "10":
+                    return "October";
+                case "11":
+                    return "November";
+                case "12":
+                    return "December";                                   
+            }
+        }
+
+        public ActionResult MapParameters()
+        {        
+            return View();
+        }
+
+        // GET: Map
+        public ActionResult Map(MapParametersViewModel model)
+        {
+            if (model.Police_Department.Equals("Select Police Department")) {
+                ModelState.AddModelError(String.Empty, "Please select police department!");
+                return View("MapParameters", model);
+            }
+            if (model.Date.Equals("Select Date"))
+            {
+                ModelState.AddModelError(String.Empty, "Please select Date!");
+                return View("MapParameters", model);
+            }
+            ViewBag.type = model.Type;
+            ViewBag.date = model.Date;
+            ViewBag.police_department = model.Police_Department;
+            List<Crime> crimes = ApplyFilters(model.Type, model.Police_Department, model.Date);
             return View(crimes);
+        }
+
+
+        public ActionResult Graphs(String police_department, String date, String category) {            
+            if (String.IsNullOrEmpty(police_department)) {
+                police_department = "All Police Departments";
+            }
+            if (String.IsNullOrEmpty(date))
+            {
+                date = "All 2017";
+            }
+            if (String.IsNullOrEmpty(category))
+            {
+                category = "All Categories";
+            }
+            ViewBag.police_department = police_department;
+            ViewBag.date = date;
+            ViewBag.category = category;
+
+            List<Crime> crimes = ApplyFilters(category, police_department, date);
+            ViewBag.crimes_per_month = new int[] { crimes.Where(x => x.Date.Value.Month == 1).Count(), crimes.Where(x => x.Date.Value.Month == 2).Count(), crimes.Where(x => x.Date.Value.Month == 3).Count(), crimes.Where(x => x.Date.Value.Month == 4).Count(), crimes.Where(x => x.Date.Value.Month == 5).Count(), crimes.Where(x => x.Date.Value.Month == 6).Count(), crimes.Where(x => x.Date.Value.Month == 7).Count(), crimes.Where(x => x.Date.Value.Month == 8).Count(), crimes.Where(x => x.Date.Value.Month == 9).Count(), crimes.Where(x => x.Date.Value.Month == 10).Count(), crimes.Where(x => x.Date.Value.Month == 11).Count(), crimes.Where(x => x.Date.Value.Month == 12).Count() };
+            return View("Graphs",crimes);
         }
 
         public ActionResult DeleteAll()
@@ -40,89 +134,6 @@ namespace CrimeWatch.Controllers
             }
             db.SaveChanges();
             return RedirectToAction("About", "Home");
-        }
-
-        [HttpPost]
-        public ActionResult Upload(HttpPostedFileBase excelfile)
-        {
-            if (excelfile != null && excelfile.ContentLength > 0)
-            {
-                string path = Server.MapPath("~/Content/" + excelfile.FileName);
-                if (System.IO.File.Exists(path))
-                {
-                    System.IO.File.Delete(path);
-                }
-
-                excelfile.SaveAs(path);
-                ImportExcel(path);
-                System.IO.File.Delete(path);
-            }
-
-            return RedirectToAction("About", "Home");
-        }
-
-        public void ImportExcel(String path)
-        {
-            Excel.Application application = new Excel.Application();
-            Excel.Workbook workbook = application.Workbooks.Open(path);
-            Excel.Worksheet worksheet = workbook.ActiveSheet;
-            Excel.Range range = worksheet.UsedRange;
-            try
-            {
-                for (int row = 1; row <= range.Rows.Count; row++)
-                {
-                    if (IsRowValid(range.Rows[row]))
-                    {                       
-                        
-                        DateTime Date = DateTime.Parse(((Excel.Range)range.Cells[row, 2]).Text);                        
-                        String Police_Department = ((Excel.Range)range.Cells[row, 4]).Text;
-                        float Longitude = float.Parse(((Excel.Range)range.Cells[row, 5]).Text);
-                        float Latitude = float.Parse(((Excel.Range)range.Cells[row, 6]).Text);
-                        String Location = ((Excel.Range)range.Cells[row, 7]).Text;
-                        String LSOA_Code = ((Excel.Range)range.Cells[row, 8]).Text;
-                        String LSOA_Name = ((Excel.Range)range.Cells[row, 9]).Text;
-                        String Type = ((Excel.Range)range.Cells[row, 10]).Text;
-                        String Outcome = ((Excel.Range)range.Cells[row, 11]).Text;
-
-                        Crime crime = new Crime
-                        {
-                            Date = Date,
-                            Police_Department = Police_Department,
-                            Longitude = Longitude,
-                            Latitude = Latitude,
-                            Type = Type,
-                            Location = String.IsNullOrEmpty(Location) ? "Unknown" : Location,
-                            LSOA_Code = String.IsNullOrEmpty(LSOA_Code) ? "Unknown" : LSOA_Code,
-                            LSOA_Name = String.IsNullOrEmpty(LSOA_Name) ? "Unknown" : LSOA_Name,                            
-                            Outcome = String.IsNullOrEmpty(Outcome) ? "Unknown" : Outcome
-                        };
-                        db.Crimes.Add(crime);
-                    }
-                }
-                db.SaveChanges();
-                workbook.Close(true);
-                application.Quit();
-            }
-            catch (Exception)
-            {
-                workbook.Close(true);
-                application.Quit();
-            }
-        }
-
-        public bool IsRowValid(Excel.Range row)
-        {
-            String Date = row.Cells[2].Text;
-            String Police_Department = row.Cells[4].Text;
-            String Longitude = row.Cells[5].Text;
-            String Latitude = row.Cells[6].Text;
-            String Type = row.Cells[10].Text;
-
-            if (String.IsNullOrEmpty(Date) || String.IsNullOrEmpty(Police_Department) || String.IsNullOrEmpty(Longitude) || String.IsNullOrEmpty(Latitude) || String.IsNullOrEmpty(Type))
-            {
-                return false;
-            }
-            return true;
         }
 
     }

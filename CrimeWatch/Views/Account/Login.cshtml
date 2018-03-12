@@ -2,57 +2,39 @@
 @model LoginViewModel
 @{
     ViewBag.Title = "Log in";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
 }
+<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
+<br /><br /><br />
 
-
-<br /><br />
 <div class="row">
-    <div class="col-lg-5 col-centered ">
-        <h2 style="text-align:center">@ViewBag.Title</h2>
-        <section id="loginForm">
-            @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
-            {
-                @Html.AntiForgeryToken()
-                <hr />
+    <div style="text-align:center">
+        <h1 class="title">Log In</h1>       
+    </div>
+    <br />
+    <div class="container customCont">
+        <br />
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+            <div class="form-group">                
                 @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-                    <div class="col-md-10">
-                        @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <div class="checkbox">
-                            @Html.CheckBoxFor(m => m.RememberMe)
-                            @Html.LabelFor(m => m.RememberMe)
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Log in" class="btn btn-default" />
-                        @Html.ActionLink("New user ?", "Register", new { @style = "float: right" })
-                    </div>
-
-                </div>
-                <p>
-
-                </p>
-                @* Enable this once you have account confirmation enabled for password reset functionality
-                    <p>
-                        @Html.ActionLink("Forgot your password?", "ForgotPassword")
-                    </p>*@
-            }
-        </section>
+            </div>
+            <div class="form-group">
+                <p>Email</p>
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Type your email here." })
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            </div>
+            <div class="form-group">
+                <p>Password</p>
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Type your password here." })
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                <a id="forgotPassword" href="#" onclick="location.href='@Url.Action("ForgotPassword", "Account")'">Forgot your password?</a>
+            </div>
+            <br />
+            <button class="btn btn-success btn-block" type="submit">Submit</button>
+        }
+        <div style="font-size:14px; padding-bottom:10px;">New here? <a href="#" onclick="location.href='@Url.Action("Register", "Account")'">Create an account</a></div>   
     </div>
 </div>
 
@@ -61,8 +43,42 @@
 }
 
 <style>
+    .form-control {
+        height: 40px;
+        width: 350px;
+    }
+
+    .form-control:focus {
+        border-color: #d47e20;
+        outline: none;
+        box-shadow: inset 0 1px 2px rgba(212,126,32,0.7),0 0 0 0.2em rgba(212,126,32,0.4);
+    }
+
     .col-centered {
         float: none;
-        margin: 0 auto;
+        margin: 0 auto;       
+    }
+
+    .customCont {
+        height:auto;
+        border: 1px solid #d8dee2;
+        border-radius: 5px;
+        background-color: white;
+        width: 310px;
+    }
+    
+    #forgotPassword {
+        font-size: 13px;
+        float: right;
+    }
+
+    body {
+        color: black;
+        background: #f4f4f4;     
+        font-size:15px;
+    }
+
+    p {
+        font-weight: 400;
     }
 </style>

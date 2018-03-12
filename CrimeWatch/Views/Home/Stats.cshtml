@@ -1,0 +1,222 @@
+﻿@using CrimeWatch.Models
+@model Tuple<List<Police_Department>, List<Crime>>
+@{
+    ViewBag.Title = "Stats";
+    Layout = "";
+}
+<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#1").parent().css("background-color", "lightcoral");
+        $("#2").parent().css("background-color", "lightcoral");            
+        $("#3").parent().css("background-color", "lightcoral");    
+        $("#4").parent().css("background-color", "orange");
+        $("#5").parent().css("background-color", "orange");
+        $("#6").parent().css("background-color", "orange");
+        $("#7").parent().css("background-color", "orange");
+        $("#8").parent().css("background-color", "orange");
+        $("#9").parent().css("background-color", "orange");
+        $("#10").parent().css("background-color", "orange");
+        $("#11").parent().css("background-color", "#fae63b");
+        $("#12").parent().css("background-color", "#fae63b");
+        $("#13").parent().css("background-color", "#fae63b");
+        $("#14").parent().css("background-color", "#fae63b");
+        $("#15").parent().css("background-color", "#fae63b");
+        $("#16").parent().css("background-color", "#fae63b");
+        $("#17").parent().css("background-color", "#fae63b");
+        $("#18").parent().css("background-color", "#fae63b");
+        $("#19").parent().css("background-color", "#fae63b");
+        $("#20").parent().css("background-color", "#fae63b");
+        $("#21").parent().css("background-color", "lightgreen");
+        $("#22").parent().css("background-color", "lightgreen");
+        $("#23").parent().css("background-color", "lightgreen");
+        $("#24").parent().css("background-color", "lightgreen");
+        $("#25").parent().css("background-color", "lightgreen");
+        $("#26").parent().css("background-color", "lightgreen");
+        $("#27").parent().css("background-color", "lightgreen");
+        $("#28").parent().css("background-color", "lightgreen");
+        $("#29").parent().css("background-color", "lightgreen");
+        $("#30").parent().css("background-color", "lightgreen");
+        $("#31").parent().css("background-color", "lightgreen");
+        $("#32").parent().css("background-color", "lightgreen");
+        $("#33").parent().css("background-color", "lightgreen");
+        $("#34").parent().css("background-color", "lightgreen");
+        $("#35").parent().css("background-color", "lightgreen");
+        $("#36").parent().css("background-color", "lightgreen");
+        $("#37").parent().css("background-color", "lightgreen");
+        $("#38").parent().css("background-color", "lightgreen");
+        $("#39").parent().css("background-color", "lightgreen");
+
+    });    
+</script>
+
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+
+<div class="container" style="width:20%; float:left; position:fixed">
+    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> Back to Dashboard</button>
+    <br /><br /><br />
+    <div class="container customCont">
+        <br />
+        <form action="/Home/Stats" method="post">
+            <div class="form-group">
+                <p>Police Department</p>
+                <select class="form-control" name="police_department">
+                    <option selected>@ViewBag.region</option>
+                    @if (ViewBag.police_department != "All Regions")
+                    {
+                        <option>All Police Departments</option>
+                    }
+                    <option>Avon and Somerset </option>
+                    <option>Bedfordshire</option>
+                    <option>British Transport</option>
+                    <option>Cambridgeshire</option>
+                    <option>Cheshire Constabulary</option>
+                    <option>City of London Police</option>
+                    <option>Cleveland Police</option>
+                    <option>Cumbria Constabulary</option>
+                    <option>Derbyshire Constabulary</option>
+                    <option>Devon & Cornwall Police</option>
+                    <option>Dorset Police</option>
+                    <option>Durham Constabulary</option>
+                    <option>Dyfed-Powys Police</option>
+                    <option>Gloucestershire Constabulary</option>
+                    <option>Greater Manchester Police</option>
+                    <option>Gwent Police</option>
+                    <option>Hampshire Constabulary</option>
+                    <option>Hertfordshire Constabulary</option>
+                    <option>Humberside Police</option>
+                    <option>Kent Police</option>
+                    <option>Lancashire Constabulary</option>
+                    <option>Leicestershire Police</option>
+                    <option>Lincolnshire Police</option>
+                    <option>Merseyside Police</option>
+                    <option>Metropolitan Police Service</option>
+                    <option>Norfolk Constabulary</option>
+                    <option>North Wales Police</option>
+                    <option>North Yorkshire Police</option>
+                    <option>Northamptonshire Police</option>
+                    <option>Northumbria Police</option>
+                    <option>Nottinghamshire Police</option>
+                    <option>South Wales Police</option>
+                    <option>South Yorkshire Police</option>
+                    <option>Staffordshire Police</option>
+                    <option>Suffolk Constabulary</option>
+                    <option>Surrey Police</option>
+                    <option>Sussex Police</option>
+                    <option>Thames Valley Police</option>
+                    <option>Warwickshire Police</option>
+                    <option>West Mercia Police</option>
+                    <option>West Midlands Police</option>
+                    <option>West Yorkshire Police</option>
+                    <option>Wiltshire Police</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <p>Date</p>
+                <select class="form-control" name="date">
+                    <option selected>@ViewBag.date</option>
+                    <option>January 2017</option>
+                    <option>February 2017</option>
+                    <option>March 2017</option>
+                    <option>April 2017</option>
+                    <option>May 2017</option>
+                    <option>June 2017</option>
+                    <option>July 2017</option>
+                    <option>August 2017</option>
+                    <option>September 2017</option>
+                    <option>October 2017</option>
+                    <option>November 2017</option>
+                    <option>December 2017</option>
+                    <option>All 2017</option>
+                    <option>January 2018</option>
+                    <option>February 2018</option>
+                    <option>March 2018</option>
+                    <option>All 2018</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <p>Crime Categories</p>
+                <select class="form-control" name="category" style="width:100%">
+                    <option>@ViewBag.category</option>
+                    @if (ViewBag.category != "All Categories")
+                    {
+                        <option>All Categories</option>
+                    }
+                    <option>Anti-social behaviour</option>
+                    <option>Bicycle theft</option>
+                    <option>Burglary</option>
+                    <option>Criminal damage and arson</option>
+                    <option>Drugs</option>
+                    <option>Other crime</option>
+                    <option>Other theft</option>
+                    <option>Possession of weapons</option>
+                    <option>Public order</option>
+                    <option>Robbery</option>
+                    <option>Shoplifting</option>
+                    <option>Theft from the person</option>
+                    <option>Vehicle crime</option>
+                    <option>Violence and sexual offences</option>
+                </select>
+            </div>
+            <br />
+            <input type="submit" class="btn btn-default" value="Submit">
+            <button class="btn-xs btn-default" style="float:right; border: 1px solid black; font-size:12px; background-color:lightcoral" id="reset">Reset filters</button>
+            <br />
+        </form>
+    </div>
+</div>
+
+<div class="container" style="width:65%; margin-left:25%;">
+    <h2 class="title" style="display:inline;">@ViewBag.police_department</h2>
+    <p class="title" style="font-size:17px; display:inline; float:right">@ViewBag.category | @ViewBag.date </p>
+    <br /><br /><br />
+    @if (ViewBag.police_department == "All Police Departments")
+    {
+        foreach (var police_department in Model.Item1)
+        {
+            int index = Model.Item1.IndexOf(police_department) + 1;
+            <div class="container" style="border:1px solid white; height:80px; font-size:16px;">
+                <br />
+                <h4 id="@index" style="float:left; display:inline;">
+                    <b>@index</b> &nbsp;&nbsp;&nbsp;&nbsp; @police_department.Name &nbsp;&nbsp; @Model.Item2.Where(x => x.Police_Department_Id == police_department.Id).Count() crimes
+                </h4>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="container customCont">
+            <br />
+            <h4>
+                @ViewBag.police_department : @Model.Item2.Where(x => x.Police_Departments.Name == ViewBag.police_department).Count() crimes
+            </h4>
+        </div>
+    }
+
+    <br />
+</div>
+
+
+<style>
+
+    li {
+        font-size: 17px;
+    }
+
+    body {
+        color: black;
+        background: #f4f4f4;
+        font-size: 15px;
+    }
+
+    .ddMenu {
+        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
+        border: 1px solid rgb(153, 153, 153);
+        background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+        padding: 5px 0px;
+    }
+</style>

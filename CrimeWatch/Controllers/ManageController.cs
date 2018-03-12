@@ -7,6 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using CrimeWatch.Models;
+using System.Net.Mail;
 
 namespace CrimeWatch.Controllers
 {
@@ -15,6 +16,7 @@ namespace CrimeWatch.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
+        private CrimeWatchDBEntities db = new CrimeWatchDBEntities();
 
         public ManageController()
         {
@@ -32,9 +34,9 @@ namespace CrimeWatch.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -215,7 +217,7 @@ namespace CrimeWatch.Controllers
 
         //
         // GET: /Manage/ChangePassword
-        public ActionResult ChangePassword()
+        public ActionResult ChangeLoginDetails()
         {
             return View();
         }
@@ -224,24 +226,140 @@ namespace CrimeWatch.Controllers
         // POST: /Manage/ChangePassword
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<ActionResult> ChangeLoginDetails(ChangeLoginDetailsViewModel model)
         {
-            if (!ModelState.IsValid)
+            String formValidationResult = ValidateFormInput(model);
+            if (formValidationResult == "ok")
             {
-                return View(model);
-            }
-            var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
-            if (result.Succeeded)
-            {
-                var user = await UserManager.FindByIdAsync(User.Identity.GetUserId());
-                if (user != null)
+                if (!String.IsNullOrEmpty(model.OldPassword))
                 {
-                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    var result = await UserManager.ChangePasswordAsync(User.Identity.GetUserId(), model.OldPassword, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        if (!String.IsNullOrEmpty(model.OldEmail))
+                        {
+                            AspNetUser user = db.AspNetUsers.Find(User.Identity.GetUserId());
+                            if (user.Email == model.OldEmail) {
+                                if (IsValid(model.NewEmail))
+                                {
+                                    user.Email = model.NewEmail;
+                                    user.UserName = model.NewEmail;
+                                    db.SaveChanges();
+                                }
+                                else {
+                                    ModelState.AddModelError(String.Empty, "The new email does not have the correct format.");
+                                    return View();
+                                }                                
+                            }
+                            else
+                            {
+                                ModelState.AddModelError(String.Empty, "The email you provided is incorrect.");
+                                return View();
+                            }
+                        }
+                        return RedirectToAction("MyPortal", "Home", new { Message = ManageMessageId.ChangePasswordSuccess });
+                    }
+                    else
+                    {
+                        AddErrors(result);
+                        return View(model);
+                    }
                 }
-                return RedirectToAction("Index", new { Message = ManageMessageId.ChangePasswordSuccess });
+                else
+                {
+                    AspNetUser user = db.AspNetUsers.Find(User.Identity.GetUserId());
+                    if (user.Email == model.OldEmail)
+                    {
+                        if (IsValid(model.NewEmail))
+                        {
+                            user.Email = model.NewEmail;
+                            user.UserName = model.NewEmail;
+                            db.SaveChanges();
+                        }
+                        else
+                        {
+                            ModelState.AddModelError(String.Empty, "The new email does not have the correct format.");
+                            return View();
+                        }
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(String.Empty, "The email you provided is incorrect.");
+                        return View();
+                    }
+                    return RedirectToAction("MyPortal", "Home", new { Message = ManageMessageId.ChangePasswordSuccess });
+                }
             }
-            AddErrors(result);
-            return View(model);
+            else {
+                ModelState.AddModelError(String.Empty, formValidationResult);
+                return View();
+            }
+        }
+        
+        public String ValidateFormInput(ChangeLoginDetailsViewModel model) {
+            if (!ModelState.IsValid || (String.IsNullOrEmpty(model.OldEmail) && String.IsNullOrEmpty(model.OldPassword)))
+            {
+                return "Either current password or email must be provided.";
+            }
+            if (!String.IsNullOrEmpty(model.OldPassword)) {
+                if (String.IsNullOrEmpty(model.NewPassword) || String.IsNullOrEmpty(model.ConfirmPassword)) {
+                    return "Both new and confirmed passwords must be provided.";
+                }
+            }
+            if (!String.IsNullOrEmpty(model.OldEmail))
+            {
+                if (String.IsNullOrEmpty(model.NewEmail) || String.IsNullOrEmpty(model.ConfirmEmail))
+                {
+                    return "Both new and confirmed emails must be provided.";
+                }
+            }
+            return "ok";
+        }
+
+        public bool IsValid(string emailaddress)
+        {
+            try
+            {
+                MailAddress m = new MailAddress(emailaddress);
+
+                return true;
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+
+        public ActionResult ChangeContactDetails()
+        {
+            AspNetUser user = db.AspNetUsers.Find(User.Identity.GetUserId());
+            ViewBag.currentName = user.FullName;
+            ViewBag.currentPhone = user.PhoneNumber;
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ChangeContactDetails(ChangeContactDetailsViewModel model)
+        {
+            if (String.IsNullOrEmpty(model.NewFullName) && String.IsNullOrEmpty(model.NewPhoneNumber)) {
+                ModelState.AddModelError(String.Empty, "No details provided.");
+                return View();
+            }
+
+            if (!String.IsNullOrEmpty(model.NewFullName)) {
+                db.AspNetUsers.Find(User.Identity.GetUserId()).FullName = model.NewFullName;
+            }
+
+            if (!String.IsNullOrEmpty(model.NewPhoneNumber))
+            {
+                db.AspNetUsers.Find(User.Identity.GetUserId()).PhoneNumber= model.NewPhoneNumber;
+            }
+
+            db.SaveChanges();
+            return RedirectToAction("MyPortal", "Home");
+            
         }
 
         //
@@ -333,7 +451,7 @@ namespace CrimeWatch.Controllers
             base.Dispose(disposing);
         }
 
-#region Helpers
+        #region Helpers
         // Used for XSRF protection when adding external logins
         private const string XsrfKey = "XsrfId";
 
@@ -384,6 +502,6 @@ namespace CrimeWatch.Controllers
             Error
         }
 
-#endregion
+        #endregion
     }
 }

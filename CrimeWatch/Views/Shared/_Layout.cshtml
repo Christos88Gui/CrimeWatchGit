@@ -5,54 +5,41 @@
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
 
-    <style>
-        .layoutBtn {
-            color: white;
-            font-size: 17px;
-            border: none;
-            background: none;
-            position: relative;
-            margin-top: 3%;
-        }
+<style>
+    .layoutBtn {
+        color: white;
+        font-size: 17px;
+        border: none;
+        background: none;
+        position: relative;
+        margin-top: 3%;
+    }
 
-        .layoutBtn:hover {
-            color: white;
-            text-shadow: 0px 0px 2px white;
-            outline: none;
-        }
+    .layoutBtn:hover {
+        color: white;
+        text-shadow: 0px 0px 2px white;
+        outline: none;
+    }
 
-        .layoutBtn:focus {
-            color: white;
-            outline: none;
-        }
+    .layoutBtn:focus {
+        color: white;
+        outline: none;
+    }
 
-        .bar {
-            background-color: black;            
-            position: fixed;
-            height: auto;
-            border-bottom: 1px solid white;
-        }
 
-        #layoutLogo {
-            float: left;
-            position: relative;
-            height: 60px;
-            width: 110px;
-        }
+    #dropdownContainer {
+        position: absolute;
+        top: 50px;
+        color: black;
+    }
 
-        #dropdownContainer {
-            position: absolute;
-            top: 50px;
-            color: black;
-        }
-
-        .dropdown-item {
-            font-size: 15px;
-            color: black;
-            display: block;
-            margin-top: 10px;
-            margin-left: 10px;
-        }
+    .dropdown-item {
+        font-size: 15px;
+        color: black;
+        display: block;
+        margin-top: 10px;
+        margin-left: 10px;
+    }
 
         .dropdown-item:hover {
             font-size: 15px;
@@ -61,7 +48,45 @@
             margin-top: 10px;
             margin-left: 10px;
         }
-    </style>
+
+    .layoutLogin {
+        font-weight: 600;
+        color: #fff !important;
+        text-decoration: none;
+        font-size: 16px !important;
+        background-color: transparent;
+    }
+
+    
+    .backToTopBtn {
+        right: 15px;
+        bottom: 40px;
+        color: black;
+        position: fixed;
+        font-size: 20px;
+        width: 50px;
+        height: 40px;
+        border: 1px solid gray;
+    }
+
+    .backToTopBtn:hover {
+        outline: none;
+        color: black;
+        font-size: 20px;
+        border: 1px solid gray;
+        box-shadow: rgb(136, 136, 136) 3px 3px 10px;        
+        background-color:white;
+    }
+
+    .backToTopBtn:focus {
+        outline:none;        
+        color: black;
+        font-size: 20px;
+        border: 1px solid gray;
+        background-color:white;
+        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
+    }
+</style>
 </head>
 
 <body>
@@ -70,28 +95,12 @@
         <div class="container" style="width:90%; margin:0 auto;">
             <div class="row">
                 <a href="#" onclick="location.href='@Url.Action("Index", "Home")'">
-
-                    <img href="#" src="~/Content/Images/layoutLogo.png" id="layoutLogo" />
+                    <img src="~/Content/Images/layoutLogo.png" class="layoutLogo" />
                 </a>
                 <div style="float:right">
-                    <button class="btn layoutLogin" onclick="location.href='@Url.Action("Login", "Account")'"> Login </button>
-                    <p style="display:inline; position:relative;top:4px;">or</p>
-                    <button class="btn layoutLogin" onclick="location.href='@Url.Action("Register", "Account")'"> Register </button>
-                </div>
-            </div>
-
-            <div class="row">
-                <div style="float:left">
-                    <a class="layoutBtn btn" id="hi">What is CrimeWatch ?</a>
-                    <a class="layoutBtn btn" id="ho">How does it work ?</a>
-                    <a class="layoutBtn btn" onclick="location.href='@Url.Action("Contact", "Home")'">Contact Us</a>
-                    <a class="layoutBtn btn" onclick="location.href='@Url.Action("Contact", "Home")'">FAQ</a>
-                </div>
-
-                @if (Request.IsAuthenticated)
-                {
-                        <div style="float:right">
-                            <a class="layoutBtn btn" onclick="location.href='@Url.Action("Index", "Map")'">Map</a>
+                    @if (Request.IsAuthenticated)
+                    {
+                        @*<a class="layoutBtn btn" onclick="location.href='@Url.Action("Index", "Map")'">Map</a>
                             <div class="dropdown" style="display:inline">
                                 <button class="btn layoutBtn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     My Account
@@ -102,16 +111,36 @@
                                     <a class="dropdown-item" style="padding-bottom:10px;" href="#">My Data</a>
                                 </div>
                             </div>
-                        </div>
-                }
+                            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style = "display:inline;" }))
+                            {
 
-            @*@Html.Partial("_LoginPartial")*@
+                                @Html.AntiForgeryToken()
+                                <a class="layoutBtn btn" style="color:lightcoral" href="javascript:document.getElementById('logoutForm').submit()">Log Out</a>
+
+                            }*@
+
+                        <a class="btn layoutLogin" onclick="location.href='@Url.Action("MyPortal", "Home")'">Dashboard <span class="glyphicon glyphicon-th"></span></a>
+                    }
+                    else
+                    {
+                        <button class="btn layoutLogin" onclick="location.href='@Url.Action("Login", "Account")'"> Login </button>
+                        <p style="display:inline; position:relative;top:4px;">or</p>
+                        <button class="btn layoutLogin" onclick="location.href='@Url.Action("Register", "Account")'"> Register </button>
+                    }
+                </div>
             </div>
-
+            <div class="row">
+                <div style="float:left">
+                    <a class="layoutBtn btn" id="What">What is CrimeWatch ?</a>
+                    <a class="layoutBtn btn" id="How">How does it work ?</a>
+                    <a class="layoutBtn btn" id="Faq">FAQ</a>
+                    <a class="layoutBtn btn" id="Contact">Contact Us</a>
+                </div>
+            </div>
         </div>
     </div>
+    <button class="btn backToTopBtn btn-default"><span class="glyphicon glyphicon-arrow-up"></span></button>
 
-    <br />
     <div class="container body-content">
         @RenderBody()
     </div>
@@ -121,28 +150,36 @@
     @RenderSection("scripts", required: false)
 </body>
 
-<style>
-    .layoutLogin {
-        font-weight: 600;
-        color: #fff !important;
-        text-decoration: none;
-        font-size: 16px !important;
-        background-color: transparent;
-    }
-</style>
 
+<script>
 
-<script> 
-
-    $("#hi").click(function () {
+    $("#What").click(function () {
         $('html, body').animate({
-            scrollTop: $("#one").offset().top - 190
+            scrollTop: $("#one").offset().top - 200
         }, 1000);
     });
 
-    $("#ho").click(function () {
+    $("#How").click(function () {
         $('html, body').animate({
-            scrollTop: $("#two").offset().top
+            scrollTop: $("#two").offset().top - 200
+        }, 1000);
+    });
+
+    $("#Faq").click(function () {
+        $('html, body').animate({
+            scrollTop: $("#three").offset().top - 200
+        }, 1000);
+    });
+
+    $("#Contact").click(function () {
+        $('html, body').animate({
+            scrollTop: $("#footer").offset().top
+        }, 1000);
+    });
+
+    $(".backToTopBtn").click(function () {
+        $('html, body').animate({
+            scrollTop: 0
         }, 1000);
     });
 

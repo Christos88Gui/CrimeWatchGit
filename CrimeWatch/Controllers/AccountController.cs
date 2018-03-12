@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Globalization;
 using System.Linq;
-using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -15,6 +13,8 @@ namespace CrimeWatch.Controllers
     [Authorize]
     public class AccountController : Controller
     {
+
+        private CrimeWatchDBEntities db = new CrimeWatchDBEntities();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -55,9 +55,8 @@ namespace CrimeWatch.Controllers
         //
         // GET: /Account/Login
         [AllowAnonymous]
-        public ActionResult Login(string returnUrl)
+        public ActionResult Login()
         {
-            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
@@ -66,7 +65,7 @@ namespace CrimeWatch.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
+        public async Task<ActionResult> Login(LoginViewModel model, String returnUrl)
         {
             if (!ModelState.IsValid)
             {
@@ -79,7 +78,7 @@ namespace CrimeWatch.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToLocal(returnUrl);
+                    return RedirectToAction("MyPortal","Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -142,6 +141,14 @@ namespace CrimeWatch.Controllers
             return View();
         }
 
+        public async Task<ActionResult> SendConfirmationEmail() {
+            AspNetUser user = db.AspNetUsers.Find(User.Identity.GetUserId());
+            string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+            var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
+            await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
+            return RedirectToAction("MyPortal", "Home");
+        }
+
         //
         // POST: /Account/Register
         [HttpPost]
@@ -151,18 +158,14 @@ namespace CrimeWatch.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { Email = model.Email , PhoneNumber = model.PhoneNumber, FullName = model.FullName, UserName = model.Email };                
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
                     await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
-                    // For more information on how to enable account confirmation and password reset please visit https://go.microsoft.com/fwlink/?LinkID=320771
-                    // Send an email with this link
-                    // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    // var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = code }, protocol: Request.Url.Scheme);
-                    // await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-
+                    string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
+                    var callbackUrl = Url.Action("MyPortal", "Home", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
+                    await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
                     return RedirectToAction("Index", "Home");
                 }
                 AddErrors(result);
@@ -367,7 +370,7 @@ namespace CrimeWatch.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
+                var user = new ApplicationUser { Email = model.Email };
                 var result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
@@ -421,6 +424,26 @@ namespace CrimeWatch.Controllers
             }
 
             base.Dispose(disposing);
+        }
+        
+        public ActionResult DeleteUser(String email)
+        {
+            try
+            {
+                foreach (AspNetUser user in db.AspNetUsers) {
+                    if (user.Email == email) {
+                        AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+                        db.AspNetUsers.Remove(user);
+                    }
+                }                
+                db.SaveChanges();
+            }
+            catch (Exception e) {
+                ViewBag.Exception = e;
+                return View("Error");
+            }
+
+            return RedirectToAction("Index", "Home");
         }
 
         #region Helpers

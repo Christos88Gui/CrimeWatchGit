@@ -12,19 +12,19 @@ namespace CrimeWatch.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Crime
+    public partial class Police_Department
     {
-        public int Id { get; set; }
-        public Nullable<System.DateTime> Date { get; set; }
-        public string Type { get; set; }
-        public Nullable<double> Latitude { get; set; }
-        public Nullable<double> Longitude { get; set; }
-        public string Location { get; set; }
-        public string LSOA_Code { get; set; }
-        public string LSOA_Name { get; set; }
-        public string Outcome { get; set; }
-        public Nullable<int> Police_Department_Id { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public Police_Department()
+        {
+            this.Crimes = new HashSet<Crime>();
+        }
     
-        public virtual Police_Department Police_Departments { get; set; }
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Region { get; set; }
+    
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Crime> Crimes { get; set; }
     }
 }
