@@ -69,7 +69,7 @@ if (!loader.IsLazyLoadingEnabled(container))
 foreach (var entitySet in container.BaseEntitySets.OfType<EntitySet>())
 {
     // Note: the DbSet members are defined below such that the getter and
-    // setter always have the same accessibility as the DbSet definition
+    // setter always have the sameLatLngCrimes accessibility as the DbSet definition
     if (Accessibility.ForReadOnlyProperty(entitySet) != "public")
     {
 #>

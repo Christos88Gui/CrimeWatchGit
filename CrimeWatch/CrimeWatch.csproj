@@ -46,6 +46,24 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Accord, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.3.8.0\lib\net46\Accord.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.MachineLearning.3.8.0\lib\net46\Accord.MachineLearning.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.MachineLearning.GPL, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.MachineLearning.GPL.3.8.0\lib\net46\Accord.MachineLearning.GPL.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Math.3.8.0\lib\net46\Accord.Math.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Math.Core, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Math.3.8.0\lib\net46\Accord.Math.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Accord.Statistics, Version=3.8.0.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Accord.Statistics.3.8.0\lib\net46\Accord.Statistics.dll</HintPath>
+    </Reference>
     <Reference Include="DynamicInterop, Version=0.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\DynamicInterop.0.8.1\lib\netstandard1.2\DynamicInterop.dll</HintPath>
     </Reference>
@@ -53,6 +71,13 @@
       <HintPath>..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.6\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="PoliceUK, Version=1.0.5674.34783, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\PoliceUK.1.0.5674.34783\lib\net35\PoliceUK.dll</HintPath>
+    </Reference>
     <Reference Include="RDotNet, Version=1.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\R.NET.1.7.0\lib\net40\RDotNet.dll</HintPath>
     </Reference>
@@ -125,9 +150,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Newtonsoft.Json">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
     <Reference Include="EntityFramework">
       <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
@@ -203,27 +225,38 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="ConstantStrings.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\ClusteringController.cs" />
+    <Compile Include="Controllers\GraphsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ImportController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MapController.cs" />
+    <Compile Include="Controllers\RegressionController.cs" />
+    <Compile Include="Controllers\StatsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\AspNetRole.cs">
-      <DependentUpon>CrimeWatchLocalModels.tt</DependentUpon>
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AspNetUser.cs">
-      <DependentUpon>CrimeWatchLocalModels.tt</DependentUpon>
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AspNetUserClaim.cs">
-      <DependentUpon>CrimeWatchLocalModels.tt</DependentUpon>
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\AspNetUserLogin.cs">
-      <DependentUpon>CrimeWatchLocalModels.tt</DependentUpon>
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\County.cs">
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\Crime.cs">
-      <DependentUpon>CrimeWatchLocalModels.tt</DependentUpon>
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Crimes_pm.cs">
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\CrimeWatchAzureModels.Context.cs">
       <AutoGen>True</AutoGen>
@@ -260,8 +293,8 @@
     </Compile>
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
-    <Compile Include="Models\Police_Department.cs">
-      <DependentUpon>CrimeWatchLocalModels.tt</DependentUpon>
+    <Compile Include="Models\Police_Departments.cs">
+      <DependentUpon>CrimeWatchAzureModels.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
@@ -269,8 +302,16 @@
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\Images\clustering.png" />
+    <Content Include="Content\Images\img1.png" />
+    <Content Include="Content\Images\img2.png" />
     <Content Include="Content\Images\layoutLogo.png" />
     <Content Include="Content\Images\map_Blurry.png" />
+    <Content Include="Content\Images\Map_Clusters\m1.png" />
+    <Content Include="Content\Images\Map_Clusters\m2.png" />
+    <Content Include="Content\Images\Map_Clusters\m3.png" />
+    <Content Include="Content\Images\Map_Clusters\m4.png" />
+    <Content Include="Content\Images\Map_Clusters\m5.png" />
     <Content Include="Content\Images\progress_ring.gif" />
     <Content Include="Models\CrimeWatchAzureModels.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -370,10 +411,16 @@
     <Content Include="Views\Home\MyPortal.cshtml" />
     <Content Include="Views\Shared\_LayoutPortal.cshtml" />
     <Content Include="Views\Manage\ChangeContactDetails.cshtml" />
-    <Content Include="Views\Map\MapParameters.cshtml" />
     <Content Include="Views\Home\Stats.cshtml" />
-    <Content Include="Views\Map\Graphs.cshtml" />
-    <Content Include="Views\Home\Upload.cshtml" />
+    <Content Include="Views\Graphs\Graphs.cshtml" />
+    <Content Include="Views\Import\Upload.cshtml" />
+    <Content Include="Views\Graphs\Parameters.cshtml" />
+    <Content Include="Views\Graphs\GraphBackup.cshtml" />
+    <Content Include="Views\Stats\Stats.cshtml" />
+    <Content Include="Views\Map\Parameters.cshtml" />
+    <Content Include="Views\Clustering\Clusters.cshtml" />
+    <Content Include="Views\Regression\Parameters.cshtml" />
+    <Content Include="Views\Regression\Prediction.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -457,7 +504,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.2.1.0\build\Microsoft.Net.Compilers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.7\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+    <Error Condition="!Exists('..\packages\Accord.3.8.0\build\Accord.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Accord.3.8.0\build\Accord.targets'))" />
   </Target>
+  <Import Project="..\packages\Accord.3.8.0\build\Accord.targets" Condition="Exists('..\packages\Accord.3.8.0\build\Accord.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

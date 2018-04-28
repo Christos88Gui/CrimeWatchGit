@@ -14,7 +14,7 @@ namespace CrimeWatch.Controllers
     public class AccountController : Controller
     {
 
-        private CrimeWatchDBEntities db = new CrimeWatchDBEntities();
+        private crimewatchAzureModels db = new crimewatchAzureModels();
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
 
@@ -22,7 +22,7 @@ namespace CrimeWatch.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +34,9 @@ namespace CrimeWatch.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -78,7 +78,7 @@ namespace CrimeWatch.Controllers
             switch (result)
             {
                 case SignInStatus.Success:
-                    return RedirectToAction("MyPortal","Home");
+                    return RedirectToAction("MyPortal", "Home");
                 case SignInStatus.LockedOut:
                     return View("Lockout");
                 case SignInStatus.RequiresVerification:
@@ -119,7 +119,7 @@ namespace CrimeWatch.Controllers
             // If a user enters incorrect codes for a specified amount of time then the user account 
             // will be locked out for a specified amount of time. 
             // You can configure the account lockout settings in IdentityConfig
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -141,7 +141,8 @@ namespace CrimeWatch.Controllers
             return View();
         }
 
-        public async Task<ActionResult> SendConfirmationEmail() {
+        public async Task<ActionResult> SendConfirmationEmail()
+        {
             AspNetUser user = db.AspNetUsers.Find(User.Identity.GetUserId());
             string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
             var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
@@ -158,19 +159,18 @@ namespace CrimeWatch.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser { Email = model.Email , PhoneNumber = model.PhoneNumber, FullName = model.FullName, UserName = model.Email };                
+                var user = new ApplicationUser { Email = model.Email, PhoneNumber = model.PhoneNumber, FullName = model.FullName, UserName = model.Email };
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
-                    var callbackUrl = Url.Action("MyPortal", "Home", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
+                    var callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code }, protocol: Request.Url.Scheme);
                     await UserManager.SendEmailAsync(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>");
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("MyPortal", "Home");
                 }
                 AddErrors(result);
             }
-
             // If we got this far, something failed, redisplay form
             return View(model);
         }
@@ -185,8 +185,14 @@ namespace CrimeWatch.Controllers
                 return View("Error");
             }
             var result = await UserManager.ConfirmEmailAsync(userId, code);
-            return View(result.Succeeded ? "ConfirmEmail" : "Error");
+            if (!result.Succeeded)
+            {
+                return View("Error");
+            }
+
+            return RedirectToAction("MyPortal", "Home");
         }
+
 
         //
         // GET: /Account/ForgotPassword
@@ -425,20 +431,23 @@ namespace CrimeWatch.Controllers
 
             base.Dispose(disposing);
         }
-        
+
         public ActionResult DeleteUser(String email)
         {
             try
             {
-                foreach (AspNetUser user in db.AspNetUsers) {
-                    if (user.Email == email) {
+                foreach (AspNetUser user in db.AspNetUsers)
+                {
+                    if (user.Email == email)
+                    {
                         AuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
                         db.AspNetUsers.Remove(user);
                     }
-                }                
+                }
                 db.SaveChanges();
             }
-            catch (Exception e) {
+            catch (Exception e)
+            {
                 ViewBag.Exception = e;
                 return View("Error");
             }

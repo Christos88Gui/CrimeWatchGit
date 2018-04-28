@@ -1,134 +1,106 @@
-﻿using CrimeWatch.Models;
+﻿using PoliceUk;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web;
+using System.Net;
 using System.Web.Mvc;
+using System.Xml.Linq;
+using CrimeWatch.Models;
+
 namespace CrimeWatch.Controllers
 {
     public class MapController : Controller
     {
-        private CrimeWatchDBEntities db = new CrimeWatchDBEntities();
+        private crimewatchAzureModels db = new crimewatchAzureModels();
 
-        public List<Crime> ApplyFilters(String category, String police_department, String date)
+        public ActionResult Parameters()
+        {     
+            ViewBag.dateDD = ReturnDateDD();
+            ViewBag.typeDD = ReturnTypeDD();
+
+            return View();
+        }
+
+
+        public ActionResult Map(string address, string date, string type)
         {
-            List<Crime> crimes = db.Crimes.ToList();
-            foreach (var crime in crimes.ToList())
+            
+            List<XElement> LatLng = ReturnLatLng(address);                        
+            var crimesLocation = new Geoposition(double.Parse(LatLng.First().Value), double.Parse(LatLng.ElementAt(1).Value));
+            DateTime crimesDate = DateTime.ParseExact(date, "MMMM yyyy", CultureInfo.InvariantCulture);
+            var policeClient = new PoliceUkClient();
+            PoliceUk.Entities.StreetLevel.StreetLevelCrimeResults results = policeClient.StreetLevelCrimes(crimesLocation, crimesDate);
+            List<Crime> crimes = new List<Crime>();
+            foreach (PoliceUk.Entities.StreetLevel.Crime crime in results.Crimes)
+            { 
+                string category = crime.Category.ToUpper().First() + crime.Category.Remove(0,1).Replace("-"," ");
+                crimes.Add(new Crime { Latitude = crime.Location.Latitude, Longitude = crime.Location.Longitude, Type = category, Date = crimesDate, Location = crime.Location.Street.Name ,Outcome = crime.OutcomeStatus is null? "Unknown":crime.OutcomeStatus.Category});
+            }
+            if (!type.Equals("All crime") && !type.Equals(""))
+                crimes = crimes.Where(x => x.Type == type).ToList();
+
+            crimes = SumCrimeTypes(crimes);           
+            ViewBag.dateDD = ReturnDateDD();
+            ViewBag.typeDD = ReturnTypeDD();
+            ViewBag.type = type;
+            ViewBag.date = date;
+            ViewBag.address = address;
+            ViewBag.lat = float.Parse(LatLng.First().Value);
+            ViewBag.lng = float.Parse(LatLng.ElementAt(1).Value);
+            return View(crimes);
+        }
+
+        public List<Crime> SumCrimeTypes(List<Crime> crimes) {
+            foreach (Crime crime in crimes)
             {
-                if (date.Contains("All "))
+                if (crimes.Where(x=>x.Latitude.Equals(crime.Latitude) && x.Longitude.Equals(crime.Longitude)).ToList().Count>1 && !crime.Type.Contains('('))
                 {
-                    if (crime.Date.Value.Year.ToString() != date.Split(' ')[1])
+                    List<Crime> sameLatLngCrimes = crimes.Where(c => c.Latitude == crime.Latitude && c.Longitude == crime.Longitude).ToList();
+                    
+                    List<string> types = new List<string>();
+                    foreach (Crime crime2 in sameLatLngCrimes)
                     {
-                        crimes.Remove(crime);
+                        types.Add(crime2.Type);
                     }
-                }
-                else {
-                    if (!(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(crime.Date.Value.Month).Equals(date.Split(' ')[0]) && crime.Date.Value.Year.ToString().Equals(date.Split(' ')[1])))
+                    List<string> typesDistinct = new List<string>();
+                    foreach (string s in types.Distinct().ToList())
                     {
-                        crimes.Remove(crime);
+                        typesDistinct.Add(s);
+                        typesDistinct.Add(sameLatLngCrimes.Where(x => x.Type.Equals(s)).Count().ToString());
+
                     }
-                }             
-                if (!category.Equals("All Categories"))
-                {
-                    if (crime.Type != category)
+                    string newType = "";
+                    for (int j = 0; j < typesDistinct.Count; j += 2)
                     {
-                        crimes.Remove(crime);
+                        newType = newType + typesDistinct[j] + " (" + typesDistinct[j + 1] + "), ";
                     }
-                }
-                if (!police_department.Equals("All Police Departments"))
-                {
-                    if (db.Police_Departments.Find(crime.Police_Department_Id).Name != police_department)
+                    foreach (Crime c in sameLatLngCrimes)
                     {
-                        crimes.Remove(crime);
+                        c.Type = newType.Remove(newType.Length - 2);
+                        c.Outcome = "Multiple";
                     }
                 }
             }
             return crimes;
         }
 
-
-        public String ReturnMonthName(String monthIndex) {        
-            switch (monthIndex)
-            {
-                default:
-                    return DateTime.Now.Month.ToString();
-                case "1":
-                    return "January";
-                case "2":
-                    return "February";
-                case "3":
-                    return "March";
-                case "4":
-                    return "April";
-                case "5":
-                    return "May";
-                case "6":
-                    return "June";
-                case "7":
-                    return "July";
-                case "8":
-                    return "August";
-                case "9":
-                    return "September";
-                case "10":
-                    return "October";
-                case "11":
-                    return "November";
-                case "12":
-                    return "December";                                   
-            }
-        }
-
-        public ActionResult MapParameters()
-        {        
-            return View();
-        }
-
-        // GET: Map
-        public ActionResult Map(MapParametersViewModel model)
+        public List<XElement> ReturnLatLng(string address)
         {
-            if (model.Police_Department.Equals("Select Police Department")) {
-                ModelState.AddModelError(String.Empty, "Please select police department!");
-                return View("MapParameters", model);
-            }
-            if (model.Date.Equals("Select Date"))
-            {
-                ModelState.AddModelError(String.Empty, "Please select Date!");
-                return View("MapParameters", model);
-            }
-            ViewBag.type = model.Type;
-            ViewBag.date = model.Date;
-            ViewBag.police_department = model.Police_Department;
-            List<Crime> crimes = ApplyFilters(model.Type, model.Police_Department, model.Date);
-            return View(crimes);
-        }
-
-
-        public ActionResult Graphs(String police_department, String date, String category) {            
-            if (String.IsNullOrEmpty(police_department)) {
-                police_department = "All Police Departments";
-            }
-            if (String.IsNullOrEmpty(date))
-            {
-                date = "All 2017";
-            }
-            if (String.IsNullOrEmpty(category))
-            {
-                category = "All Categories";
-            }
-            ViewBag.police_department = police_department;
-            ViewBag.date = date;
-            ViewBag.category = category;
-
-            List<Crime> crimes = ApplyFilters(category, police_department, date);
-            ViewBag.crimes_per_month = new int[] { crimes.Where(x => x.Date.Value.Month == 1).Count(), crimes.Where(x => x.Date.Value.Month == 2).Count(), crimes.Where(x => x.Date.Value.Month == 3).Count(), crimes.Where(x => x.Date.Value.Month == 4).Count(), crimes.Where(x => x.Date.Value.Month == 5).Count(), crimes.Where(x => x.Date.Value.Month == 6).Count(), crimes.Where(x => x.Date.Value.Month == 7).Count(), crimes.Where(x => x.Date.Value.Month == 8).Count(), crimes.Where(x => x.Date.Value.Month == 9).Count(), crimes.Where(x => x.Date.Value.Month == 10).Count(), crimes.Where(x => x.Date.Value.Month == 11).Count(), crimes.Where(x => x.Date.Value.Month == 12).Count() };
-            return View("Graphs",crimes);
+            string requestUri = ConstantStrings.API_GOOGLE_GEOCODE + "address=" + address.Replace(" ", "+") + "&key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI";
+            WebRequest request = WebRequest.Create(requestUri);
+            WebResponse responseAddr = request.GetResponse();
+            XDocument xdoc = XDocument.Load(responseAddr.GetResponseStream());
+            XElement result = xdoc.Element("GeocodeResponse").Element("result");
+            XElement locationElement = result.Element("geometry").Element("location");
+            XElement lat = locationElement.Element("lat");
+            XElement lng = locationElement.Element("lng");
+            return new List<XElement> { lat, lng };
         }
 
         public ActionResult DeleteAll()
         {
-            foreach (Crime crime in db.Crimes)
+            foreach (Models.Crime crime in db.Crimes)
             {
                 db.Crimes.Remove(crime);
             }
@@ -136,5 +108,33 @@ namespace CrimeWatch.Controllers
             return RedirectToAction("About", "Home");
         }
 
+
+        public List<string> ReturnDateDD()
+        {
+            List<string> datesToString = new List<string>();
+            List<DateTime> dates = new List<DateTime>();
+            foreach (var record in db.Crimes_pm)
+            {
+                dates.Add(record.Month);
+            }
+            dates = dates.Distinct().OrderByDescending(x => x).ToList();
+            foreach (var date in dates)
+            {
+                datesToString.Add(CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(date.Month) + " " + date.Year);
+            }
+            return datesToString;
+        }
+
+        public List<string> ReturnTypeDD()
+        {
+            List<string> typesToString = new List<string>();
+            PoliceUkClient client = new PoliceUkClient();
+            List<PoliceUk.Entities.Category> categories = client.CrimeCategories(DateTime.UtcNow).ToList();
+            foreach (var category in categories)
+            {
+                typesToString.Add(category.Name);
+            }
+            return typesToString;
+        }
     }
 }

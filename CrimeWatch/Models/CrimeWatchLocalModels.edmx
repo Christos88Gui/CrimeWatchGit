@@ -67,6 +67,15 @@
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="FullName" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="Counties">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Police_Department_Id" Type="int" />
+          <Property Name="Population" Type="int" />
+        </EntityType>
         <EntityType Name="Crimes">
           <Key>
             <PropertyRef Name="Id" />
@@ -81,6 +90,7 @@
           <Property Name="LSOA_Name" Type="varchar" MaxLength="50" />
           <Property Name="Outcome" Type="varchar(max)" />
           <Property Name="Police_Department_Id" Type="int" />
+          <Property Name="County_Id" Type="int" />
         </EntityType>
         <EntityType Name="Police_Departments">
           <Key>
@@ -88,9 +98,32 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="50" />
-          <Property Name="Region" Type="nvarchar" MaxLength="50" />
         </EntityType>
-        <Association Name="FK_Crimes_ToTable">
+        <Association Name="FK_Counties_Police_Departments">
+          <End Role="Police_Departments" Type="Self.Police_Departments" Multiplicity="0..1" />
+          <End Role="Counties" Type="Self.Counties" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Police_Departments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Counties">
+              <PropertyRef Name="Police_Department_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crimes_Counties">
+          <End Role="Counties" Type="Self.Counties" Multiplicity="0..1" />
+          <End Role="Crimes" Type="Self.Crimes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crimes">
+              <PropertyRef Name="County_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crimes_Police_Departments">
           <End Role="Police_Departments" Type="Self.Police_Departments" Multiplicity="0..1" />
           <End Role="Crimes" Type="Self.Crimes" Multiplicity="*" />
           <ReferentialConstraint>
@@ -165,9 +198,18 @@
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Counties" EntityType="Self.Counties" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Crimes" EntityType="Self.Crimes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Police_Departments" EntityType="Self.Police_Departments" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK_Crimes_ToTable" Association="Self.FK_Crimes_ToTable">
+          <AssociationSet Name="FK_Counties_Police_Departments" Association="Self.FK_Counties_Police_Departments">
+            <End Role="Police_Departments" EntitySet="Police_Departments" />
+            <End Role="Counties" EntitySet="Counties" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Crimes_Counties" Association="Self.FK_Crimes_Counties">
+            <End Role="Counties" EntitySet="Counties" />
+            <End Role="Crimes" EntitySet="Crimes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Crimes_Police_Departments" Association="Self.FK_Crimes_Police_Departments">
             <End Role="Police_Departments" EntitySet="Police_Departments" />
             <End Role="Crimes" EntitySet="Crimes" />
           </AssociationSet>
@@ -266,7 +308,9 @@
           <Property Name="LSOA_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Outcome" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="Police_Department_Id" Type="Int32" />
-          <NavigationProperty Name="Police_Departments" Relationship="CrimeWatchDBModel.FK_Crimes_ToTable1" FromRole="Crime" ToRole="Police_Departments" />
+          <NavigationProperty Name="Police_Department" Relationship="CrimeWatchDBModel.FK_Crimes_ToTable1" FromRole="Crime" ToRole="Police_Departments" />
+          <Property Name="County_Id" Type="Int32" />
+          <NavigationProperty Name="County" Relationship="CrimeWatchDBModel.FK_Crimes_Counties" FromRole="Crime" ToRole="County" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
@@ -324,6 +368,15 @@
             <End Role="Police_Departments" EntitySet="Police_Departments" />
             <End Role="Crime" EntitySet="Crimes" />
           </AssociationSet>
+          <EntitySet Name="Counties" EntityType="CrimeWatchDBModel.County" />
+          <AssociationSet Name="FK_Counties_Police_Departments" Association="CrimeWatchDBModel.FK_Counties_Police_Departments">
+            <End Role="Police_Department" EntitySet="Police_Departments" />
+            <End Role="County" EntitySet="Counties" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Crimes_Counties" Association="CrimeWatchDBModel.FK_Crimes_Counties">
+            <End Role="County" EntitySet="Counties" />
+            <End Role="Crime" EntitySet="Crimes" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Police_Department">
           <Key>
@@ -332,7 +385,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Crimes" Relationship="CrimeWatchDBModel.FK_Crimes_ToTable1" FromRole="Police_Departments" ToRole="Crime" />
-          <Property Name="Region" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Counties" Relationship="CrimeWatchDBModel.FK_Counties_Police_Departments" FromRole="Police_Department" ToRole="County" />
         </EntityType>
         <Association Name="FK_Crimes_ToTable1">
           <End Type="CrimeWatchDBModel.Police_Department" Role="Police_Departments" Multiplicity="0..1" />
@@ -343,6 +396,41 @@
             </Principal>
             <Dependent Role="Crime">
               <PropertyRef Name="Police_Department_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="County">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Police_Department_Id" Type="Int32" />
+          <NavigationProperty Name="Police_Department" Relationship="CrimeWatchDBModel.FK_Counties_Police_Departments" FromRole="County" ToRole="Police_Department" />
+          <Property Name="Population" Type="Int32" />
+          <NavigationProperty Name="Crimes" Relationship="CrimeWatchDBModel.FK_Crimes_Counties" FromRole="County" ToRole="Crime" />
+        </EntityType>
+        <Association Name="FK_Counties_Police_Departments">
+          <End Type="CrimeWatchDBModel.Police_Department" Role="Police_Department" Multiplicity="0..1" />
+          <End Type="CrimeWatchDBModel.County" Role="County" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Police_Department">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="County">
+              <PropertyRef Name="Police_Department_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crimes_Counties">
+          <End Type="CrimeWatchDBModel.County" Role="County" Multiplicity="0..1" />
+          <End Type="CrimeWatchDBModel.Crime" Role="Crime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="County">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crime">
+              <PropertyRef Name="County_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -411,6 +499,7 @@
           <EntitySetMapping Name="Crimes">
             <EntityTypeMapping TypeName="CrimeWatchDBModel.Crime">
               <MappingFragment StoreEntitySet="Crimes">
+                <ScalarProperty Name="County_Id" ColumnName="County_Id" />
                 <ScalarProperty Name="Police_Department_Id" ColumnName="Police_Department_Id" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
@@ -435,7 +524,16 @@
           <EntitySetMapping Name="Police_Departments">
             <EntityTypeMapping TypeName="CrimeWatchDBModel.Police_Department">
               <MappingFragment StoreEntitySet="Police_Departments">
-                <ScalarProperty Name="Region" ColumnName="Region" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Counties">
+            <EntityTypeMapping TypeName="CrimeWatchDBModel.County">
+              <MappingFragment StoreEntitySet="Counties">
+                <ScalarProperty Name="Population" ColumnName="Population" />
+                <ScalarProperty Name="Police_Department_Id" ColumnName="Police_Department_Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

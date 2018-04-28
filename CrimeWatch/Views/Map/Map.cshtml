@@ -4,10 +4,10 @@
 @{
     ViewBag.Title = "Map page";
 }
-@model List<CrimeWatch.Models.Crime>
 @Styles.Render("~/Content/css")
 @Scripts.Render("~/bundles/modernizr")
-
+@using CrimeWatch.Models
+@model List<Crime>
 
 <style>
     body {
@@ -18,15 +18,13 @@
 
 
 <script>
-    function initializeMap(position) {
+  
+    function initializeMap() {
         var mapPosition = document.getElementById('map');
-        var initialPosition = { lat: 51.502775, lng: -0.119927 };
-        var iconBase = 'https://maps.google.com/mapfiles/kml/shapes/';
-
-        if (position != null) {
-            var initialPosition = { lat: position.coords.latitude, lng: position.coords.longitude };
-        }
-
+        var lat = @ViewBag.lat;
+        var lng = @ViewBag.lng;
+        var initialPosition = { lat: lat, lng: lng};
+        var iconBase = 'https://maps.google.com/mapfiles/';       
         var mapOptions = {
             center: initialPosition,
             zoom: 14,
@@ -37,7 +35,6 @@
             streetViewControl: true,
             streetViewControlOptions: {
                 position: google.maps.ControlPosition.TOP_RIGHT
-
             },
             mapTypeControl: true,
             mapTypeControlOptions: {
@@ -51,12 +48,12 @@
 
         var marker = new google.maps.Marker({
             position: initialPosition,
-            icon: iconBase + 'library_maps.png',
+            icon: iconBase + 'arrow.png',
             map: map
         });
 
         var infowindow = new google.maps.InfoWindow({
-            content: "<p><b>Your location!</></p>"
+            content: "@ViewBag.address",
         });
 
         marker.addListener('click', function () {
@@ -64,7 +61,7 @@
         });
 
         var geocoder = new google.maps.Geocoder();
-        document.getElementById('searchField').addEventListener('keypress', function (e) {
+        document.getElementById('addressSearch2').addEventListener('keypress', function (e) {
             if (e.which == 13) {
                 geocodeAddress(geocoder, map);
             }
@@ -73,181 +70,118 @@
         addMarkers(map);
     }
 
-    function addMarkers(map) {
-        var crimes = [];
+    function addMarkers(map) {       
+        var crimes = [[]];
         var infowindow = new google.maps.InfoWindow();
         var marker = [], i;
         var filterContainer = document.getElementById('filterContainer');
         var backBtn = document.getElementById('backBtn');
-        var searchField = document.getElementById('searchField');
-        var autocomplete = new google.maps.places.Autocomplete(document.getElementById('searchField'));
-        @foreach (var crime in Model) {
-            @:crimes.push(["@crime.Latitude", "@crime.Longitude","@crime.Type","@crime.Date.Value.ToString("MMMM, yyyy")","@crime.Police_Departments.Name", "@crime.Location","@crime.Outcome"]);
+        var searchField = document.getElementById('addressSearch2');
+        var autocomplete = new google.maps.places.Autocomplete(searchField);
+        @foreach(var crime in Model) {        
+            @: crimes.push(["@crime.Latitude", "@crime.Longitude", "@crime.Type", "@crime.Location", "@crime.Outcome"]);
         }
-
+        var types = []; 
         for (i = 0; i < crimes.length; i++) {
-            marker[i] = new google.maps.Marker({
+            var count = 0;
+            types.length = 0;            
+            var counter = 0;
+            for (var j = 0; j < crimes.length; j++) {
+                if (crimes[j][0] == crimes[i][0] && crimes[j][1] == crimes[i][1]) {
+                    count++;                    
+                }                
+            }     
+            var label = String(count);
+            marker[i] = new google.maps.Marker({                
                 position: new google.maps.LatLng(crimes[i][0], crimes[i][1]),
-                map: map
-
+                map: map,
+                label:label
             });
             google.maps.event.addListener(marker[i], 'click', (function (marker, i) {
                 return function () {
-                    infowindow.setContent("<br><p><b>Crime Type: </b> " + crimes[i][2] + "</p><p><b>Date:</b> " + crimes[i][3] + "</p><p><b>Department </b> " + crimes[i][4] + "</p><p><b>Exact Location: </b> " + crimes[i][5] + "<p><b>Outcome: </b> " + crimes[i][6] );
+                    infowindow.setContent("<br><p><b>Crime Type: </b> " + crimes[i][2] + "</p><p><b>Location:</b> " + crimes[i][3] + "</p><p><b>Outcome:</b> " + crimes[i][4]);
                     infowindow.open(map, marker[i]);
                 }
             })(marker, i));
         }
-        var mapOptions = { maxZoom: 15, imagePath: 'https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/m' };
-        var markerCluster = new MarkerClusterer(map, marker, mapOptions);
+        var markerCluster = new MarkerClusterer(map, marker, { imagePath: "https://raw.githubusercontent.com/googlemaps/js-marker-clusterer/gh-pages/images/m", maxZoom: 20});
         map.controls[google.maps.ControlPosition.TOP_LEFT].push(backBtn);
-        map.controls[google.maps.ControlPosition.TOP_CENTER].push(searchField);
         map.controls[google.maps.ControlPosition.LEFT_CENTER].push(filterContainer);
         document.getElementById('loading_div').style.display = "none";
         document.getElementById('map').style.display = "block";
         backBtn.style.display = "block";
-        searchField.style.display = "block";
         filterContainer.style.display = "block";
-        //document.getElementById('month').selectedIndex = 5;
-    }
-
-    function requestLocation() {
-        navigator.geolocation.getCurrentPosition(initializeMap);
     }
 
     function geocodeAddress(geocoder, resultsMap) {
-        var searchField = document.getElementById('searchField').value;
+        var searchField = document.getElementById('addressSearch2').value;
         if (searchField != "") {
             geocoder.geocode({ 'address': searchField }, function (results, status) {
                 if (status === 'OK') {
                     resultsMap.zoom = 17;
-                    resultsMap.setCenter(results[0].geometry.location);                    
-                    //var marker = new google.maps.Marker({
-                    //    position: results[0].geometry.location,
-                    //    map: resultsMap
-                    //});
+                    resultsMap.setCenter(results[0].geometry.location);
+                   
                 } else {
                     alert('The location could not be found.');
                 }
             });
         }
     }
+
 </script>
 <script src="~/Scripts/markerClustering.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI&libraries=places&callback=requestLocation"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI&libraries=places&callback=initializeMap"></script>
 <link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
 
-<button id="backBtn" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> <span class="glyphicon glyphicon-th"></span> Dashboard</button>
+<button id="backBtn" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> <span class="glyphicon glyphicon-th"></span> User Portal</button>
 <br /><br />
 
-      <div id="loading_div">
-          <h1 class="title" style="color:white">Loading Map...</h1>
-          <br /><br />
-          <img src="~/Content/Images/progress_ring.gif" id="progress_ring" />
-      </div>
+<div id="loading_div">
+    <h1 class="title" style="color:white">Loading Map...</h1>
+    <br /><br />
+    <img src="~/Content/Images/progress_ring.gif" id="progress_ring" />
+</div>
 
 <div id="map"></div>
 
 <div class="container customCont" id="filterContainer">
     <form action="/Map/Map" method="post">
-        <h3 class="title">Map Parameters</h3>
+        <h3 class="title">Search</h3>
         <br />
         <div class="form-group">
-            <p>Crime Categories</p>
-            <select class="form-control" name="type">
-                <option>@ViewBag.type</option>
-                <option>Robbery</option>
-                <option>Violence and sexual offences</option>
-                <option>Other crime</option>
-                <option>Anti-social behaviour</option>
-                <option>Bicycle theft</option>
-                <option>Criminal damage and arson</option>
-                <option>Drugs</option>
-                <option>Other theft</option>
-                <option>Burglary</option>
-                <option>Public order</option>
-                <option>Vehicle crime</option>
-                <option>Shoplifting</option>
-                <option>Theft from the person</option>
-                <option>Possession of weapons</option>
+            <p><b>1.</b> Postcode / Address</p>
+            <input id="addressSearch2" name="address" type="text" class="form-control" placeholder="@ViewBag.address" value="@ViewBag.address">
+        </div>
+        <div class="form-group">
+            <p>2. Date</p>
+            <select class="form-control" name="date"> 
+                 <option>
+                        @ViewBag.date
+                 </option>
+                 @foreach (var date in ViewBag.dateDD) {
+                    <option> 
+                        @date
+                  </option>
+                  }
             </select>
         </div>
         <div class="form-group">
-            <p>Police Department</p>
-            <select class="form-control" name="police_department">
-                <option selected>@ViewBag.police_department</option>
-                <option>Avon and Somerset Constabulary</option>
-                <option>Bedfordshire Police</option>
-                <option>British Transport Police</option>
-                <option>Cambridgeshire Constabulary</option>
-                <option>Cheshire Constabulary</option>
-                <option>City of London Police</option>
-                <option>Cleveland Police</option>
-                <option>Cumbria Constabulary</option>
-                <option>Derbyshire Constabulary</option>
-                <option>Devon & Cornwall Police</option>
-                <option>Dorset Police</option>
-                <option>Durham Constabulary</option>
-                <option>Dyfed-Powys Police</option>
-                <option>Gloucestershire Constabulary</option>
-                <option>Greater Manchester Police</option>
-                <option>Gwent Police</option>
-                <option>Hampshire Constabulary</option>
-                <option>Hertfordshire Constabulary</option>
-                <option>Humberside Police</option>
-                <option>Kent Police</option>
-                <option>Lancashire Constabulary</option>
-                <option>Leicestershire Police</option>
-                <option>Lincolnshire Police</option>
-                <option>Merseyside Police</option>
-                <option>Metropolitan Police Service</option>
-                <option>Norfolk Constabulary</option>
-                <option>North Wales Police</option>
-                <option>North Yorkshire Police</option>
-                <option>Northamptonshire Police</option>
-                <option>Northumbria Police</option>
-                <option>Nottinghamshire Police</option>
-                <option>South Wales Police</option>
-                <option>South Yorkshire Police</option>
-                <option>Staffordshire Police</option>
-                <option>Suffolk Constabulary</option>
-                <option>Surrey Police</option>
-                <option>Sussex Police</option>
-                <option>Thames Valley Police</option>
-                <option>Warwickshire Police</option>
-                <option>West Mercia Police</option>
-                <option>West Midlands Police</option>
-                <option>West Yorkshire Police</option>
-                <option>Wiltshire Police</option>
+            <p>3. Crime Categories</p>
+              <select class="form-control centeredElement" name="type">
+                   @if (ViewBag.type != "All Types") {
+                    <option>
+                        @ViewBag.type
+                    </option>
+                   }                   
+                   @foreach (var type in ViewBag.typeDD) {
+                        <option> 
+                            @type
+                        </option>
+                    }
             </select>
-        </div>
-        <div class="form-group">
-            <p>Date</p>
-            <select class="form-control" name="date">
-                <option selected>@ViewBag.date</option>
-                <option>January 2017</option>
-                <option>February 2017</option>
-                <option>March 2017</option>
-                <option>April 2017</option>
-                <option>May 2017</option>
-                <option>June 2017</option>
-                <option>July 2017</option>
-                <option>August 2017</option>
-                <option>September 2017</option>
-                <option>October 2017</option>
-                <option>November 2017</option>
-                <option>December 2017</option>
-                <option>All 2017</option>
-                <option>January 2018</option>
-                <option>February 2018</option>
-                <option>March 2018</option>
-                <option>All 2018</option>
-            </select>
-        </div>
+        </div>         
         <input type="submit" class="btn btn-default" value="Submit">
-        <button class="btn-xs btn-default" style="float:right; border: 1px solid black; font-size:12px; background-color:lightcoral" id="reset">Reset filters</button>
         <br /><br />
     </form>
 </div>
 
-<input id="searchField" type="text" class="form-control" placeholder="Search for...">

@@ -12,18 +12,26 @@ namespace CrimeWatch.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Police_Department
+    public partial class County
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Police_Department()
+        public County()
         {
+            this.Crimes_pm = new HashSet<Crimes_pm>();
             this.Crimes = new HashSet<Crime>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Region { get; set; }
+        public Nullable<int> Police_Department_Id { get; set; }
+        public Nullable<int> Population { get; set; }
+        public Nullable<int> Total_Crimes { get; set; }
+        public Nullable<int> Violent_Crimes { get; set; }
+        public Nullable<int> Cluster_Id { get; set; }
     
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<Crimes_pm> Crimes_pm { get; set; }
+        public virtual Police_Departments Police_Departments { get; set; }
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Crime> Crimes { get; set; }
     }

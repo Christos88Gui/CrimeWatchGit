@@ -1394,7 +1394,7 @@ intellisense.annotate(jQuery.fn, {
     /// <summary>Selects all elements that are the first child of their parent.</summary>
   },
   'first-of-type': function() {
-    /// <summary>Selects all elements that are the first among siblings of the same element name.</summary>
+    /// <summary>Selects all elements that are the first among siblings of the sameLatLngCrimes element name.</summary>
   },
   'focus': function() {
     /// <signature>
@@ -1677,7 +1677,7 @@ intellisense.annotate(jQuery.fn, {
     /// <summary>Selects all elements that are the last child of their parent.</summary>
   },
   'last-of-type': function() {
-    /// <summary>Selects all elements that are the last among siblings of the same element name.</summary>
+    /// <summary>Selects all elements that are the last among siblings of the sameLatLngCrimes element name.</summary>
   },
   'length': function() {
     /// <summary>The number of elements in the jQuery object.</summary>
@@ -1844,7 +1844,7 @@ intellisense.annotate(jQuery.fn, {
   },
   'next siblings': function() {
     /// <signature>
-    ///   <summary>Selects all sibling elements that follow after the "prev" element, have the same parent, and match the filtering "siblings" selector.</summary>
+    ///   <summary>Selects all sibling elements that follow after the "prev" element, have the sameLatLngCrimes parent, and match the filtering "siblings" selector.</summary>
     ///   <param name="prev" type="String">Any valid selector.</param>
     ///   <param name="siblings" type="String">A selector to filter elements that are the following siblings of the first selector.</param>
     /// </signature>
@@ -1912,7 +1912,7 @@ intellisense.annotate(jQuery.fn, {
   },
   'nth-of-type': function() {
     /// <signature>
-    ///   <summary>Selects all elements that are the nth child of their parent in relation to siblings with the same element name.</summary>
+    ///   <summary>Selects all elements that are the nth child of their parent in relation to siblings with the sameLatLngCrimes element name.</summary>
     ///   <param name="index" type="String">The index of each child to match, starting with 1, the string even or odd, or an equation ( eg. :nth-of-type(even), :nth-of-type(4n) )</param>
     /// </signature>
   },
@@ -1995,7 +1995,7 @@ intellisense.annotate(jQuery.fn, {
     /// <summary>Selects all elements that are the only child of their parent.</summary>
   },
   'only-of-type': function() {
-    /// <summary>Selects all elements that have no siblings with the same element name.</summary>
+    /// <summary>Selects all elements that have no siblings with the sameLatLngCrimes element name.</summary>
   },
   'outerHeight': function() {
     /// <signature>

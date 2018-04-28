@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Web.Mvc;
 using CrimeWatch.Models;
 
@@ -7,7 +8,9 @@ namespace CrimeWatch
 {
     public static class ConstantStrings
     {
-        private static CrimeWatchDBEntities db = new CrimeWatchDBEntities();
+        public const string API_POLICE = "https://data.police.uk/api/crimes-street/";
+        public const string API_GOOGLE_GEOCODE = "https://maps.googleapis.com/maps/api/geocode/xml?";
+        
 
         public struct EmailConstants
         {
@@ -17,25 +20,18 @@ namespace CrimeWatch
         }
 
         public static IEnumerable<SelectListItem> Dates = new List<SelectListItem> {
-            new SelectListItem{Selected=true, Value="Select Date",Text="Select Date"},
-            new SelectListItem{ Value="All 2017",Text="All 2017"},
-            new SelectListItem{ Value="All 2018",Text="All 2018"}
-            //new SelectListItem{ Value="January 2017",Text="January 2017"},
-            //new SelectListItem{ Value="February 2017",Text="February 2017"},
-            //new SelectListItem{ Value="March 2017",Text="March 2017"},
-            //new SelectListItem{ Value="April 2017",Text="April 2017"},
-            //new SelectListItem{ Value="May 2017",Text="May 2017"},
-            //new SelectListItem{ Value="June 2017",Text="June 2017"},
-            //new SelectListItem{ Value="July 2017",Text="July 2017"},
-            //new SelectListItem{ Value="August 2017",Text="August 2017"},
-            //new SelectListItem{ Value="September 2017",Text="September 2017"},
-            //new SelectListItem{ Value="October 2017",Text="October 2017"},
-            //new SelectListItem{ Value="November 2017",Text="November 2017"},
-            //new SelectListItem{ Value="December 2017",Text="December 2017"},
-            //new SelectListItem{ Value="All 2017",Text="All 2017"},
-            //new SelectListItem{ Value="January 2018",Text="January 2018"},
-            //new SelectListItem{ Value="February 2018",Text="February 2018"},
-            //new SelectListItem{ Value="All 2018",Text="All 2018"}
+            new SelectListItem{ Value="2017-03",Text="March 2017"},
+            new SelectListItem{ Value="2017-04",Text="April 2017"},
+            new SelectListItem{ Value="2017-05",Text="May 2017"},
+            new SelectListItem{ Value="2017-06",Text="June 2017"},
+            new SelectListItem{ Value="2017-07",Text="July 2017"},
+            new SelectListItem{ Value="2017-08",Text="August 2017"},
+            new SelectListItem{ Value="2017-09",Text="September 2017"},
+            new SelectListItem{ Value="2017-10",Text="October 2017"},
+            new SelectListItem{ Value="2017-11",Text="November 2017"},
+            new SelectListItem{ Value="2017-12",Text="December 2017"},
+            new SelectListItem{ Value="2018-01",Text="January 2018"},
+            new SelectListItem{ Selected=true , Value="2018-02",Text="February 2018"}
     };
 
     public static IEnumerable<SelectListItem> Police_Departments = new List<SelectListItem> {
@@ -85,29 +81,32 @@ namespace CrimeWatch
         new SelectListItem{ Value="Wiltshire Police",Text="Wiltshire Police"}
     };
         public static IEnumerable<SelectListItem> Crime_Types = new List<SelectListItem> {
-        new SelectListItem{Selected=true, Value="All Categories",Text="All Categories (Optional)"},
-        new SelectListItem{ Value="Anti-social behaviour",Text="Anti-social behaviour"},
-        new SelectListItem{ Value="Bicycle theft",Text="Bicycle theft"},
-        new SelectListItem{ Value="Burglary",Text="Burglary"},
-        new SelectListItem{ Value="Criminal damage and arson",Text="Criminal damage and arson"},
-        new SelectListItem{ Value="Drugs",Text="Drugs"},
-        new SelectListItem{ Value="Possession of weapons",Text="Possession of weapons"},
-        new SelectListItem{ Value="Other crime",Text="Other crime"},
-        new SelectListItem{ Value="Other theft",Text="Other theft"},
-        new SelectListItem{ Value="Public order",Text="Public order"},
-        new SelectListItem{ Value="Robbery",Text="Robbery"},
-        new SelectListItem{ Value="Shoplifting",Text="Shoplifting"},
-        new SelectListItem{ Value="Theft from the person",Text="Theft from the person"},
-        new SelectListItem{ Value="Vehicle crime",Text="Vehicle crime"},
-        new SelectListItem{ Value="Violence and sexual offences",Text="Violence and sexual offences"}
+        new SelectListItem{Selected=true, Value="",Text="All Types"},
+        new SelectListItem{ Value="anti-social-behaviour",Text="Anti-social behaviour"},
+        new SelectListItem{ Value="bicycle-theft",Text="Bicycle theft"},
+        new SelectListItem{ Value="burglary",Text="Burglary"},
+        new SelectListItem{ Value="criminal-damage-and-arson",Text="Criminal damage and arson"},
+        new SelectListItem{ Value="drugs",Text="Drugs"},
+        new SelectListItem{ Value="possession-of-weapons",Text="Possession of weapons"},
+        new SelectListItem{ Value="other-crime",Text="Other crime"},
+        new SelectListItem{ Value="other-theft",Text="Other theft"},
+        new SelectListItem{ Value="public-order",Text="Public order"},
+        new SelectListItem{ Value="robbery",Text="Robbery"},
+        new SelectListItem{ Value="shoplifting",Text="Shoplifting"},
+        new SelectListItem{ Value="theft-from-the-person",Text="Theft from the person"},
+        new SelectListItem{ Value="vehicle-crime",Text="Vehicle crime"},
+        new SelectListItem{ Value="violence-and-sexual-offences",Text="Violence and sexual offences"}
     };
 
-        public static string[] Months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
-        public static string[] Crime_Categories = { "Anti-social behaviour", "Bicycle theft", "Burglary", "Criminal damage and arson", "Drugs", "Possession of weapons", "Other crime", "Other theft", "Public order", "Robbery", "Shoplifting", "Theft from the person", "Vehicle crime", "Violence and sexual offences" };
-
-
-        public static String[] police_departments = new string[] { "Avon and Somerset Constabulary", "Bedfordshire Police","Cambridgeshire Constabulary","Cheshire Constabulary","City of London Police","Cleveland Police","Cumbria Constabulary","Derbyshire Constabulary","Devon & Cornwall Police","Dorset Police","Durham Constabulary","Essex Police","Gloucestershire Constabulary","Greater Manchester Police","Hampshire Constabulary" ,"Hertfordshire Constabulary","Humberside Police","Kent Police","Lancashire Constabulary","Leicestershire Police","Lincolnshire Police","Merseyside Police","Metropolitan Police Service","Norfolk Constabulary","North Yorkshire Police","Northamptonshire Police","Northumbria Police","Nottinghamshire Police","South Yorkshire Police","Staffordshire Police","Suffolk Constabulary","Surrey Police","Sussex Police","Thames Valley Police","Warwickshire Police","West Mercia Police","West Midlands Police","West Yorkshire Police","Wiltshire Police" };
+        public static string[] months = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+        public static string[] crime_categories = { "Anti-social behaviour", "Bicycle theft", "Burglary", "Criminal damage and arson", "Drugs", "Possession of weapons", "Other crime", "Other theft", "Public order", "Robbery", "Shoplifting", "Theft from the person", "Vehicle crime", "Violence and sexual offences" };
+        public static string[] regions = { "Avon and Somerset", "Bedfordshire", "Cambridgeshire", "Cheshire", "City of London", "Cleveland", "Cumbria", "Derbyshire", "Devon & Cornwall", "Dorset", "Durham", "Dyfed & Powys", "Essex", "Gloucestershire", "Greater Manchester", "Gwent","Hampshire", "Hertfordshire", "Humberside", "Kent", "Lancashire", "Leicestershire", "Lincolnshire", "Merseyside", "London", "Norfolk","North Wales", "North Yorkshire", "Northamptonshire", "Northumbria", "Nottinghamshire","Northern Ireland","South Wales","South Yorkshire", "Staffordshire", "Suffolk", "Surrey", "Sussex", "Thames Valley", "Warwickshire", "West Mercia", "West Midlands", "West Yorkshire", "Wiltshire" };
+        public static string[] police_departments = { "Avon and Somerset Constabulary","Bedfordshire Police","Cambridgeshire Constabulary","Cheshire Constabulary","City of London Police","Cleveland Police","Cumbria Constabulary","Derbyshire Constabulary","Devon & Cornwall Police","Dorset Police","Durham Constabulary", "Dyfed-Powys Police", "Essex Police","Gloucestershire Constabulary","Greater Manchester Police","Gwent Police","Hampshire Constabulary" ,"Hertfordshire Constabulary","Humberside Police","Kent Police","Lancashire Constabulary","Leicestershire Police","Lincolnshire Police","Merseyside Police","Metropolitan Police Service","Norfolk Constabulary", "North Wales Police", "North Yorkshire Police","Northamptonshire Police","Northumbria Police","Nottinghamshire Police", "Police Service of Northern Ireland", "South Wales Police","South Yorkshire Police","Staffordshire Police","Suffolk Constabulary","Surrey Police","Sussex Police","Thames Valley Police","Warwickshire Police","West Mercia Police","West Midlands Police","West Yorkshire Police","Wiltshire Police" };
+        public static DateTime firstCrimeDate = new DateTime();
+        public static DateTime lastCrimeDate = new DateTime();
     }
+
+
 
 }
 

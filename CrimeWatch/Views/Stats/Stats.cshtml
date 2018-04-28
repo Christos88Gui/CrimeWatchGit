@@ -1,0 +1,86 @@
+﻿@using CrimeWatch.Models
+@model List<Crimes_pm>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+
+@{
+    ViewBag.Title = "Stats";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+}
+
+<br />
+<div class="row">
+    <button style="float:left;" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
+    <select class="form-control" style="float:right">
+        <option href="#" onclick="location.href='@Url.Action("Stats", "Stats", new { period=1 })'">@ViewBag.datesDD[0]</option>
+        <option href="#" onclick="location.href='@Url.Action("Stats", "Stats", new { period=2 })'">@ViewBag.datesDD[1]</option>
+        <option href="#" onclick="location.href='@Url.Action("Stats", "Stats", new { period=3 })'">@ViewBag.datesDD[2]</option>
+    </select>
+</div>
+<br />
+
+<h2 class="title">Crime Statistics</h2>
+<h4 class="title"> Period @ViewBag.firstDate - @ViewBag.lastDate</h4>
+<div class="container customCont">
+    <div id="table"></div>
+    <br /><br />
+</div>
+
+
+
+<script>
+        google.charts.load('current', { 'packages': ['table'] });
+        google.charts.setOnLoadCallback(drawTable);
+
+        function drawTable() {
+            var table_data = new google.visualization.DataTable();
+            table_data.addColumn('string', 'County');
+            table_data.addColumn('string', 'Policed by');
+            table_data.addColumn('number', 'Total Population');
+            table_data.addColumn('number', 'Total Crimes');
+            table_data.addColumn('number', 'Crimes / 1000 residents');
+            @for (int i = 0; i < Model.Count(); i++) {
+                Crimes_pm record = Model.ElementAt(i);
+                @:table_data.addRow(['@record.County.Name','@record.County.Police_Departments.Name',@record.County.Population,@record.All_crimes,@record.All_crimes * 1000 / @record.County.Population ]);
+            }
+            var cssClassNames = {
+                'tableCell': 'largeFont',
+                'headerRow': 'largeFont header',
+            }
+
+            var table_options = {
+                allowHtml: true,
+                sortColumn: 4,
+                sortAscending: false,
+                showRowNumber: true,
+                width: '100%',
+                height: '100%',
+                'cssClassNames': cssClassNames
+            };
+
+            //HOW TO CHANGE BACKGROUND COLOR
+            //table_data.setProperty(0,0,'style', 'background-color: red;');
+
+            var table = new google.visualization.Table(document.getElementById('table'));
+
+            table.draw(table_data, table_options);
+        }
+
+</script>
+
+<style>
+    body {
+        color: black;
+        background: #f4f4f4;
+        font-size: 15px;
+        margin-top: 5%;
+    }
+
+    .largeFont {
+        font-size: 15px;
+    }
+
+    .header {
+        background-color: lightblue;
+    }
+</style>

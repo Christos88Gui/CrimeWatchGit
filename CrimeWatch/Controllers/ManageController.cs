@@ -16,7 +16,7 @@ namespace CrimeWatch.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-        private CrimeWatchDBEntities db = new CrimeWatchDBEntities();
+        private crimewatchAzureModels db = new crimewatchAzureModels();
 
         public ManageController()
         {
@@ -239,17 +239,19 @@ namespace CrimeWatch.Controllers
                         if (!String.IsNullOrEmpty(model.OldEmail))
                         {
                             AspNetUser user = db.AspNetUsers.Find(User.Identity.GetUserId());
-                            if (user.Email == model.OldEmail) {
+                            if (user.Email == model.OldEmail)
+                            {
                                 if (IsValid(model.NewEmail))
                                 {
                                     user.Email = model.NewEmail;
                                     user.UserName = model.NewEmail;
                                     db.SaveChanges();
                                 }
-                                else {
+                                else
+                                {
                                     ModelState.AddModelError(String.Empty, "The new email does not have the correct format.");
                                     return View();
-                                }                                
+                                }
                             }
                             else
                             {
@@ -290,19 +292,23 @@ namespace CrimeWatch.Controllers
                     return RedirectToAction("MyPortal", "Home", new { Message = ManageMessageId.ChangePasswordSuccess });
                 }
             }
-            else {
+            else
+            {
                 ModelState.AddModelError(String.Empty, formValidationResult);
                 return View();
             }
         }
-        
-        public String ValidateFormInput(ChangeLoginDetailsViewModel model) {
+
+        public String ValidateFormInput(ChangeLoginDetailsViewModel model)
+        {
             if (!ModelState.IsValid || (String.IsNullOrEmpty(model.OldEmail) && String.IsNullOrEmpty(model.OldPassword)))
             {
                 return "Either current password or email must be provided.";
             }
-            if (!String.IsNullOrEmpty(model.OldPassword)) {
-                if (String.IsNullOrEmpty(model.NewPassword) || String.IsNullOrEmpty(model.ConfirmPassword)) {
+            if (!String.IsNullOrEmpty(model.OldPassword))
+            {
+                if (String.IsNullOrEmpty(model.NewPassword) || String.IsNullOrEmpty(model.ConfirmPassword))
+                {
                     return "Both new and confirmed passwords must be provided.";
                 }
             }
@@ -343,23 +349,25 @@ namespace CrimeWatch.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult ChangeContactDetails(ChangeContactDetailsViewModel model)
         {
-            if (String.IsNullOrEmpty(model.NewFullName) && String.IsNullOrEmpty(model.NewPhoneNumber)) {
+            if (String.IsNullOrEmpty(model.NewFullName) && String.IsNullOrEmpty(model.NewPhoneNumber))
+            {
                 ModelState.AddModelError(String.Empty, "No details provided.");
                 return View();
             }
 
-            if (!String.IsNullOrEmpty(model.NewFullName)) {
+            if (!String.IsNullOrEmpty(model.NewFullName))
+            {
                 db.AspNetUsers.Find(User.Identity.GetUserId()).FullName = model.NewFullName;
             }
 
             if (!String.IsNullOrEmpty(model.NewPhoneNumber))
             {
-                db.AspNetUsers.Find(User.Identity.GetUserId()).PhoneNumber= model.NewPhoneNumber;
+                db.AspNetUsers.Find(User.Identity.GetUserId()).PhoneNumber = model.NewPhoneNumber;
             }
 
             db.SaveChanges();
             return RedirectToAction("MyPortal", "Home");
-            
+
         }
 
         //

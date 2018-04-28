@@ -1,29 +1,30 @@
 ﻿@model CrimeWatch.Models.AspNetUser
 @{
-    ViewBag.Title = "Dashboard";
+    ViewBag.Title = "User Portal";
     Layout = "~/Views/Shared/_LayoutPortal.cshtml";
 }
 
-<div class="row" style="margin-top:7%; color:black">
+<div class="row" style="margin-top:5%; color:black">
     @if (Model.EmailConfirmed)
     {
-    <div class="col-lg-9" style="text-align:center">  
+    <div class="col-lg-9">  
         <br />
-        <div class="container customCont" style="height:412px; width:85%">
-            <h2 class="title">Dashboard</h2>
+        <div class="container customCont" style="width:85%; text-align:center">
             <br />
+            <h3 class="title" style="margin-right:50%; color:gray">Data Visualization</h3>
             <div class="row">
-                <button class="menuBtn" onclick="location.href='@Url.Action("MapParameters", "Map")'">Crime Map<br /><span class="glyphicon glyphicon-map-marker portalGlyph"></span></button>
-                <button class="menuBtn" onclick="location.href='@Url.Action("Stats", "Home")'">Statistics<br /><span class="glyphicon glyphicon-list-alt portalGlyph"></span></button>
-                <button class="menuBtn" onclick="location.href='@Url.Action("Graphs", "Map")'">Graphs<br /><span class="glyphicon glyphicon-stats portalGlyph"></span></button>
-                <button class="menuBtn" onclick="location.href='@Url.Action("Upload", "Home")'">Upload Data<br /><span class="glyphicon glyphicon-upload portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("Parameters", "Map")'">Crimes Map<br /><span class="glyphicon glyphicon-map-marker portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("Parameters", "Graphs")'">Charts<br /><span class="glyphicon glyphicon-stats portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("Stats", "Stats", new { period = 1 })'">Statistics<br /><span class="glyphicon glyphicon-list-alt portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("Upload", "String")'">Upload Data<br /><span class="glyphicon glyphicon-upload portalGlyph"></span></button>
             </div>
-            <br /> 
+            <hr />
+            <h3 class="title" style="margin-right:57%; color:gray">Machine Learning</h3>       
             <div class="row">
-                <button class="menuBtn" onclick="location.href='@Url.Action("Index", "Home")'">Prediction <br /><span class="glyphicon glyphicon-random portalGlyph"></span></button>
-                <button class="menuBtn" onclick="location.href='@Url.Action("Index", "Home")'">My Predictions<br /><span class="glyphicon glyphicon-cog portalGlyph"></span></button>
-                <button class="menuBtn" onclick="location.href='@Url.Action("Index", "Home")'">Something<br /><span class="glyphicon glyphicon-compressed portalGlyph"></span></button>
-                <button class="menuBtn" onclick="location.href='@Url.Action("Index", "Home")'">A Button<br /><span class="glyphicon glyphicon-copyright-mark portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("Clusters", "Clustering")'">Counties Clusters<br /><span class="glyphicon glyphicon-adjust portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("Parameters", "Regression")'">Crime Estimations<br /><span class="glyphicon glyphicon-random portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("delete", "Import")'">Something<br /><span class="glyphicon glyphicon-compressed portalGlyph"></span></button>
+                <button class="menuBtn" onclick="location.href='@Url.Action("AsignClusters", "Clustering")'">Upload Data<br /><span class="glyphicon glyphicon-upload portalGlyph"></span></button>
                 <br /><br /><br />
             </div>
         </div>
@@ -33,15 +34,16 @@
     <div class="col-lg-9">   
         <div id="notVerifiedMsg" class="container">
             <br />
-            <h3>Your account is not verified</h3>
-            <h4>This page requires your account to be verified. Please verify your acocunt by clicking the link sent to the email address you provided.</h4>
+            <h3 class="title">Your account is not verified</h3>
             <br />
-            <h3>Didn't receive an email ?</h3>
-            <h4>1) Did you make a mistake when typing your email ? You can check your details on the top right of the page. If this is the case, you must change your email by pressing 'Change login details'. Then, you should resend the confirmation email to the correct address by pressing the 'Send confirmation email' button.</h4>               
+            <h4>This page requires your account to be verified. Please verify your acocunt by clicking the link sent to the email address you provided.</h4>
+            <h3 class="title">Didn't receive an email ?</h3>
+            <br />
+            <h4>1) Did you make a mistake when typing your email ? You can check your details on the top right of the page. If this is the case, you must change your email by pressing 'Change login details'. Then, you should resend the confirmation email to the correct address by pressing the 'Send confirmation email' button.</h4>
             <h4>2) Did you wait long enough ? Sometimes it takes up to few minutes to receive the confirmation email. Please wait for 3 to 4 minutes if you haven't done so.</h4>
             <br />
             <h4 style="display:inline">If none of the above applies:</h4>
-            <button style="margin-left:50px; background-color:silver; color:black" type="button" class="btn btn-lg btn-primary" onclick="location.href='@Url.Action("SendConfirmationEmail", "Account")'">Send confirmation email</button>            
+            <button style="margin-left:50px; color:black" type="button" class="btn btn-lg btn-warning" onclick="location.href='@Url.Action("SendConfirmationEmail", "Account")'">Send confirmation email</button>
             <br /><br />
         </div>
     </div>
@@ -62,20 +64,32 @@
                 @using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm" }))
                     {
                         @Html.AntiForgeryToken()
-                        <a href="javascript:document.getElementById('logoutForm').submit()">Log Out</a>
+                        <a href="javascript:document.getElementById('logoutForm').submit()" >Log Out</a>
                     }
             </li>
-            <li class="list-group-item portalLink deleteAccountLink"><a style="color:red;" onclick="location.href='@Url.Action("DeleteUser", "Account", new { email = User.Identity.Name })'" href="#">Delete Account</a></li>
+            <li class="list-group-item portalLink deleteAccountLink" id="deleteAccount"><a style="color:red;" onclick="DeleteAccount()" @*onclick="location.href='@Url.Action("DeleteUser", "Account", new { email = User.Identity.Name })'"*@ href="#">Delete Account</a></li>
+
         </ul>
     </div>
 </div>
-
-
+<script>
+    function DeleteAccount() {
+        var answer = confirm("Are you sure you want to continue");
+        if (answer == true) {
+         $.get('@Url.Action("DeleteUser","Account")',{email:@User.Identity.Name } function(data) {
+            //do whatever with the result.
+            });
+        }
+        else {
+            return false;
+        }
+        
+    }
+</script>
 <style>
     #notVerifiedMsg {
         background:white;
-        border: 2px solid lightcoral;
-        margin-top:3%;     
+        border: 2px solid lightcoral;    
     }
     
     #changeLoginForm {
@@ -96,6 +110,7 @@
         font-size: 20px;
         border: none;
     }
+
 
     .menuBtn:hover {
         transition: all 0.3s linear;
@@ -152,4 +167,6 @@
     .deleteAccountLink:hover {
         background-color: lightcoral;
     }
+
+
 </style>

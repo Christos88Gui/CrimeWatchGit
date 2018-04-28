@@ -23,7 +23,7 @@ namespace CrimeWatch.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("data source=(LocalDB)\\MSSQLLocalDB;attachdbfilename=|DataDirectory|\\CrimeWatchDB.mdf;integrated security=True;connect timeout=30;MultipleActiveResultSets=True;App=EntityFramework")
+            : base("data source=crimewatch.database.windows.net;initial catalog=crimewatchDB;user id=crimewatchadminlogin;password=cr1mew@tch@dm1nl0g1n;multipleactiveresultsets=True;application name=EntityFramework")
         {
         }
 

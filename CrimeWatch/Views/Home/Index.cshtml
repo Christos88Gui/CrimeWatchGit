@@ -1,72 +1,173 @@
 ﻿@{
     ViewBag.Title = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model List<CrimeWatch.Models.Police_Department>
+@model List<CrimeWatch.Models.Police_Departments>
 
-<br /><br />
-<br /><br />
+<body onload="startTimer()">
+    <br /><br />
+    <br /><br />
 
-<br />
-<div class="row cont">
-    <div class="col-lg-6">
-        <img src="~/Content/Images/map.png" id="bigLogo" />
+    <div class="row cont">
+        <div class="col-lg-6">
+            <img src="~/Content/Images/img1.png" id="img1" class="homepageImage" />
+            <br /><br />
+            <form style="margin-left:50%">
+                <input name="field" type="radio" id="radioBtn1" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn2" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn3" class="radioBtn">
+            </form>
+        </div>       
+        <div class="col-lg-6">
+            <div class="container" style="width:420px;">
+                <img id="logo" src="~/Content/Images/logo.png"/>       
+                @if (Request.IsAuthenticated)
+                {
+                <div class="container" style="color:white; font-size:20px; text-align:justify">
+                    CrimeWatch allows you to explore the current and future criminality rates of your neighbourhood or greater area using interactive features and accurate prediction models.
+                </div>             
+                }
+                else {
+                <div class="container" style="color:white; font-size:20px; text-align:justify">
+                    CrimeWatch allows you to discover the criminality of a place and estimate future crime numbers. CrimeWatch implements prediction algorithms and the latest data visualization tools. <a href="#" onclick="location.href='@Url.Action("Login", "Account")'">Log in</a> to get started.
+                </div>                
+                }
+            </div>
+        </div>
     </div>
-    <div class="col-lg-6" style="text-align:center">
-        <img src="~/Content/Images/logo.png" style="height:200px; width:360px; margin-top:6%" />
+
+    <div class="row infoCont" id="one">
+        <div class="col-lg-6">
+            <h2>What is CrimeWatch?</h2>
+            <br />
+            <h4>
+                It is a web application that aims to provide in-depth information about criminality in the UK and Wales. To achieve that, CrimeWatch has adopted a list of interactive data presentation tools. These include: <br /><br /><b>- Interactive crime map<br />- Graphs and charts<br />- Statistic crime tables</b><br /><br /> CrimeWatch is also capable making estimations for future crime numbers. By implementing a <b>multiple linear regression model</b>, it can accurately forecast the number of total crimes and crimes by type for a selected region.
+            </h4>
+            <br /><br />
+        </div>
+        <div class="col-lg-6">
+            <img id="img2" src="~/Content/Images/img1.png" class="homepageImage"/>
+            <br /><br />
+            <form style="text-align:center">
+                <input name="field" type="radio" id="radioBtn4" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn5" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn6" class="radioBtn">
+            </form>
+        </div>
     </div>
-</div>
 
+    <div class="row infoCont" id="two">        
+        <div class="col-lg-6">
+            <h2>How does it work ?</h2>
+            <div style="overflow-y:scroll; height:280px">
+                <h4>
+                    <b>Data Source</b><br />Crimewatch is based on crime reports (Excel files) published by the UK Police on a monthly basis. The application loops through these files and extracts and stores all crime information. It afterwards manipulates them to the point they reveal useful information about criminality in an area.<br /><br /> <b>Maps and charts</b><br />Police data reveal the latitute and longitude attributes of each crime making it possible for CrimeWatch to visualise the exact location of a crime by using an interactive map. On the other hand, the charts present an aggregated view of the data reveiling criminaity figures for each of the regions in the UK and Wales.<br><br /><b>Machine Learning</b><br>CrimeWatch has the ability to forecast the total number of crimes that are going to occur in an area. To achieve that, the application implements a multiple linear regression model with itegration of the Statistical language R.
+                </h4>
+            </div>
+            <br /><br />
+        </div>
+        <div class="col-lg-6">
+            <img id="img3" src="~/Content/Images/map.png" class="homepageImage" />
+            <br /><br />
+            <form style="text-align:center">
+                <input name="field" type="radio" id="radioBtn7" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn8" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn9" class="radioBtn">
+            </form>
+        </div>
+    </div>
 
-<div class="row infoCont" id="one">
-    <div class="col-lg-6">
-        <h2>What is CrimeWatch?</h2>
+    <div class="row infoCont" id="three">
+        <div class="col-lg-6">
+            <h2>FAQ's</h2>
+            <br />
+            <h4>
+                Crimewatch (formerly Crimewatch UK) was a British television programme produced by the BBC, that reconstructs major unsolved crimes in order to gain information from the public which may assist in solving the case. The programme was originally broadcast once a month on BBC One, although in more recent years it was usually broadcast roughly once every two months.
+                Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
+            </h4>
+            <br /><br />
+        </div>
+        <div class="col-lg-6">
+            <img id="img4" src="~/Content/Images/map.png" class="homepageImage" />
+            <br /><br />
+            <form style="text-align:center">
+                <input name="field" type="radio" id="radioBtn10" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn11" class="radioBtn">
+                <input name="field" type="radio" id="radioBtn12" class="radioBtn">
+            </form>
+        </div>
+    </div>
+
+    <div id='footer'>
         <br />
-        <h4>
-            Crimewatch (formerly Crimewatch UK) was a British television programme produced by the BBC, that reconstructs major unsolved crimes in order to gain information from the public which may assist in solving the case. The programme was originally broadcast once a month on BBC One, although in more recent years it was usually broadcast roughly once every two months.
-
-            Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
-        </h4>
-        <br /><br />
-    </div>    
-</div>
-
-<div class="row infoCont" id="two">
-    <div class="col-lg-6">
-        <h2>How does it work ?</h2>
-        <br />
-        <h4>
-            Crimewatch (formerly Crimewatch UK) was a British television programme produced by the BBC, that reconstructs major unsolved crimes in order to gain information from the public which may assist in solving the case. The programme was originally broadcast once a month on BBC One, although in more recent years it was usually broadcast roughly once every two months.
-
-            Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
-        </h4>
-        <br /><br />
+        <address>
+            24A Guildford Park road<br />
+            Guildford, United Kingdom, GU2 7ND<br />
+            <strong>Tel:</strong> <a href="#">+44 7482868848</a><br />
+            <strong>Email:</strong> <a href="mailto:support@crimewatch.com">Support@example.com</a><br />
+        </address>
     </div>
-</div>
+</body>
 
-<div class="row infoCont" id="three">
-    <div class="col-lg-6">
-        <h2>FAQ's</h2>
-        <br />
-        <h4>
-            Crimewatch (formerly Crimewatch UK) was a British television programme produced by the BBC, that reconstructs major unsolved crimes in order to gain information from the public which may assist in solving the case. The programme was originally broadcast once a month on BBC One, although in more recent years it was usually broadcast roughly once every two months.
+<script>
 
-            Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
-        </h4>
-        <br /><br />
-    </div>
-</div>
 
-<div id='footer'>
-    <br />
-    <address>
-        24A Guildford Park road<br />
-        Guildford, United Kingdom, GU2 7ND<br />
-        <strong>Tel:</strong> <a href="#">+44 7482868848</a><br />
-        <strong>Email:</strong> <a href="mailto:support@crimewatch.com">Support@example.com</a><br />
-    </address>
-</div>
+    function displayNextImage() {
+        var image = document.getElementById('img1');
+        if (document.getElementById('radioBtn1').checked == true) {
+            document.getElementById('radioBtn2').checked = true;
+            image.src = '../Content/Images/img2.png';
+        }
+        else if (document.getElementById('radioBtn2').checked == true) {
+            document.getElementById('radioBtn3').checked = true;
+            image.src = '../Content/Images/map.png';
+        }
+        else {
+            document.getElementById('radioBtn1').checked = true;
+            image.src = '../Content/Images/img1.png';
+        }
+    }
 
+    function startTimer() {
+        setRadioBtnHandlers();
+        setInterval(displayNextImage, 7000);
+        document.getElementById('radioBtn1').checked = true;
+        document.getElementById('radioBtn4').checked = true;
+        document.getElementById('radioBtn7').checked = true;
+        document.getElementById('radioBtn10').checked = true;
+    }
+
+    function setRadioBtnHandlers() {
+        $("#radioBtn1").click(function () { document.getElementById("img1").src = '../Content/Images/img1.png' });
+        $("#radioBtn2").click(function () { document.getElementById("img1").src = '../Content/Images/img2.png' });
+        $("#radioBtn3").click(function () { document.getElementById("img1").src = '../Content/Images/map.png' });
+
+        $("#radioBtn4").click(function () { document.getElementById("img2").src = '../Content/Images/img1.png' });
+        $("#radioBtn5").click(function () { document.getElementById("img2").src = '../Content/Images/img2.png' });
+        $("#radioBtn6").click(function () { document.getElementById("img2").src = '../Content/Images/map_Blurry.png' });
+
+        $("#radioBtn7").click(function () { document.getElementById("img3").src = '../Content/Images/map.png' });
+        $("#radioBtn8").click(function () { document.getElementById("img3").src = '../Content/Images/logo.png' });
+        $("#radioBtn9").click(function () { document.getElementById("img3").src = '../Content/Images/map_Blurry.png' });
+
+        $("#radioBtn10").click(function () { document.getElementById("img4").src = '../Content/Images/map.png' });
+        $("#radioBtn11").click(function () { document.getElementById("img4").src = '../Content/Images/logo.png' });
+        $("#radioBtn12").click(function () { document.getElementById("img4").src = '../Content/Images/map_Blurry.png' });
+    }
+</script>
 <style>
+
+    .radioBtn:checked {
+        border: none;
+        outline: none;
+        box-shadow: inset 0 1px 2px rgba(246, 118, 9, 0.80),0 0 0 0.2em rgba(212,126,32,0.4);
+    }
+
+    h2 {
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
+    }
+
+
     #footer {
         position: absolute;
         height: auto;
@@ -90,12 +191,22 @@
         border: 1px solid rgb(153, 153, 153);
     }
 
-    #bigLogo {
-        margin-top: 10%;
-        margin-bottom: 10%;
-        width: 500px;
-        height: 250px;
+    #img1 {
         margin-left: 10%;
+    }
+
+    #logo {
+        margin-left: 5%;
+        height: 200px;
+        width: 360px;
+        text-align: center;
+    }
+
+    .homepageImage {
+        margin-top: 10%;
+        width: 530px;
+        height: 300px;
+        border: 1px solid gray;
     }
 
     .infoCont {
@@ -118,5 +229,4 @@
     #three {
         margin-top: 100px;
     }
-
 </style>

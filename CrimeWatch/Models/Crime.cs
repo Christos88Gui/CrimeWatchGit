@@ -24,7 +24,10 @@ namespace CrimeWatch.Models
         public string LSOA_Name { get; set; }
         public string Outcome { get; set; }
         public Nullable<int> Police_Department_Id { get; set; }
+        public Nullable<int> County_Id { get; set; }
+        public string Police_Department_Name { get; set; }
     
-        public virtual Police_Department Police_Departments { get; set; }
+        public virtual County County { get; set; }
+        public virtual Police_Departments Police_Departments { get; set; }
     }
 }

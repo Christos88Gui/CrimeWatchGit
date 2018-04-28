@@ -4,7 +4,22 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="CrimeWatchAzureNamespace.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="crimewatchDBModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012.Azure" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'crimewatchDB.dbo.Apr2017$' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Apr2017$">
+          <Property Name="Crime ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="Reported by" Type="nvarchar" MaxLength="255" />
+          <Property Name="Falls within" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA code" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Crime type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Last outcome category" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
         <EntityType Name="AspNetRoles">
           <Key>
             <PropertyRef Name="Id" />
@@ -55,22 +70,210 @@
           <Property Name="LockoutEnabled" Type="bit" Nullable="false" />
           <Property Name="AccessFailedCount" Type="int" Nullable="false" />
           <Property Name="UserName" Type="nvarchar" MaxLength="256" Nullable="false" />
+          <Property Name="FullName" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'crimewatchDB.dbo.Aug2017$' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Aug2017$">
+          <Property Name="Crime ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="Reported by" Type="nvarchar" MaxLength="255" />
+          <Property Name="Falls within" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA code" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Crime type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Last outcome category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Context" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <EntityType Name="Counties">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Police_Department_Id" Type="int" />
+          <Property Name="Population" Type="int" />
+          <Property Name="Total_Crimes" Type="int" />
+          <Property Name="Violent_Crimes" Type="int" />
+          <Property Name="Cluster_Id" Type="int" />
         </EntityType>
         <EntityType Name="Crimes">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Date" Type="datetime" />
+          <Property Name="Date" Type="date" />
           <Property Name="Type" Type="varchar" MaxLength="50" />
-          <Property Name="Police_Department" Type="varchar" MaxLength="50" />
           <Property Name="Latitude" Type="float" />
           <Property Name="Longitude" Type="float" />
           <Property Name="Location" Type="varchar(max)" />
           <Property Name="LSOA_Code" Type="varchar" MaxLength="50" />
           <Property Name="LSOA_Name" Type="varchar" MaxLength="50" />
           <Property Name="Outcome" Type="varchar(max)" />
+          <Property Name="Police_Department_Id" Type="int" />
+          <Property Name="County_Id" Type="int" />
+          <Property Name="Police_Department_Name" Type="varchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="Crimes_pm">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="County_Id" Type="int" Nullable="false" />
+          <Property Name="Month" Type="datetime" Nullable="false" />
+          <Property Name="All_crimes" Type="int" Nullable="false" />
+          <Property Name="Anti_social_behaviour" Type="int" />
+          <Property Name="Bicycle_theft" Type="int" />
+          <Property Name="Burglary" Type="int" />
+          <Property Name="Criminal_damage_and_arson" Type="int" />
+          <Property Name="Drugs" Type="int" />
+          <Property Name="Other_theft" Type="int" />
+          <Property Name="Possession_of_weapons" Type="int" />
+          <Property Name="Public_order" Type="int" />
+          <Property Name="Robbery" Type="int" />
+          <Property Name="Shoplifting" Type="int" />
+          <Property Name="Theft_from_the_person" Type="int" />
+          <Property Name="Vehicle_crime" Type="int" />
+          <Property Name="Violence_and_sexual_offences" Type="int" />
+          <Property Name="Other_crime" Type="int" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'crimewatchDB.dbo.Jul2017$' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Jul2017$">
+          <Property Name="Crime ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="Reported by" Type="nvarchar" MaxLength="255" />
+          <Property Name="Falls within" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA code" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Crime type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Last outcome category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Context" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'crimewatchDB.dbo.Jun2017$' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Jun2017$">
+          <Property Name="Crime ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="Reported by" Type="nvarchar" MaxLength="255" />
+          <Property Name="Falls within" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA code" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Crime type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Last outcome category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Context" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'crimewatchDB.dbo.Mar2017$' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Mar2017$">
+          <Property Name="Crime ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="Reported by" Type="nvarchar" MaxLength="255" />
+          <Property Name="Falls within" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA code" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Crime type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Last outcome category" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'crimewatchDB.dbo.May2017$' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="May2017$">
+          <Property Name="Crime ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="Reported by" Type="nvarchar" MaxLength="255" />
+          <Property Name="Falls within" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA code" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Crime type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Last outcome category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Context" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <EntityType Name="Police_Departments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6013: The table/view 'crimewatchDB.dbo.Sep2017$' does not have a primary key defined and no valid primary key could be inferred. This table/view has been excluded. To use the entity, you will need to review your schema, add the correct keys, and uncomment it.
+        <EntityType Name="Sep2017$">
+          <Property Name="Crime ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Month" Type="nvarchar" MaxLength="255" />
+          <Property Name="Reported by" Type="nvarchar" MaxLength="255" />
+          <Property Name="Falls within" Type="nvarchar" MaxLength="255" />
+          <Property Name="Longitude" Type="float" />
+          <Property Name="Latitude" Type="float" />
+          <Property Name="Location" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA code" Type="nvarchar" MaxLength="255" />
+          <Property Name="LSOA name" Type="nvarchar" MaxLength="255" />
+          <Property Name="Crime type" Type="nvarchar" MaxLength="255" />
+          <Property Name="Last outcome category" Type="nvarchar" MaxLength="255" />
+          <Property Name="Context" Type="nvarchar" MaxLength="255" />
+        </EntityType>-->
+        <Association Name="Crimes_pm_to_Counties">
+          <End Role="Counties" Type="Self.Counties" Multiplicity="1" />
+          <End Role="Crimes_pm" Type="Self.Crimes_pm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crimes_pm">
+              <PropertyRef Name="County_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Counties_Police_Departments">
+          <End Role="Police_Departments" Type="Self.Police_Departments" Multiplicity="0..1" />
+          <End Role="Counties" Type="Self.Counties" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Police_Departments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Counties">
+              <PropertyRef Name="Police_Department_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crimes_Counties">
+          <End Role="Counties" Type="Self.Counties" Multiplicity="0..1" />
+          <End Role="Crimes" Type="Self.Crimes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crimes">
+              <PropertyRef Name="County_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crimes_Police_Departments">
+          <End Role="Police_Departments" Type="Self.Police_Departments" Multiplicity="0..1" />
+          <End Role="Crimes" Type="Self.Crimes" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Police_Departments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crimes">
+              <PropertyRef Name="Police_Department_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUsers" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -127,13 +330,32 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="CrimeWatchAzureNamespaceStoreContainer">
+        <EntityContainer Name="crimewatchDBModelStoreContainer">
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaims" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogins" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Counties" EntityType="Self.Counties" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Crimes" EntityType="Self.Crimes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Crimes_pm" EntityType="Self.Crimes_pm" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Police_Departments" EntityType="Self.Police_Departments" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="Crimes_pm_to_Counties" Association="Self.Crimes_pm_to_Counties">
+            <End Role="Counties" EntitySet="Counties" />
+            <End Role="Crimes_pm" EntitySet="Crimes_pm" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Counties_Police_Departments" Association="Self.FK_Counties_Police_Departments">
+            <End Role="Police_Departments" EntitySet="Police_Departments" />
+            <End Role="Counties" EntitySet="Counties" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Crimes_Counties" Association="Self.FK_Crimes_Counties">
+            <End Role="Counties" EntitySet="Counties" />
+            <End Role="Crimes" EntitySet="Crimes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Crimes_Police_Departments" Association="Self.FK_Crimes_Police_Departments">
+            <End Role="Police_Departments" EntitySet="Police_Departments" />
+            <End Role="Crimes" EntitySet="Crimes" />
+          </AssociationSet>
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -155,7 +377,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="CrimeWatchAzureNamespace" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="crimewatchDBModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="AspNetRole">
           <Key>
             <PropertyRef Name="Id" />
@@ -201,24 +423,77 @@
           <Property Name="LockoutEnabled" Type="Boolean" Nullable="false" />
           <Property Name="AccessFailedCount" Type="Int32" Nullable="false" />
           <Property Name="UserName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="FullName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="AspNetUserClaims" Relationship="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserClaims" />
           <NavigationProperty Name="AspNetUserLogins" Relationship="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" FromRole="AspNetUsers" ToRole="AspNetUserLogins" />
           <NavigationProperty Name="AspNetRoles" Relationship="Self.AspNetUserRoles" FromRole="AspNetUsers" ToRole="AspNetRoles" />
+        </EntityType>
+        <EntityType Name="County">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Police_Department_Id" Type="Int32" />
+          <Property Name="Population" Type="Int32" />
+          <Property Name="Total_Crimes" Type="Int32" />
+          <Property Name="Violent_Crimes" Type="Int32" />
+          <Property Name="Cluster_Id" Type="Int32" />
+          <NavigationProperty Name="Crimes_pm" Relationship="Self.Crimes_pm_to_Counties" FromRole="Counties" ToRole="Crimes_pm" />
+          <NavigationProperty Name="Police_Departments" Relationship="Self.FK_Counties_Police_Departments" FromRole="Counties" ToRole="Police_Departments" />
+          <NavigationProperty Name="Crimes" Relationship="Self.FK_Crimes_Counties" FromRole="Counties" ToRole="Crimes" />
         </EntityType>
         <EntityType Name="Crime">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Date" Type="DateTime" Precision="3" />
+          <Property Name="Date" Type="DateTime" Precision="0" />
           <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="Police_Department" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Latitude" Type="Double" />
           <Property Name="Longitude" Type="Double" />
           <Property Name="Location" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="LSOA_Code" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="LSOA_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="Outcome" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="Police_Department_Id" Type="Int32" />
+          <Property Name="County_Id" Type="Int32" />
+          <Property Name="Police_Department_Name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="County" Relationship="Self.FK_Crimes_Counties" FromRole="Crimes" ToRole="Counties" />
+          <NavigationProperty Name="Police_Departments" Relationship="Self.FK_Crimes_Police_Departments" FromRole="Crimes" ToRole="Police_Departments" />
+        </EntityType>
+        <EntityType Name="Crimes_pm">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="County_Id" Type="Int32" Nullable="false" />
+          <Property Name="Month" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="All_crimes" Type="Int32" Nullable="false" />
+          <Property Name="Anti_social_behaviour" Type="Int32" />
+          <Property Name="Bicycle_theft" Type="Int32" />
+          <Property Name="Burglary" Type="Int32" />
+          <Property Name="Criminal_damage_and_arson" Type="Int32" />
+          <Property Name="Drugs" Type="Int32" />
+          <Property Name="Other_theft" Type="Int32" />
+          <Property Name="Possession_of_weapons" Type="Int32" />
+          <Property Name="Public_order" Type="Int32" />
+          <Property Name="Robbery" Type="Int32" />
+          <Property Name="Shoplifting" Type="Int32" />
+          <Property Name="Theft_from_the_person" Type="Int32" />
+          <Property Name="Vehicle_crime" Type="Int32" />
+          <Property Name="Violence_and_sexual_offences" Type="Int32" />
+          <Property Name="Other_crime" Type="Int32" />
+          <NavigationProperty Name="County" Relationship="Self.Crimes_pm_to_Counties" FromRole="Crimes_pm" ToRole="Counties" />
+        </EntityType>
+        <EntityType Name="Police_Departments">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Counties" Relationship="Self.FK_Counties_Police_Departments" FromRole="Police_Departments" ToRole="Counties" />
+          <NavigationProperty Name="Crimes" Relationship="Self.FK_Crimes_Police_Departments" FromRole="Police_Departments" ToRole="Crimes" />
         </EntityType>
         <Association Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="1">
@@ -248,16 +523,67 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="Crimes_pm_to_Counties">
+          <End Role="Counties" Type="Self.County" Multiplicity="1" />
+          <End Role="Crimes_pm" Type="Self.Crimes_pm" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crimes_pm">
+              <PropertyRef Name="County_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Counties_Police_Departments">
+          <End Role="Police_Departments" Type="Self.Police_Departments" Multiplicity="0..1" />
+          <End Role="Counties" Type="Self.County" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Police_Departments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Counties">
+              <PropertyRef Name="Police_Department_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crimes_Counties">
+          <End Role="Counties" Type="Self.County" Multiplicity="0..1" />
+          <End Role="Crimes" Type="Self.Crime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Counties">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crimes">
+              <PropertyRef Name="County_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Crimes_Police_Departments">
+          <End Role="Police_Departments" Type="Self.Police_Departments" Multiplicity="0..1" />
+          <End Role="Crimes" Type="Self.Crime" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Police_Departments">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Crimes">
+              <PropertyRef Name="Police_Department_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="AspNetUserRoles">
           <End Role="AspNetRoles" Type="Self.AspNetRole" Multiplicity="*" />
           <End Role="AspNetUsers" Type="Self.AspNetUser" Multiplicity="*" />
         </Association>
-        <EntityContainer Name="Entities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="crimewatchAzureModels" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRole" />
           <EntitySet Name="AspNetUserClaims" EntityType="Self.AspNetUserClaim" />
           <EntitySet Name="AspNetUserLogins" EntityType="Self.AspNetUserLogin" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUser" />
+          <EntitySet Name="Counties" EntityType="Self.County" />
           <EntitySet Name="Crimes" EntityType="Self.Crime" />
+          <EntitySet Name="Crimes_pm" EntityType="Self.Crimes_pm" />
+          <EntitySet Name="Police_Departments" EntityType="Self.Police_Departments" />
           <AssociationSet Name="FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserClaims" EntitySet="AspNetUserClaims" />
@@ -265,6 +591,22 @@
           <AssociationSet Name="FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" Association="Self.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
             <End Role="AspNetUserLogins" EntitySet="AspNetUserLogins" />
+          </AssociationSet>
+          <AssociationSet Name="Crimes_pm_to_Counties" Association="Self.Crimes_pm_to_Counties">
+            <End Role="Counties" EntitySet="Counties" />
+            <End Role="Crimes_pm" EntitySet="Crimes_pm" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Counties_Police_Departments" Association="Self.FK_Counties_Police_Departments">
+            <End Role="Police_Departments" EntitySet="Police_Departments" />
+            <End Role="Counties" EntitySet="Counties" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Crimes_Counties" Association="Self.FK_Crimes_Counties">
+            <End Role="Counties" EntitySet="Counties" />
+            <End Role="Crimes" EntitySet="Crimes" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Crimes_Police_Departments" Association="Self.FK_Crimes_Police_Departments">
+            <End Role="Police_Departments" EntitySet="Police_Departments" />
+            <End Role="Crimes" EntitySet="Crimes" />
           </AssociationSet>
           <AssociationSet Name="AspNetUserRoles" Association="Self.AspNetUserRoles">
             <End Role="AspNetRoles" EntitySet="AspNetRoles" />
@@ -276,9 +618,9 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="CrimeWatchAzureNamespaceStoreContainer" CdmEntityContainer="Entities">
+        <EntityContainerMapping StorageEntityContainer="crimewatchDBModelStoreContainer" CdmEntityContainer="crimewatchAzureModels">
           <EntitySetMapping Name="AspNetRoles">
-            <EntityTypeMapping TypeName="CrimeWatchAzureNamespace.AspNetRole">
+            <EntityTypeMapping TypeName="crimewatchDBModel.AspNetRole">
               <MappingFragment StoreEntitySet="AspNetRoles">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -286,7 +628,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserClaims">
-            <EntityTypeMapping TypeName="CrimeWatchAzureNamespace.AspNetUserClaim">
+            <EntityTypeMapping TypeName="crimewatchDBModel.AspNetUserClaim">
               <MappingFragment StoreEntitySet="AspNetUserClaims">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -296,7 +638,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUserLogins">
-            <EntityTypeMapping TypeName="CrimeWatchAzureNamespace.AspNetUserLogin">
+            <EntityTypeMapping TypeName="crimewatchDBModel.AspNetUserLogin">
               <MappingFragment StoreEntitySet="AspNetUserLogins">
                 <ScalarProperty Name="LoginProvider" ColumnName="LoginProvider" />
                 <ScalarProperty Name="ProviderKey" ColumnName="ProviderKey" />
@@ -305,7 +647,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="AspNetUsers">
-            <EntityTypeMapping TypeName="CrimeWatchAzureNamespace.AspNetUser">
+            <EntityTypeMapping TypeName="crimewatchDBModel.AspNetUser">
               <MappingFragment StoreEntitySet="AspNetUsers">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Email" ColumnName="Email" />
@@ -319,26 +661,74 @@
                 <ScalarProperty Name="LockoutEnabled" ColumnName="LockoutEnabled" />
                 <ScalarProperty Name="AccessFailedCount" ColumnName="AccessFailedCount" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Counties">
+            <EntityTypeMapping TypeName="crimewatchDBModel.County">
+              <MappingFragment StoreEntitySet="Counties">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Police_Department_Id" ColumnName="Police_Department_Id" />
+                <ScalarProperty Name="Population" ColumnName="Population" />
+                <ScalarProperty Name="Total_Crimes" ColumnName="Total_Crimes" />
+                <ScalarProperty Name="Violent_Crimes" ColumnName="Violent_Crimes" />
+                <ScalarProperty Name="Cluster_Id" ColumnName="Cluster_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="Crimes">
-            <EntityTypeMapping TypeName="CrimeWatchAzureNamespace.Crime">
+            <EntityTypeMapping TypeName="crimewatchDBModel.Crime">
               <MappingFragment StoreEntitySet="Crimes">
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Date" ColumnName="Date" />
                 <ScalarProperty Name="Type" ColumnName="Type" />
-                <ScalarProperty Name="Police_Department" ColumnName="Police_Department" />
                 <ScalarProperty Name="Latitude" ColumnName="Latitude" />
                 <ScalarProperty Name="Longitude" ColumnName="Longitude" />
                 <ScalarProperty Name="Location" ColumnName="Location" />
                 <ScalarProperty Name="LSOA_Code" ColumnName="LSOA_Code" />
                 <ScalarProperty Name="LSOA_Name" ColumnName="LSOA_Name" />
                 <ScalarProperty Name="Outcome" ColumnName="Outcome" />
+                <ScalarProperty Name="Police_Department_Id" ColumnName="Police_Department_Id" />
+                <ScalarProperty Name="County_Id" ColumnName="County_Id" />
+                <ScalarProperty Name="Police_Department_Name" ColumnName="Police_Department_Name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="AspNetUserRoles" TypeName="CrimeWatchAzureNamespace.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
+          <EntitySetMapping Name="Crimes_pm">
+            <EntityTypeMapping TypeName="crimewatchDBModel.Crimes_pm">
+              <MappingFragment StoreEntitySet="Crimes_pm">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="County_Id" ColumnName="County_Id" />
+                <ScalarProperty Name="Month" ColumnName="Month" />
+                <ScalarProperty Name="All_crimes" ColumnName="All_crimes" />
+                <ScalarProperty Name="Anti_social_behaviour" ColumnName="Anti_social_behaviour" />
+                <ScalarProperty Name="Bicycle_theft" ColumnName="Bicycle_theft" />
+                <ScalarProperty Name="Burglary" ColumnName="Burglary" />
+                <ScalarProperty Name="Criminal_damage_and_arson" ColumnName="Criminal_damage_and_arson" />
+                <ScalarProperty Name="Drugs" ColumnName="Drugs" />
+                <ScalarProperty Name="Other_theft" ColumnName="Other_theft" />
+                <ScalarProperty Name="Possession_of_weapons" ColumnName="Possession_of_weapons" />
+                <ScalarProperty Name="Public_order" ColumnName="Public_order" />
+                <ScalarProperty Name="Robbery" ColumnName="Robbery" />
+                <ScalarProperty Name="Shoplifting" ColumnName="Shoplifting" />
+                <ScalarProperty Name="Theft_from_the_person" ColumnName="Theft_from_the_person" />
+                <ScalarProperty Name="Vehicle_crime" ColumnName="Vehicle_crime" />
+                <ScalarProperty Name="Violence_and_sexual_offences" ColumnName="Violence_and_sexual_offences" />
+                <ScalarProperty Name="Other_crime" ColumnName="Other_crime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Police_Departments">
+            <EntityTypeMapping TypeName="crimewatchDBModel.Police_Departments">
+              <MappingFragment StoreEntitySet="Police_Departments">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="AspNetUserRoles" TypeName="crimewatchDBModel.AspNetUserRoles" StoreEntitySet="AspNetUserRoles">
             <EndProperty Name="AspNetRoles">
               <ScalarProperty Name="Id" ColumnName="RoleId" />
             </EndProperty>

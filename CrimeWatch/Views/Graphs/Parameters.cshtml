@@ -1,0 +1,31 @@
+﻿@{
+    ViewBag.Title = "Graph Parameters";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+}
+
+<button style="float:left;" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
+<br>
+<div class="container customCont" style="width:500px; padding-bottom:20px">
+    <h2 class="title">Select County</h2>
+    <br />
+    <div class="container" style="height:350px;width:400px; overflow-y:scroll; margin:0 auto;">
+        <div class="row">
+            <a class="menuBtn" href="@Url.Action("Graphs", "Graphs", new { countyName = "", period=1 })">All counties</a>
+        </div>
+        @foreach (var county in ViewBag.countiesDD)
+        {
+        <div class="row">
+            <a class="menuBtn" href="@Url.Action("Graphs", "Graphs", new { countyName = county, period=1 })">@county</a>            
+        </div>
+        }
+    </div>
+</div>
+
+<style>
+    body {
+        background: #f4f4f4;
+        margin-top: 5%
+    }
+
+
+</style>

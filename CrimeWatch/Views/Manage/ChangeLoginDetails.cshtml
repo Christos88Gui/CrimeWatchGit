@@ -8,7 +8,7 @@
 <br /><br /><br /><br />
 
 <div class="row">
-    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> Back to Dashboard</button>
+    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> User Portal</button>
     <div class="container customCont">
         <br />
         @using (Html.BeginForm("ChangeLoginDetails", "Manage", FormMethod.Post, new { role = "form", name = "my-form" }))

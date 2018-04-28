@@ -4,6 +4,7 @@
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
+    <link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
 
 <style>
     .layoutBtn {
@@ -119,7 +120,7 @@
 
                             }*@
 
-                        <a class="btn layoutLogin" onclick="location.href='@Url.Action("MyPortal", "Home")'">Dashboard <span class="glyphicon glyphicon-th"></span></a>
+                    <a class="btn layoutLogin" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal <span class="glyphicon glyphicon-th"></span></a>
                     }
                     else
                     {

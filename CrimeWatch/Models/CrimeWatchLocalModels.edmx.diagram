@@ -16,6 +16,9 @@
         <AssociationConnector Association="CrimeWatchDBModel.AspNetUserRoles" ManuallyRouted="false" />
         <EntityTypeShape EntityType="CrimeWatchDBModel.Police_Department" Width="2.25" PointX="5.375" PointY="6.75" />
         <AssociationConnector Association="CrimeWatchDBModel.FK_Crimes_ToTable1" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.County" Width="2" PointX="9.125" PointY="7.25" />
+        <AssociationConnector Association="CrimeWatchDBModel.FK_Counties_Police_Departments" />
+        <AssociationConnector Association="CrimeWatchDBModel.FK_Crimes_Counties" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

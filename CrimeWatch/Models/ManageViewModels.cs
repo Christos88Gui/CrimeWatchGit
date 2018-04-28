@@ -65,7 +65,7 @@ namespace CrimeWatch.Models
         
         [DataType(DataType.EmailAddress)]
         [Display(Name = "Confirm new email")]
-        [Compare("NewEmail", ErrorMessage = "The emails you provided are not the same.")]
+        [Compare("NewEmail", ErrorMessage = "The emails you provided are not the sameLatLngCrimes.")]
         public string ConfirmEmail { get; set; }
     }
 
@@ -116,7 +116,7 @@ namespace CrimeWatch.Models
         public string Date { get; set; }
 
         [Required]
-        [Display(Name = "Crime Category")]
+        [Display(Name = "Crime Type")]
         public string Type { get; set; }
 
     }

@@ -13,10 +13,10 @@ namespace CrimeWatch.Models
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class Entities : DbContext
+    public partial class crimewatchAzureModels : DbContext
     {
-        public Entities()
-            : base("name=Entities")
+        public crimewatchAzureModels()
+            : base("name=crimewatchAzureModels")
         {
         }
     
@@ -29,6 +29,9 @@ namespace CrimeWatch.Models
         public virtual DbSet<AspNetUserClaim> AspNetUserClaims { get; set; }
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
+        public virtual DbSet<County> Counties { get; set; }
         public virtual DbSet<Crime> Crimes { get; set; }
+        public virtual DbSet<Crimes_pm> Crimes_pm { get; set; }
+        public virtual DbSet<Police_Departments> Police_Departments { get; set; }
     }
 }

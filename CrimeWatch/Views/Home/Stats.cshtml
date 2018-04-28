@@ -1,5 +1,5 @@
 ﻿@using CrimeWatch.Models
-@model Tuple<List<Police_Department>, List<Crime>>
+@model Tuple<List<Police_Departments>, List<Crime>>
 @{
     ViewBag.Title = "Stats";
     Layout = "";
@@ -57,7 +57,7 @@
 @Scripts.Render("~/bundles/modernizr")
 
 <div class="container" style="width:20%; float:left; position:fixed">
-    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> Back to Dashboard</button>
+    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
     <br /><br /><br />
     <div class="container customCont">
         <br />
@@ -65,7 +65,7 @@
             <div class="form-group">
                 <p>Police Department</p>
                 <select class="form-control" name="police_department">
-                    <option selected>@ViewBag.region</option>
+                    <option selected>@ViewBag.police_department</option>
                     @if (ViewBag.police_department != "All Regions")
                     {
                         <option>All Police Departments</option>
@@ -140,9 +140,9 @@
             </div>
             <div class="form-group">
                 <p>Crime Categories</p>
-                <select class="form-control" name="category" style="width:100%">
-                    <option>@ViewBag.category</option>
-                    @if (ViewBag.category != "All Categories")
+                <select class="form-control" name="type" style="width:100%">
+                    <option>@ViewBag.type</option>
+                    @if (ViewBag.type != "All Categories")
                     {
                         <option>All Categories</option>
                     }
@@ -164,7 +164,6 @@
             </div>
             <br />
             <input type="submit" class="btn btn-default" value="Submit">
-            <button class="btn-xs btn-default" style="float:right; border: 1px solid black; font-size:12px; background-color:lightcoral" id="reset">Reset filters</button>
             <br />
         </form>
     </div>
@@ -172,7 +171,7 @@
 
 <div class="container" style="width:65%; margin-left:25%;">
     <h2 class="title" style="display:inline;">@ViewBag.police_department</h2>
-    <p class="title" style="font-size:17px; display:inline; float:right">@ViewBag.category | @ViewBag.date </p>
+    <p class="title" style="font-size:17px; display:inline; float:right">@ViewBag.type | @ViewBag.date </p>
     <br /><br /><br />
     @if (ViewBag.police_department == "All Police Departments")
     {
@@ -192,7 +191,7 @@
         <div class="container customCont">
             <br />
             <h4>
-                @ViewBag.police_department : @Model.Item2.Where(x => x.Police_Departments.Name == ViewBag.police_department).Count() crimes
+                @ViewBag.police_department : @Model.Item2.Where(x => x.Police_Department.Name == ViewBag.police_department).Count() crimes
             </h4>
         </div>
     }

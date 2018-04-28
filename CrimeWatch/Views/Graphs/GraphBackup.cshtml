@@ -1,0 +1,377 @@
+﻿@using CrimeWatch.Models
+@model List<CrimeWatch.Models.Crime>
+@{
+    ViewBag.Title = "Graphs";
+    Layout = "";
+}
+<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+
+<div class="container" style="width:20%; float:left; position:fixed;">
+    <button style="float:left" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> User Portal</button>
+    <br /><br /><br />
+    <div class="container customCont">
+        <br />
+        <form action="/Map/Graphs" method="post">
+            <div class="form-group">
+                <p>Police Department</p>
+                <select class="form-control" name="police_department" id="police_department">
+                    <option selected>@ViewBag.police_department</option>
+                    @if (ViewBag.police_department != "All Police Departments")
+                    {
+                        <option>All Police Departments</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <p>Date</p>
+                <select class="form-control" name="date">
+                    @if (ViewBag.date == "All 2017")
+                    {
+                        <option selected>All 2017</option>
+                        <option>All 2018</option>
+                    }
+                    else
+                    {
+                        <option>All 2017</option>
+                        <option selected>All 2018</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <p>Crime Categories</p>
+                <select class="form-control" name="type" id="type" style="width:100%">
+                    <option>@ViewBag.type</option>
+                    @if (ViewBag.type != "All Types")
+                    {
+                        <option>All Categories</option>
+                    }
+                </select>
+            </div>
+            <br />
+            <input type="submit" class="btn btn-default" value="Submit">
+            <br />
+        </form>
+    </div>
+</div>
+
+<div class="container" style="width:20%; right:0px; top:15%; position:fixed; border:1px solid black">
+    <div id="table"></div>
+</div>
+
+<div class="container" style="width:58%;">
+    <br />
+    <div class="container customCont">
+        <h2 class="title" style="display:inline;">@ViewBag.police_department</h2>
+        <br />
+        <p>Covers counties: </p>
+        @foreach (var c in ViewBag.counties)
+        {
+            <p>@c</p>
+        }
+        <br />
+        <p>Population: @ViewBag.population</p>
+        <br />
+    </div>
+
+    <p class="title" style="font-size:17px; display:inline; float:right">@ViewBag.type | @ViewBag.date </p>
+
+    <div class="container" style="border:1px solid lightgray; margin-top:4%">
+        <br />
+        <div id="table"></div>
+        <br />
+    </div>
+    <br>
+    <div class="container customCont">
+        <br />
+        <div id="area_chart"></div>
+        <br />
+    </div>
+    @if (ViewBag.type == "All Types")
+    {
+        <br />
+        <div class="container customCont">
+            <div id="pie_chart"></div>
+        </div>
+    }
+    <br />
+    <div class="container customCont">
+        <br />
+        <div id="column_chart"></div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    window.onload = populateDropdowns;
+    function populateDropdowns() {
+        var police_departmentDD = document.getElementById('police_department');
+        var police_departments  = @Html.Raw(Json.Encode(ConstantStrings.police_departments));
+        for (var i = 0; i<@ConstantStrings.police_departments.Length;i++) {
+            var opt = document.createElement('option');
+            opt.innerHTML = police_departments[i];
+            opt.value = police_departments[i];
+            police_departmentDD.appendChild(opt);
+        }
+        var categories = @Html.Raw(Json.Encode(ConstantStrings.crime_categories));
+        var typeDD = document.getElementById('type');
+        for (var i = 0; i < @ConstantStrings.crime_categories.Length; i++) {
+            var opt = document.createElement('option');
+            opt.innerHTML = categories[i];
+            opt.value = categories[i];
+            typeDD.appendChild(opt);
+        }
+    }
+
+    google.charts.load('current', { 'packages': ['corechart','bar','table'] });
+    google.charts.setOnLoadCallback(generateCharts);
+    function generateCharts() {
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var area_chart_data = new google.visualization.DataTable();
+        area_chart_data.addColumn('string', 'Months');
+        area_chart_data.addColumn('number', 'Crimes');
+        @for (int i = 0; i < 12; i++) {
+            @:area_chart_data.addRow(['@ConstantStrings.months[i].Substring(0,3)', @Model.Item1.Where(x=>x.Date.Value.Month == i+1).Count()]);
+        }
+        var area_chart_options = {
+            'width': 730,
+            'height': 370,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: { titles: 'Crimes', minValue: 0 }
+        };
+        var area_chart = new google.visualization.AreaChart(document.getElementById('area_chart'));
+        area_chart.draw(area_chart_data, area_chart_options);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------PIE CHART----------------------------------//
+        var pie_chart_data = new google.visualization.DataTable();
+        pie_chart_data.addColumn('string', 'Crime_Types');
+        pie_chart_data.addColumn('number', 'Percentages');
+
+        @for (var i = 0; i < ConstantStrings.crime_categories.Length; i++) {
+            @:pie_chart_data.addRow(['@ConstantStrings.crime_categories[i]', @Model.Item1.Where(x=>x.Type == ConstantStrings.crime_categories[i]).Count()]);
+        }
+        var pie_chart_options = {
+            'width': 700,
+            'height': 400
+        };
+        var pie_chart = new google.visualization.PieChart(document.getElementById('pie_chart'));
+        pie_chart.draw(pie_chart_data, pie_chart_options);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------TABLE ----------------------------------//
+        var table_data = new google.visualization.DataTable();
+        table_data.addColumn('string', 'Police_Department');
+        table_data.addColumn('string', 'Counties');
+        table_data.addColumn('number', 'Crimes: @ViewBag.type');
+        @foreach (var police_department in Model.Item2) {
+            if (police_department.Counties.Count == 1) {
+                @:table_data.addRow(['@police_department.Name','@police_department.Counties.First().Name', @Model.Item1.Where(x=>x.Police_Department.Equals(police_department)).Count()]);
+            }
+            else if (police_department.Counties.Count == 2) {
+                @:table_data.addRow(['@police_department.Name','@police_department.Counties.First().Name, @police_department.Counties.ElementAt(1).Name', @Model.Item1.Where(x=>x.Police_Department.Equals(police_department)).Count()]);
+            }
+            else if (police_department.Counties.Count == 2) {
+                @:table_data.addRow(['@police_department.Name','@police_department.Counties.First().Name, @police_department.Counties.ElementAt(1).Name, @police_department.Counties.ElementAt(2).Name', @Model.Item1.Where(x=>x.Police_Department.Equals(police_department)).Count()]);
+            }
+         }
+        var table_options = {
+            'height': 350,
+            'width':750
+        };
+        var table = new google.visualization.Table(document.getElementById('table'));
+        table.draw(table_data, table_options);
+        //---------------------------------------------------------------------------------------------------------------//
+    }
+</script>
+
+<script>
+    var counties = @Html.Raw(Json.Encode(ViewBag.counties));
+    var crimes_per_county = @Html.Raw(Json.Encode(ViewBag.numbers));
+
+    Highcharts.chart('column_chart', {
+        chart: {
+            type: 'bar',
+            height: 1000
+        },
+        xAxis: {
+            categories: counties
+        },
+        legend: {
+            reversed: true
+        },
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        series: [{
+            name:'Crimes',
+            data: crimes_per_county
+        }]
+    });
+</script>
+
+
+<style>
+    li {
+        font-size: 17px;
+    }
+
+    body {
+        color: black;
+        background: #f4f4f4;
+        font-size: 15px;
+    }
+
+    .ddMenu {
+        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
+        border: 1px solid rgb(153, 153, 153);
+        background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+        padding: 5px 0px;
+    }
+</style>
+
+
+@*//------------------------------------------------------------------COLUMN CHART----------------------------------//*@
+@*var column_chart_data = new google.visualization.DataTable();
+    column_chart_data.addColumn('string', 'Regions');
+    column_chart_data.addColumn('number', 'Crimes');
+
+     @foreach (var region in ConstantStrings.regions) {
+        @:column_chart_data.addRow(['@region', @Model.Where(x=>x.Police_Department.Region == region).Count()]);
+     }
+
+    var column_chart_options = {
+        'height': 1500
+    };
+    var column_chart = new google.visualization.BarChart(document.getElementById('column_chart'));
+    column_chart.draw(column_chart_data, column_chart_options);*@
+@*//---------------------------------------------------------------------------------------------------------------//*@
+
+
+@*Highcharts.chart('months_graph', {
+        chart: {
+            type: 'area',
+            spacingBottom: 30
+        },
+        title: {
+            text: 'Total crimes: @Model.Count()'
+        },
+        legend: {
+            layout: 'vertical',
+            align: 'left',
+            verticalAlign: 'top',
+            y: -10,
+            floating: true,
+            borderWidth: 1,
+            backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor) || '#FFFFFF'
+        },
+        xAxis: {
+            categories: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+        },
+        yAxis: {
+            title: {
+                text: 'Incidents'
+            },
+            labels: {
+                formatter: function () {
+                    return this.value;
+                }
+            }
+        },
+        tooltip: {
+            formatter: function () {
+                return '<b>' + this.series.name + '</b><br/>' +
+                    this.x + ': ' + this.y;
+            }
+        },
+        plotOptions: {
+            area: {
+                fillOpacity: 0.5
+            }
+        },
+        series: [{
+            name: '@ViewBag.type',
+            data: [@ViewBag.crimes_per_month[0],@ViewBag.crimes_per_month[1],@ViewBag.crimes_per_month[2],@ViewBag.crimes_per_month[3],@ViewBag.crimes_per_month[4],@ViewBag.crimes_per_month[5],@ViewBag.crimes_per_month[6],@ViewBag.crimes_per_month[7],@ViewBag.crimes_per_month[8],@ViewBag.crimes_per_month[9],@ViewBag.crimes_per_month[10],@ViewBag.crimes_per_month[11]]
+        }]
+    });
+
+    Highcharts.chart('pie_chart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Crime Categories Comparisson'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true
+            }
+        },
+        series: [{
+            name: 'Percentage',
+            colorByPoint: true,
+            data: [{
+                name: 'Anti-social behaviour',
+                y: @Model.Where(x=>x.Type.Equals("Anti-social behaviour")).Count() / @Model.Count()
+            }, {
+                name: 'Bicycle theft',
+                y: @Model.Where(x=>x.Type.Equals("Bicycle theft")).Count() / @Model.Count()
+            }, {
+                name: 'Burglary',
+                y: @Model.Where(x=>x.Type.Equals("Burglary")).Count() / @Model.Count()
+            }, {
+                name: 'Criminal damage and arson',
+                y: @Model.Where(x=>x.Type.Equals("Criminal damage and arson")).Count() / @Model.Count()
+            }, {
+                name: 'Drugs',
+                y: @Model.Where(x=>x.Type.Equals("Drugs")).Count() / @Model.Count()
+            }, {
+                name: 'Possession of weapons',
+                y: @Model.Where(x=>x.Type.Equals("Possession of weapons")).Count() / @Model.Count()
+            }, {
+                name: 'Other crime',
+                y: @Model.Where(x=>x.Type.Equals("Other crime")).Count() / @Model.Count()
+            }, {
+                name: 'Other theft',
+                y: @Model.Where(x=>x.Type.Equals("Other theft")).Count() / @Model.Count()
+            }, {
+                name: 'Public order',
+                y: @Model.Where(x=>x.Type.Equals("Public order")).Count() / @Model.Count()
+            }, {
+                name: 'Robbery',
+                y: @Model.Where(x=>x.Type.Equals("Robbery")).Count() / @Model.Count()
+            }, {
+                name: 'Shoplifting',
+                y: @Model.Where(x=>x.Type.Equals("Shoplifting")).Count() / @Model.Count()
+            }, {
+                name: 'Theft from the person',
+                y: @Model.Where(x=>x.Type.Equals("Theft from the person")).Count() / @Model.Count()
+            }, {
+                name: 'Vehicle crime',
+                y: @Model.Where(x=>x.Type.Equals("Vehicle crime")).Count() / @Model.Count()
+            }, {
+                name: 'Violence and sexual offences',
+                y: @Model.Where(x=>x.Type.Equals("Violence and sexual offences")).Count() / @Model.Count()
+            }
+            ]
+        }]
+    });*@

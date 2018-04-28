@@ -1,0 +1,151 @@
+﻿@using CrimeWatch.Models
+@model List<Crimes_pm>
+@{
+    ViewBag.Title = "Graphs";
+    Layout = "";
+}
+<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+@Styles.Render("~/Content/css")
+@Scripts.Render("~/bundles/modernizr")
+
+<button style="float:left; margin-left:3%" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
+
+<div style="text-align:center">
+    <h2 class="title" style="display:inline;">@ViewBag.countyName</h2>
+    <br /><br /><br />
+    <p style="display:inline"><b>Population: </b></p><p style="display:inline">@ViewBag.population</p>
+    &ensp;
+    <p style="display:inline"><b>Policed by:</b></p>
+    <p style="display:inline">@ViewBag.police_department</p>
+    &ensp;
+    <p style="display:inline"><b>Period:</b></p>
+    <p style="display:inline">@ViewBag.firstDate - @ViewBag.lastDate</p>
+    <br /><br />
+</div>
+<hr />
+<br />
+<div class="container customCont" style="width:17%; float:left; position:fixed; margin-left:1%">
+    <form action="/Graphs/Graphs" method="post">
+        <br />
+        <div class="form-group">
+            <label>Select County</label>
+            <select name="countyName" class="form-control">
+                @foreach (var opt in ViewBag.countiesDD)
+                {
+                    <option value="@opt">@opt</option>
+                }
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Select Period</label>
+            <select name="period" class="form-control">
+                <option value="1">@ViewBag.datesDD[0]</option>
+                <option value="2">@ViewBag.datesDD[1]</option>
+                <option value="3">@ViewBag.datesDD[2]</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Submit</button>
+        </div>
+    </form>
+</div>
+
+<div class="container" style="width:80%; margin-left:18%">
+    <div class="container customCont" style="overflow:hidden">
+        <h3 class="graphHeader" style="overflow:hidden">Crimes by category</h3>
+        <div id="pie_chart"></div>
+    </div>
+    <br /><br />
+    <div class="container customCont">
+        <h3 class="graphHeader">Crimes by month</h3>
+        <div id="area_chart"></div>
+    </div>
+
+</div>
+<br />
+
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart','bar','table'] });
+    google.charts.setOnLoadCallback(generateCharts);
+    function generateCharts() {
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var area_chart_data = new google.visualization.DataTable();
+        area_chart_data.addColumn('string', 'Months');
+        area_chart_data.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:area_chart_data.addRow(['@item.Month.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Month.Month == item.Month.Month).Sum(v=>v.All_crimes)]);
+
+        }
+        var dateRange = 'Period: @ViewBag.firstDate - @ViewBag.lastDate'
+        var area_chart_options = {
+            title: dateRange,
+            'width': 900,
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var area_chart = new google.visualization.AreaChart(document.getElementById('area_chart'));
+        area_chart.draw(area_chart_data, area_chart_options);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------PIE CHART----------------------------------//
+        var pie_chart_data = new google.visualization.DataTable();
+        pie_chart_data.addColumn('string', 'Crime Categories');
+        pie_chart_data.addColumn('number', 'Percentages');
+        pie_chart_data.addRow(['Anti social behaviour', @Model.Sum(y=>y.Anti_social_behaviour) ]);
+        pie_chart_data.addRow(['Bicycle theft', @Model.Sum(y=>y.Bicycle_theft) ]);
+        pie_chart_data.addRow(['Burglary', @Model.Sum(y=>y.Burglary) ]);
+        pie_chart_data.addRow(['Criminal damage and arson', @Model.Sum(y=>y.Criminal_damage_and_arson) ]);
+        pie_chart_data.addRow(['Drugs', @Model.Sum(y=>y.Drugs) ]);
+        pie_chart_data.addRow(['Other crime', @Model.Sum(y=>y.Other_crime) ]);
+        pie_chart_data.addRow(['Other theft', @Model.Sum(y=>y.Other_theft) ]);
+        pie_chart_data.addRow(['Possession of weapons', @Model.Sum(y=>y.Possession_of_weapons) ]);
+        pie_chart_data.addRow(['Public order', @Model.Sum(y=>y.Public_order) ]);
+        pie_chart_data.addRow(['Robbery', @Model.Sum(y=>y.Robbery) ]);
+        pie_chart_data.addRow(['Shoplifting', @Model.Sum(y=>y.Shoplifting) ]);
+        pie_chart_data.addRow(['Theft from the person', @Model.Sum(y=>y.Theft_from_the_person) ]);
+        pie_chart_data.addRow(['Vehicle crime', @Model.Sum(y=>y.Vehicle_crime) ]);
+        pie_chart_data.addRow(['Violence and sexual offences', @Model.Sum(y=>y.Violence_and_sexual_offences) ]);
+
+        var pie_chart_options = {
+            'width': 1000,
+            'height': 400
+        };
+        var pie_chart = new google.visualization.PieChart(document.getElementById('pie_chart'));
+        pie_chart.draw(pie_chart_data, pie_chart_options);
+        //---------------------------------------------------------------------------------------------------------------//
+    }
+</script>
+
+<style>
+
+
+    .graphHeader {
+        margin-left: 15%;
+        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
+    }
+
+    li {
+        font-size: 17px;
+    }
+
+    body {
+        color: black;
+        background: #f4f4f4;
+        font-size: 15px;
+    }
+
+    .ddMenu {
+        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
+        border: 1px solid rgb(153, 153, 153);
+        background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+        padding: 5px 0px;
+    }
+</style>

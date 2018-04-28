@@ -1,0 +1,84 @@
+﻿@{
+    ViewBag.Title = "Map Parameters";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+}
+
+<button style="float:left;" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
+
+<div class="container customCont" style="margin-top:10%;">
+    <h2 class="title">Initialize Map</h2>
+    <br />
+    <form action="Map/Map" id="mapForm" onsubmit="return validateForm()">
+        <div class="col-lg-4">
+            <h4><b>1.</b> Postcode / Address</h4>
+            <input type="text" class="form-control centeredElement" id="addressSearch1" name="address" placeholder="13 Bolton street, London or GU2 7ND" />
+            <br /><br />
+            <input hidden name="latitude" />
+            <input hidden name="longitude" />
+        </div>
+        <div class="col-lg-3">
+            <h4><b>2.</b>Date</h4>
+            <select class="form-control centeredElement" name="date">
+                @foreach (var date in ViewBag.dateDD) {
+                    <option> 
+                        @date
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-lg-4" style="color:black">
+            <h4><b>3.</b>Crime Type</h4>
+            <select class="form-control centeredElement" name="type">
+                 @foreach (var type in ViewBag.typeDD) {
+                    <option> 
+                        @type
+                    </option>
+                }
+            </select>
+        </div>
+        <div class="col-md-1">
+            <button class="btn btn-default" id="submitMapParamsBtn" onclick="submitForm()">Submit</button>
+        </div>        
+    </form>
+</div>
+
+<style>
+    #submitMapParamsBtn {
+        margin-top:35px;
+        margin-right:25px;
+        text-align:left;
+        height:45px;
+        font-weight:bold;
+
+    }
+
+    body {
+        margin-top: 5%
+    }
+
+    h4 {
+      text-align:center;
+      color:black;
+      font-family:Verdana
+    } 
+</style>
+
+<script>
+    function autocomplete() {
+        var address = document.getElementById('addressSearch1');
+        var autocomplete = new google.maps.places.Autocomplete(address);
+    }
+
+    function validateForm() {
+        var address = document.getElementById("addressSearch1").value;
+        if (address == "") {
+            window.alert("Please type an address or postcode");
+            return false;
+        }
+    }
+
+    
+
+
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI&libraries=places&callback=autocomplete"></script>

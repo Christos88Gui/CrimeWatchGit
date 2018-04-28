@@ -31,6 +31,7 @@ namespace CrimeWatch.Models
         public virtual DbSet<AspNetUserLogin> AspNetUserLogins { get; set; }
         public virtual DbSet<AspNetUser> AspNetUsers { get; set; }
         public virtual DbSet<Crime> Crimes { get; set; }
-        public virtual DbSet<Police_Department> Police_Departments { get; set; }
+        public virtual DbSet<Police_Departments> Police_Departments { get; set; }
+        public virtual DbSet<County> Counties { get; set; }
     }
 }
