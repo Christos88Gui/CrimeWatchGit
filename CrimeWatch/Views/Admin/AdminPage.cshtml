@@ -1,0 +1,75 @@
+﻿@using CrimeWatch.Models
+@model Tuple<List<Record>, List<AspNetUser>>
+@{
+    ViewBag.Title = "Admin Page";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+}
+
+<div class="container customCont">
+    <br>
+    <button class="btn btn-warning" onclick="location.href = '@Url.Action("MyPortal", "Home")'">User Portal</button>
+    <h2 class="title">Website maintainance</h2>
+    <div class="row">
+        <div class="col-lg-6">
+            <br/><br/>
+            <h3>Records in the database</h3>
+            <div style="overflow-y: scroll; height: 400px">
+                <table class="table-bordered table">
+                    <tr>
+                        <th>County</th>
+                        <th>Date</th>
+                        <th></th>
+                    </tr>
+                    @foreach (var record in Model.Item1)
+                    {
+                        <tr>
+                            <td>
+                                @record.County.Name
+                            </td>
+                            <td>
+                                @record.Date.ToString("MMMM yyyy")
+                            </td>
+                            <td>
+                                <button onclick="location.href = '@Url.Action("DeleteRecord", "Admin")'" class="btn btn-sm btn-danger">Delete</button>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            </div>
+            <br/><br/>
+        </div>
+        <div class="col-lg-6">
+            <br/><br/>
+            <h3>Registered users</h3>
+            <div style="overflow-y: scroll; max-height: 400px;">
+                <table class="table-bordered table">
+                    <tr>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Phone number</th>
+                        <th>Email Confirmed</th>
+                    </tr>
+                    @foreach (var user in Model.Item2)
+                    {
+                    <tr>
+                        <td>
+                            @user.FullName
+                        </td>
+                        <td>
+                            @user.Email
+                        </td>
+                        <td>
+                            @user.EmailConfirmed
+                        </td>
+                        <td>
+                            <button onclick="location.href = '@Url.Action("DeleteUser", "Admin", new {email = user.Email})'" class="btn btn-sm btn-danger">Delete</button>
+                        </td>
+                    </tr>
+                    }
+                </table>
+            </div>
+            <br/><br/>
+        </div>
+
+    </div>
+</div>

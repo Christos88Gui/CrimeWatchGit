@@ -2,155 +2,50 @@
 @model List<County>
 @{
     ViewBag.Title = "Clusters";
-    Layout = "";
+    Layout = "~/Views/Shared/_LayoutFullscreen.cshtml";
 }
-@Styles.Render("~/Content/css")
-@Scripts.Render("~/bundles/modernizr")
-<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
 
-@Styles.Render("~/Content/css")
-@Scripts.Render("~/bundles/modernizr")
+<button class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
 
-<button style="float:left; margin-left:3%" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
-<h2 class="title">Criminality Clusters</h2>
-<div style="text-align:center; margin:0 auto;width:80%">
-    <br /><br />
-    <h4 class="title" style="text-align:left; margin-top:3%">Cluster 1: <b>Very Low Criminality</b></h4>
-    <div class="row" style="font-size:17px; background-color:lightgray; border:1px solid white">
-        <div class="col-lg-4">
-            <b>County name </b>
-        </div>
-        <div class="col-lg-4">
-            <b>Crimes per 1000 residents</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Violent crimes per 1000 residents</b>
-        </div>
-    </div>
-    @foreach (var county in Model.Where(x => x.Cluster_Id == 1))
-    {
-        <div class="row" style="height:30px; background-color:lightgreen; border:1px solid white">
-            <div class="col-lg-4">
-                @county.Name
-            </div>
-            <div class="col-lg-4">
-                @county.Total_Crimes
-            </div>
-            <div class="col-lg-4">
-                @county.Violent_Crimes
-            </div>
-        </div>
-    }
-    <h4 class="title" style="text-align:left; margin-top:3%">Cluster 2: <b>Low Criminality</b></h4>
-    <div class="row" style="font-size:17px; background-color:lightgray; border:1px solid white">
-        <div class="col-lg-4">
-            <b>County name</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Crimes per 1000 residents</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Violent crimes per 1000 residents</b>
-        </div>
-    </div>
-    @foreach (var county in Model.Where(x => x.Cluster_Id == 0))
-    {
-        <div class="row" style="height:30px; background-color:lightblue; border:1px solid white">
-            <div class="col-lg-4">
-                @county.Name
-            </div>
-            <div class="col-lg-4">
-                @county.Total_Crimes
-            </div>
-            <div class="col-lg-4">
-                @county.Violent_Crimes
-            </div>
-        </div>
-    }
-    <h4 class="title" style="text-align:left; margin-top:3%">Cluster 3: <b>Normal Criminality</b></h4>
-    <div class="row" style="font-size:17px; background-color:lightgray; border:1px solid white">
-        <div class="col-lg-4">
-            <b>County name</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Crimes per 1000 residents</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Violent crimes per 1000 residents</b>
-        </div>
-    </div>
-    @foreach (var county in Model.Where(x => x.Cluster_Id == 2))
-    {
-        <div class="row" style="height:30px; background-color:yellow; border:1px solid white">
-            <div class="col-lg-4">
-                @county.Name
-            </div>
-            <div class="col-lg-4">
-                @county.Total_Crimes
-            </div>
-            <div class="col-lg-4">
-                @county.Violent_Crimes
-            </div>
-        </div>
-    }
-    <h4 class="title" style="text-align:left; margin-top:3%">Cluster 4: <b>High Criminality</b></h4>
-    <div class="row" style="font-size:17px; background-color:lightgray; border:1px solid white">
-        <div class="col-lg-4">
-            <b>County name</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Crimes per 1000 residents</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Violent crimes per 1000 residents</b>
-        </div>
-    </div>
-    @foreach (var county in Model.Where(x => x.Cluster_Id == 3))
-    {
-        <div class="row" style="height:30px; background-color:orange; border:1px solid white">
-            <div class="col-lg-4">
-                @county.Name
-            </div>
-            <div class="col-lg-4">
-                @county.Total_Crimes
-            </div>
-            <div class="col-lg-4">
-                @county.Violent_Crimes
-            </div>
-        </div>
-    }
-    <h4 class="title" style="text-align:left; margin-top:3%">Cluster 5: <b>Very High Criminality</b></h4>
-    <div class="row" style="font-size:17px; background-color:lightgray; border:1px solid white">
-        <div class="col-lg-4">
-            <b>County name</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Crimes per 1000 residents</b>
-        </div>
-        <div class="col-lg-4">
-            <b>Violent crimes per 1000 residents</b>
-        </div>
-    </div>
-    @foreach (var county in Model.Where(x => x.Cluster_Id == 4))
-    {
-        <div class="row" style="height:30px; background-color:lightcoral; border:1px solid white">
-            <div class="col-lg-4">
-                @county.Name
-            </div>
-            <div class="col-lg-4">
-                @county.Total_Crimes
-            </div>
-            <div class="col-lg-4">
-                @county.Violent_Crimes
-            </div>
-        </div>
-    }
+<h2 class="title">Counties by Crime Rate</h2>
+
+<div class="container centeredElement">
+    <br />
+    <table id="counties_cluster_table" class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.LabelFor(x => x.First().Name)
+                </th>
+                <th>
+                    @Html.LabelFor(x => x.First().CrimesPer1000)
+                </th>
+                <th>
+                    @Html.LabelFor(x => x.First().CrimeRate)
+                </th>
+            </tr>
+        </thead>
+        @foreach (var county in Model.OrderBy(x => x.CrimeRate.Rank))
+        {
+            <tr>
+                <td>                    
+                    @Html.DisplayFor(modelItem => county.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => county.CrimesPer1000)
+                </td>                
+                <td>
+                    @Html.DisplayFor(modelItem => county.CrimeRate.Rank) 
+                    @Html.DisplayFor(modelItem => county.CrimeRate.Name) 
+                </td>
+            </tr>
+        }
+    </table>
 </div>
 
-<style>
-    body {
-        color: black;
-        background: #f4f4f4;
-        font-size: 15px;
-    }
-</style>
+
+<script type="text/javascript">
+    window.onload = function () {
+        colorRows();
+    };
+</script>

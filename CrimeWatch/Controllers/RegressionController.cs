@@ -1,82 +1,53 @@
 ﻿using CrimeWatch.Models;
-using Accord.Statistics.Models.Regression.Linear;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
-using System;
-using System.Globalization;
+using CrimeWatch.Services;
 
 namespace CrimeWatch.Controllers
 {
+    [Authorize]
     public class RegressionController : Controller
     {
-        private crimewatchAzureModels db = new crimewatchAzureModels();
-        public OrdinaryLeastSquares ols = new OrdinaryLeastSquares();
-        public MultipleLinearRegression regression = new MultipleLinearRegression();
+        private readonly CrimeWatchModel _db = new CrimeWatchModel();
+        private readonly CommonFunctions _cf = new CommonFunctions();
+        private readonly RegressionService _regression = new RegressionService();
+        private readonly KMeansService _kMEans= new KMeansService();
 
-        public ActionResult Parameters() {
-            ViewBag.datesDD = ReturnDatesDD();
-            ViewBag.countiesDD = ReturnCountiesDD();
-            return View();
-        }
+        public Tests t = new Tests();
 
-        public ActionResult PredictCrimes(string countyName, string dateStr) {
-            // Compute the output for a given input:
-            County county = db.Counties.First(x=>x.Name.Equals(countyName));
-            trainRegression(county);
-            DateTime date = DateTime.ParseExact(dateStr, "MMMM yyyy", CultureInfo.InvariantCulture);
-            double[] input = new double[]{ date.Month, date.Year };
-            double y = regression.Transform(input); // The answer will be 28.088
-            // We can also extract the slope and the intercept term
-            // for the line. Those will be -0.26 and 50.5, respectively.
-            double[] s = regression.Weights;     // -0.264706
-            double c = regression.Intercept; // 50.588235
-            return RedirectToAction("MyPortal","Home");
-        }
 
-        public void trainRegression(County county) {
-            List<Crimes_pm> records = county.Crimes_pm.ToList();
-            int recordsCount = records.Count();
-            // Declare some sample test data.
-            double[][] inputs = new double[recordsCount][];
-            double[] outputs = new double[recordsCount];
-            for (int i = 0; i < recordsCount; i++)
-            {
-                Crimes_pm record = records.ElementAt(i);
-                double year = Convert.ToDouble(record.Month.Year);
-                double month = Convert.ToDouble(record.Month.Month);
-                double[] arr = new double[] { month, year};
-                inputs[i] = arr;
-                outputs[i] = record.All_crimes;
-            }
-            // Use Ordinary Least Squares to learn the regression
-            ols = new OrdinaryLeastSquares();
-            // Use OLS to learn the simple linear regression
-            regression = ols.Learn(inputs, outputs);            
-        }
-
-        public List<string> ReturnDatesDD()
+        /// <summary>
+        /// Receives a county name by the user, trains an svr model 
+        /// and returns 12 predicted record for the next 12 months
+        /// </summary>
+        /// <param name="countyName">The requested county</param>
+        /// <returns></returns>
+        public ActionResult Prediction(string countyName)
         {
-            List<string> datesDD = new List<string>();
-            Crimes_pm lastRecord = db.Crimes_pm.OrderBy(x => x.Month).ToList().Last();
-            DateTime firstDate = lastRecord.Month.AddMonths(1);
-            DateTime lastDate = firstDate.AddMonths(+11);
-            for (var date = firstDate; date.Date <= lastDate; date = date.AddMonths(1))
-                datesDD.Add(date.ToString("MMMM yyyy"));
-
-            return datesDD;
-        }
-
-        public List<string> ReturnCountiesDD()
-        {
-            List<string> countyNames = new List<string>();
-            foreach (County county in db.Counties)
+            ViewBag.datesDD = _cf.ReturnDatesDd(); ViewBag.countiesDD = _cf.ReturnCountiesDd();
+            //Sets the properties of the graph in Prediction View
+            if (string.IsNullOrEmpty(countyName))
             {
-                countyNames.Add(county.Name);
+                var crimes = new double[1][]; crimes[0] = new double[] { 0, 0 , 0};
+                ViewBag.crimes = crimes;
+                ViewBag.title = "Forecast Crimes";
+                ViewBag.prediction = "";
+                ViewBag.countyName = "";
+                return View();
             }
-            return countyNames;
-        }
 
+            ViewBag.countyName = countyName;
+            ViewBag.title = countyName;
+            var county = _db.Counties.First(x => x.Name.Equals(countyName));
+            //Finds the 12 most recent records of the county
+            List<Record> pastRecords = county.Records.OrderByDescending(x => x.Date).Take(12).ToList();
+            //Retrieves the 12 next predicted records
+            List<Record> predictedRecords = _regression.ReturnPredictedRecords(county, 12);
+            //Passes both record lists to the view
+            ViewBag.crimes = _regression.ReturnScatterPlotData(county.Records.OrderBy(x=>x.Date).ToList(),predictedRecords);            
+            return View(pastRecords.Concat(predictedRecords).ToList());
+        }
     }
 }
 

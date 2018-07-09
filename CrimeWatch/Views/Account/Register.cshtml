@@ -2,99 +2,51 @@
 @{
     ViewBag.Title = "Register";
     Layout = "~/Views/Shared/_LayoutPortal.cshtml";
-
 }
 
-<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
-<br /><br /><br />
-
-<div class="row">
-    <div style="text-align:center">
-        <h1 style="font-family: 'Allerta Stencil', sans-serif;">Register</h1>
-    </div>
+<div class="container" id="registerCont">
+    <h1 class="title centeredText">Register</h1>
     <br />
     <div class="container customCont">
         <br />
         @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { role = "form" }))
-    {
-        @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            <p>Fullname</p>
-            @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", @placeholder = "Type your fullname here." })
-            @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
-        </div>
-        <div class="form-group">
-            <p>Phone Number</p>
-            @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", @placeholder = "Type your phone number here." })
-            @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
-        </div>
-        <div class="form-group">
-            <p>Email</p>
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Type your email here." })
-            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
-        </div>
-        <div class="form-group">
-            <p>Password</p>
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Type your password here." })
-            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-        </div>
-        <div class="form-group">
-            <p>Confirm Password</p>
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm your password." })
-            @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
-        </div>
-        <br />
-        <button class="btn btn-success btn-block" type="submit">Submit</button>
-}
-        <div style="font-size:14px; padding-bottom:10px;">Already registered? <a href="#" onclick="location.href='@Url.Action("Login", "Account")'">Log In</a></div>
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <p>Email</p>
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", @placeholder = "Type your email here." })
+                        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <p>Password</p>
+                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = "Type your password here." })
+                        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <p>Confirm Password</p>
+                        @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm your password." })
+                        @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="form-group">
+                        <p>Fullname</p>
+                        @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", @placeholder = "Type your fullname here." })
+                        @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group">
+                        <p>Phone Number</p>
+                        @Html.TextBoxFor(m => m.PhoneNumber, new { @class = "form-control", @placeholder = "Type your phone number here." })
+                        @Html.ValidationMessageFor(m => m.PhoneNumber, "", new { @class = "text-danger" })
+                    </div>
+                </div>                     
+            </div>
+            <br />
+            <button id="registerBtn" class="btn btn-success btn-block" type="submit">Submit</button>
+        }
+        <div id="loginLink">Already registered? <a href="#" onclick="location.href='@Url.Action("Login", "Account")'">Log In</a></div>
     </div>
 </div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
-<style>
-
-    .form-control {
-        height: 40px;
-        width: 350px;
-    }
-
-        .form-control:focus {
-            border-color: #d47e20;
-            outline: none;
-            box-shadow: inset 0 1px 2px rgba(212,126,32,0.7),0 0 0 0.2em rgba(212,126,32,0.4);
-        }
-
-    .col-centered {
-        float: none;
-        margin: 0 auto;
-    }
-
-    .customCont {
-        height: auto;
-        border: 1px solid #d8dee2;
-        border-radius: 5px;
-        background-color: white;
-        width: 310px;
-    }
-
-    body {
-        color: black;
-        background: #f4f4f4;
-        font-size: 15px;
-    }
-
-    p {
-        font-weight: 400;
-    }
-
-    .col-centered {
-        float: none;
-        margin: 0 auto;
-        width: 500px;
-        color: white;
-        background: black;
-    }
-</style>

@@ -1,38 +1,20 @@
 ﻿@using CrimeWatch.Models
-@model List<Crimes_pm>
+@model List<Record>
 @{
     ViewBag.Title = "Graphs";
-    Layout = "";
+    Layout = "~/Views/Shared/_LayoutFullscreen.cshtml";
 }
-<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
-<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-<script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
-@Styles.Render("~/Content/css")
-@Scripts.Render("~/bundles/modernizr")
 
-<button style="float:left; margin-left:3%" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
+<button class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
+<br /><br />
 
-<div style="text-align:center">
-    <h2 class="title" style="display:inline;">@ViewBag.countyName</h2>
-    <br /><br /><br />
-    <p style="display:inline"><b>Population: </b></p><p style="display:inline">@ViewBag.population</p>
-    &ensp;
-    <p style="display:inline"><b>Policed by:</b></p>
-    <p style="display:inline">@ViewBag.police_department</p>
-    &ensp;
-    <p style="display:inline"><b>Period:</b></p>
-    <p style="display:inline">@ViewBag.firstDate - @ViewBag.lastDate</p>
-    <br /><br />
-</div>
-<hr />
-<br />
-<div class="container customCont" style="width:17%; float:left; position:fixed; margin-left:1%">
-    <form action="/Graphs/Graphs" method="post">
+<div class="container" id="graphParametersCont">
+    <form action="/Graphs/Graphs" method="post"  onsubmit="return validateForm()">
         <br />
         <div class="form-group">
             <label>Select County</label>
-            <select name="countyName" class="form-control">
+            <select name="countyName" id="countyName" class="form-control">
+                <option value="Please Select">Please Select</option>
                 @foreach (var opt in ViewBag.countiesDD)
                 {
                     <option value="@opt">@opt</option>
@@ -41,7 +23,8 @@
         </div>
         <div class="form-group">
             <label>Select Period</label>
-            <select name="period" class="form-control">
+            <select name="periodId" id="periodId" class="form-control">
+                <option value="Please Select">Please Select</option>
                 <option value="1">@ViewBag.datesDD[0]</option>
                 <option value="2">@ViewBag.datesDD[1]</option>
                 <option value="3">@ViewBag.datesDD[2]</option>
@@ -53,36 +36,122 @@
     </form>
 </div>
 
-<div class="container" style="width:80%; margin-left:18%">
-    <div class="container customCont" style="overflow:hidden">
-        <h3 class="graphHeader" style="overflow:hidden">Crimes by category</h3>
+<div class="container customCont">
+    <div class="centeredText">
+        <h2 class="title graphParameters">@ViewBag.countyName</h2>
+        <br />
+        <p class="graphParameters"><b>Population:</b>@ViewBag.population &ensp;&ensp;&ensp; <b>Policed by:</b> @ViewBag.police_department &ensp;&ensp;&ensp; <b>Period:</b> @ViewBag.firstDate - @ViewBag.lastDate</p>
+    </div>
+    <hr />    <br />    <br />
+
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by category</h3>
         <div id="pie_chart"></div>
     </div>
-    <br /><br />
-    <div class="container customCont">
-        <h3 class="graphHeader">Crimes by month</h3>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Anti-social behaviour</h3>
         <div id="area_chart"></div>
     </div>
-
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Bicycle theft</h3>
+        <div id="area_chart2"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Burglary</h3>
+        <div id="area_chart3"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Criminal damage and arson</h3>
+        <div id="area_chart4"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Drugs</h3>
+        <div id="area_chart5"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Other crime</h3>
+        <div id="area_chart6"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Other theft</h3>
+        <div id="area_chart7"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Possession of weapons</h3>
+        <div id="area_chart8"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Public order</h3>
+        <div id="area_chart9"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Robbery</h3>
+        <div id="area_chart10"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Shoplifting</h3>
+        <div id="area_chart11"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Theft from the person</h3>
+        <div id="area_chart12"></div>
+    </div>
+    <div class="graphCont">
+        <h3 class="graphHeader">Crimes by month: Violence and sexual offences</h3>
+        <div id="area_chart13"></div>
+    </div>
 </div>
-<br />
 
 <script type="text/javascript">
+    function validateForm() {
+        var period = document.getElementById("periodId").value;
+        var countyName = document.getElementById("countyName").value;
+        if (period == "Please Select" || countyName == "Please Select") {
+            window.alert("Both a county and a period must be provided.");
+            return false;
+        }
+    }
+
     google.charts.load('current', { 'packages': ['corechart','bar','table'] });
     google.charts.setOnLoadCallback(generateCharts);
     function generateCharts() {
+        var dateRange = 'Period: @ViewBag.firstDate - @ViewBag.lastDate'
+
+        //------------------------------------------------------------------PIE CHART----------------------------------//
+        var pieChartData = new google.visualization.DataTable();
+        pieChartData.addColumn('string', 'Crime Categories');
+        pieChartData.addColumn('number', 'Percentages');
+        pieChartData.addRow(['Anti social behaviour', @Model.Sum(y=>y.AntiSocialBehaviour) ]);
+        pieChartData.addRow(['Bicycle theft', @Model.Sum(y=>y.BicycleTheft) ]);
+        pieChartData.addRow(['Burglary', @Model.Sum(y=>y.Burglary) ]);
+        pieChartData.addRow(['Criminal damage and arson', @Model.Sum(y=>y.CriminalDamageAndArson) ]);
+        pieChartData.addRow(['Drugs', @Model.Sum(y=>y.Drugs) ]);
+        pieChartData.addRow(['Other crime', @Model.Sum(y=>y.OtherCrime) ]);
+        pieChartData.addRow(['Other theft', @Model.Sum(y=>y.OtherTheft) ]);
+        pieChartData.addRow(['Possession of weapons', @Model.Sum(y=>y.PossessionOfWeapons) ]);
+        pieChartData.addRow(['Public order', @Model.Sum(y=>y.PublicOrder) ]);
+        pieChartData.addRow(['Robbery', @Model.Sum(y=>y.Robbery) ]);
+        pieChartData.addRow(['Shoplifting', @Model.Sum(y=>y.Shoplifting) ]);
+        pieChartData.addRow(['Theft from the person', @Model.Sum(y=>y.TheftFromThePerson) ]);
+        pieChartData.addRow(['Vehicle crime', @Model.Sum(y=>y.VehicleCrime) ]);
+        pieChartData.addRow(['Violence and sexual offences', @Model.Sum(y=>y.ViolenceAndSexualOffences) ]);
+
+        var pieChartOptions = {
+            'height': 400
+        };
+        var pieChart = new google.visualization.PieChart(document.getElementById('pie_chart'));
+        pieChart.draw(pieChartData, pieChartOptions);
+        //---------------------------------------------------------------------------------------------------------------//
         //------------------------------------------------------------------AREA CHART----------------------------------//
-        var area_chart_data = new google.visualization.DataTable();
-        area_chart_data.addColumn('string', 'Months');
-        area_chart_data.addColumn('number', 'Crimes');
+        var areaChartData = new google.visualization.DataTable();
+        areaChartData.addColumn('string', 'Months');
+        areaChartData.addColumn('number', 'Crimes');
         @foreach(var item in Model) {
-            @:area_chart_data.addRow(['@item.Month.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Month.Month == item.Month.Month).Sum(v=>v.All_crimes)]);
+            @:areaChartData.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.AllCrimes)]);
 
         }
-        var dateRange = 'Period: @ViewBag.firstDate - @ViewBag.lastDate'
-        var area_chart_options = {
-            title: dateRange,
-            'width': 900,
+        var areaChartOptions = {
+            title: dateRange,            
             'height': 480,
             hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
             vAxis: {
@@ -91,61 +160,283 @@
                     
                 } }
         };
-        var area_chart = new google.visualization.AreaChart(document.getElementById('area_chart'));
-        area_chart.draw(area_chart_data, area_chart_options);
+        var areaChart = new google.visualization.AreaChart(document.getElementById('area_chart'));
+        areaChart.draw(areaChartData, areaChartOptions);
         //---------------------------------------------------------------------------------------------------------------//
 
-        //------------------------------------------------------------------PIE CHART----------------------------------//
-        var pie_chart_data = new google.visualization.DataTable();
-        pie_chart_data.addColumn('string', 'Crime Categories');
-        pie_chart_data.addColumn('number', 'Percentages');
-        pie_chart_data.addRow(['Anti social behaviour', @Model.Sum(y=>y.Anti_social_behaviour) ]);
-        pie_chart_data.addRow(['Bicycle theft', @Model.Sum(y=>y.Bicycle_theft) ]);
-        pie_chart_data.addRow(['Burglary', @Model.Sum(y=>y.Burglary) ]);
-        pie_chart_data.addRow(['Criminal damage and arson', @Model.Sum(y=>y.Criminal_damage_and_arson) ]);
-        pie_chart_data.addRow(['Drugs', @Model.Sum(y=>y.Drugs) ]);
-        pie_chart_data.addRow(['Other crime', @Model.Sum(y=>y.Other_crime) ]);
-        pie_chart_data.addRow(['Other theft', @Model.Sum(y=>y.Other_theft) ]);
-        pie_chart_data.addRow(['Possession of weapons', @Model.Sum(y=>y.Possession_of_weapons) ]);
-        pie_chart_data.addRow(['Public order', @Model.Sum(y=>y.Public_order) ]);
-        pie_chart_data.addRow(['Robbery', @Model.Sum(y=>y.Robbery) ]);
-        pie_chart_data.addRow(['Shoplifting', @Model.Sum(y=>y.Shoplifting) ]);
-        pie_chart_data.addRow(['Theft from the person', @Model.Sum(y=>y.Theft_from_the_person) ]);
-        pie_chart_data.addRow(['Vehicle crime', @Model.Sum(y=>y.Vehicle_crime) ]);
-        pie_chart_data.addRow(['Violence and sexual offences', @Model.Sum(y=>y.Violence_and_sexual_offences) ]);
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData2 = new google.visualization.DataTable();
+        areaChartData2.addColumn('string', 'Months');
+        areaChartData2.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData2.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.AntiSocialBehaviour)]);
 
-        var pie_chart_options = {
-            'width': 1000,
-            'height': 400
+        }
+        var areaChartOptions2 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'All crimes',
+                viewWindow: {
+                    
+                } }
         };
-        var pie_chart = new google.visualization.PieChart(document.getElementById('pie_chart'));
-        pie_chart.draw(pie_chart_data, pie_chart_options);
+        var areaChart2 = new google.visualization.AreaChart(document.getElementById('area_chart2'));
+        areaChart2.draw(areaChartData2, areaChartOptions2);
         //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData3 = new google.visualization.DataTable();
+        areaChartData3.addColumn('string', 'Months');
+        areaChartData3.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData3.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.CriminalDamageAndArson)]);
+
+        }
+        var areaChartOptions3 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Criminal damage and arson',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart3 = new google.visualization.AreaChart(document.getElementById('area_chart3'));
+        areaChart3.draw(areaChartData3, areaChartOptions3);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData4 = new google.visualization.DataTable();
+        areaChartData4.addColumn('string', 'Months');
+        areaChartData4.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData4.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.Drugs)]);
+
+        }
+        var areaChartOptions4 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Drugs',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart4 = new google.visualization.AreaChart(document.getElementById('area_chart4'));
+        areaChart4.draw(areaChartData4, areaChartOptions4);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData5 = new google.visualization.DataTable();
+        areaChartData5.addColumn('string', 'Months');
+        areaChartData5.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData5.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.OtherCrime)]);
+
+        }
+        var areaChartOptions5 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart5 = new google.visualization.AreaChart(document.getElementById('area_chart5'));
+        areaChart5.draw(areaChartData5, areaChartOptions5);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData6 = new google.visualization.DataTable();
+        areaChartData6.addColumn('string', 'Months');
+        areaChartData6.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData6.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.OtherTheft)]);
+
+        }
+        var areaChartOptions6 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart6 = new google.visualization.AreaChart(document.getElementById('area_chart6'));
+        areaChart6.draw(areaChartData6, areaChartOptions6);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData7 = new google.visualization.DataTable();
+        areaChartData7.addColumn('string', 'Months');
+        areaChartData7.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData7.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.PossessionOfWeapons)]);
+
+        }
+        var areaChartOptions7 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart7 = new google.visualization.AreaChart(document.getElementById('area_chart7'));
+        areaChart7.draw(areaChartData7, areaChartOptions7);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData8 = new google.visualization.DataTable();
+        areaChartData8.addColumn('string', 'Months');
+        areaChartData8.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData8.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.PublicOrder)]);
+
+        }
+        var areaChartOptions8 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart8 = new google.visualization.AreaChart(document.getElementById('area_chart8'));
+        areaChart8.draw(areaChartData8, areaChartOptions8);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData9 = new google.visualization.DataTable();
+        areaChartData9.addColumn('string', 'Months');
+        areaChartData9.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData9.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.Robbery)]);
+
+        }
+        var areaChartOptions9 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart9 = new google.visualization.AreaChart(document.getElementById('area_chart9'));
+        areaChart9.draw(areaChartData9, areaChartOptions9);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData10 = new google.visualization.DataTable();
+        areaChartData10.addColumn('string', 'Months');
+        areaChartData10.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData10.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.Shoplifting)]);
+
+        }
+        var areaChartOptions10 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart10 = new google.visualization.AreaChart(document.getElementById('area_chart10'));
+        areaChart10.draw(areaChartData10, areaChartOptions10);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData11 = new google.visualization.DataTable();
+        areaChartData11.addColumn('string', 'Months');
+        areaChartData11.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData11.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.TheftFromThePerson)]);
+
+        }
+        var areaChartOptions11 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart11 = new google.visualization.AreaChart(document.getElementById('area_chart11'));
+        areaChart11.draw(areaChartData11, areaChartOptions11);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData12 = new google.visualization.DataTable();
+        areaChartData12.addColumn('string', 'Months');
+        areaChartData12.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData12.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.VehicleCrime)]);
+
+        }
+        var areaChartOptions12 = {
+            title: dateRange,            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart12 = new google.visualization.AreaChart(document.getElementById('area_chart12'));
+        areaChart12.draw(areaChartData12, areaChartOptions12);
+        //---------------------------------------------------------------------------------------------------------------//
+
+        //------------------------------------------------------------------AREA CHART----------------------------------//
+        var areaChartData13 = new google.visualization.DataTable();
+        areaChartData13.addColumn('string', 'Months');
+        areaChartData13.addColumn('number', 'Crimes');
+        @foreach(var item in Model) {
+            @:areaChartData13.addRow(['@item.Date.ToString("MMM yyyy")', @Model.Where(x=>x.Date.Month == item.Date.Month).Sum(v=>v.ViolenceAndSexualOffences)]);
+
+        }
+        var areaChartOptions13 = {
+            title: dateRange,
+            
+            'height': 480,
+            hAxis: { title: 'Months', titleTextStyle: { color: '#333' } },
+            vAxis: {
+                titles: 'Crimes',
+                viewWindow: {
+                    
+                } }
+        };
+        var areaChart13 = new google.visualization.AreaChart(document.getElementById('area_chart13'));
+        areaChart13.draw(areaChartData13, areaChartOptions13);
+        //---------------------------------------------------------------------------------------------------------------//        
     }
 </script>
-
-<style>
-
-
-    .graphHeader {
-        margin-left: 15%;
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
-    }
-
-    li {
-        font-size: 17px;
-    }
-
-    body {
-        color: black;
-        background: #f4f4f4;
-        font-size: 15px;
-    }
-
-    .ddMenu {
-        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
-        border: 1px solid rgb(153, 153, 153);
-        background: rgb(255, 255, 255) none repeat scroll 0% 0%;
-        padding: 5px 0px;
-    }
-</style>

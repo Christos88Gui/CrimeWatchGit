@@ -1,39 +1,42 @@
 ﻿using CrimeWatch.Models;
-using System.Linq;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
-using System.Collections.Generic;
-using System.Globalization;
-using PoliceUk;
 using System;
+using System.Web;
+using System.Globalization;
+using System.Web.Security;
 
 namespace CrimeWatch.Controllers
 {
     public class HomeController : Controller
     {
-        private crimewatchAzureModels db = new crimewatchAzureModels();
+        private readonly CrimeWatchModel _db = new CrimeWatchModel();
 
+
+        /// <summary>
+        /// Redirects to the home page.
+        /// </summary>
+        /// <returns></returns>
         public ActionResult Index()
         {
-            return View(db.Police_Departments.ToList());
-        }
-
-        public ActionResult About()
-        {
-            ViewBag.records = db.Crimes.Count();
             return View();
         }
 
-        public ActionResult Contact()
+        public void AddUserToRole()
         {
-            ViewBag.Message = "Your contact page.";
+            Roles.CreateRole("Administrator");   
+            
+            Roles.AddUserToRole("admin@admin.com", "Administrator");
 
-            return View();
         }
 
+        /// <summary>
+        /// Redirects to user portal View (Dashboard).
+        /// </summary>
+        /// <returns>The Id of logged in user</returns>
         public ActionResult MyPortal()
         {
-            return View(db.AspNetUsers.Find(User.Identity.GetUserId()));
+            return View(_db.AspNetUsers.Find(User.Identity.GetUserId()));
         }
     }
 }

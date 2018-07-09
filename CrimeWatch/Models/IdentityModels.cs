@@ -1,5 +1,4 @@
-﻿using System.Data.Entity;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
@@ -23,7 +22,7 @@ namespace CrimeWatch.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("data source=crimewatch.database.windows.net;initial catalog=crimewatchDB;user id=crimewatchadminlogin;password=cr1mew@tch@dm1nl0g1n;multipleactiveresultsets=True;application name=EntityFramework")
+            : base(@"data source=(LocalDB)\MSSQLLocalDB;attachdbfilename=|DataDirectory|\CrimeWatchDB.mdf;integrated security=True;MultipleActiveResultSets=True;App=EntityFramework")
         {
         }
 

@@ -108,16 +108,16 @@ namespace CrimeWatch.Models
 
     public class MapParametersViewModel {
         [Required]
-        [Display(Name = "Police Department *")]
-        public string Police_Department { get; set; }
+        [Display(Name = "Address / Postcode")]
+        public string Address { get; set; }
 
         [Required]
-        [Display(Name = "Time Period *")]
-        public string Date { get; set; }
+        [Display(Name = "Month")]
+        public string Month { get; set; }
 
         [Required]
-        [Display(Name = "Crime Type")]
-        public string Type { get; set; }
+        [Display(Name = "Crime Category")]
+        public string Category { get; set; }
 
     }
 }

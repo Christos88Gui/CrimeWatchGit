@@ -1,0 +1,41 @@
+﻿@model CrimeWatch.Models.ChangeContactDetailsViewModel
+
+@{
+    ViewBag.Title = "Change Contact Details";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
+<button class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> User Portal</button>
+
+<div id="changeContactDetailsCont">
+    <br />
+    <div class="container customCont">
+        <br />
+        @using (Html.BeginForm("ChangeContactDetails", "Account", FormMethod.Post, new { role = "form", name = "my-form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h3 class="title">Change Contact Details</h3>
+            <hr />
+            <div class="row">
+                @Html.ValidationSummary("", new { @class = "text-danger" })
+                <div class="container">
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.NewFullName, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.NewFullName, new { Value = ViewBag.currentName, @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.NewPhoneNumber, new { @class = "control-label" })
+                        @Html.TextBoxFor(m => m.NewPhoneNumber, new { Value = ViewBag.currentPhone, @class = "form-control" })
+                    </div>
+                </div>
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="submit" class="btn btn-success" id="sbmt">Change Contact details</button>
+            </div>
+        }
+    </div>
+</div>

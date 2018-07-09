@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="852e56f295e345189df0492c0c42a0f2" Name="Diagram1" ZoomLevel="52">
+        <EntityTypeShape EntityType="CrimeWatchDBModel.AspNetRole" Width="1.5" PointX="0.875" PointY="11.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.AspNetUser" Width="1.5" PointX="3.125" PointY="10.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.County" Width="2.125" PointX="10.875" PointY="10.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.Record" Width="2.125" PointX="14" PointY="11.125" IsExpanded="true" />
+        <AssociationConnector Association="CrimeWatchDBModel.Records_to_Counties" ManuallyRouted="false" />
+        <AssociationConnector Association="CrimeWatchDBModel.AspNetUserRoles" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.AspNetUserClaim" Width="1.5" PointX="5.375" PointY="10.625" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.AspNetUserLogin" Width="1.5" PointX="5.375" PointY="13.375" />
+        <AssociationConnector Association="CrimeWatchDBModel.FK_dbo_AspNetUserClaims_dbo_AspNetUsers_UserId" />
+        <AssociationConnector Association="CrimeWatchDBModel.FK_dbo_AspNetUserLogins_dbo_AspNetUsers_UserId" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.PoliceDepartment" Width="1.5" PointX="8.625" PointY="14.375" />
+        <AssociationConnector Association="CrimeWatchDBModel.FK_Counties_PoliceDepartments" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.CrimeRate" Width="1.5" PointX="11.125" PointY="14.875" />
+        <AssociationConnector Association="CrimeWatchDBModel.FK_Counties_CrimeRates" />
+        <AssociationConnector Association="CrimeWatchDBModel.Records_to_CrimeRates" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.CountyRank" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="CrimeWatchDBModel.RecordRank" Width="1.5" PointX="2.75" PointY="0.75" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

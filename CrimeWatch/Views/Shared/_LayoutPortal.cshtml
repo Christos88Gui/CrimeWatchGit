@@ -6,6 +6,10 @@
     @Scripts.Render("~/bundles/modernizr")
     <link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
 </head>
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
 
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -22,10 +26,23 @@
     <div class="container body-content">
         @RenderBody()
     </div>
-
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/mapView.js")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
 </body>
 
+<style>
+    body {
+        color: black;
+        background-image: url('../../Content/Images/map.PNG');
+        font-size: 15px;
+        margin-top: 5%
+    }
 
+    .form-control:focus {
+        border-color: #d47e20;
+        outline: none;
+        box-shadow: inset 0 1px 2px rgba(212,126,32,0.7),0 0 0 0.2em rgba(212,126,32,0.4);
+    }
+</style>

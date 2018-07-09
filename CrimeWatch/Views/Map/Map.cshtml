@@ -1,30 +1,78 @@
 ﻿@{
-    Layout = "";
-}
-@{
     ViewBag.Title = "Map page";
+    Layout = "~/Views/Shared/_LayoutFullscreen.cshtml";
 }
-@Styles.Render("~/Content/css")
-@Scripts.Render("~/bundles/modernizr")
-@using CrimeWatch.Models
+@using PoliceUk.Entities.StreetLevel;
 @model List<Crime>
 
-<style>
-    body {
-        background: black;
-        height: 100%;
-    }
-</style>
+<button id="backBtn" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> <span class="glyphicon glyphicon-th"></span> User Portal</button>
+<br /><br />
+
+<div id="loading_div">
+    <h1 class="title centeredText" style="color:white">Loading Map...</h1>
+    <br /><br />
+    <img src="~/Content/Images/progress_ring.gif" id="progress_ring" />
+</div>
+
+<div id="map"></div>
+
+<div class="container customCont" id="filterContainer">
+    <form action="/Map/Map" method="post">
+        <h3 class="title centeredText">Search</h3>
+        <br />
+        <div class="form-group">
+            <p><b>1.</b> Postcode / Address</p>
+            <input id="addressSearch2" name="address" type="text" class="form-control" placeholder="@ViewBag.address" value="@ViewBag.address">
+        </div>
+        <div class="form-group">
+            <p>2. Date</p>
+            <select class="form-control" name="date"> 
+                 <option style="color:transparent">
+                        @ViewBag.date
+                 </option>
+                 @foreach (var date in ViewBag.dateDD) {
+                  <option> 
+                        @date
+                  </option>
+                  }
+            </select>
+        </div>
+        <div class="form-group">
+            <p>3. Crime Categories</p>
+              <select class="form-control centeredElement" name="type">
+                   @if (ViewBag.type != "All Types") {
+                 <option style="color:transparent">
+                        @ViewBag.type
+                    </option>
+                   }                   
+                   @foreach (var type in ViewBag.typeDD) {
+                        <option> 
+                            @type
+                        </option>
+                    }
+            </select>
+        </div>         
+        <input type="submit" class="btn btn-default" value="Submit">
+        <br /><br />
+    </form>
+</div>
+
+
+
+
+
+
+
+
 
 
 <script>
-  
     function initializeMap() {
         var mapPosition = document.getElementById('map');
         var lat = @ViewBag.lat;
         var lng = @ViewBag.lng;
         var initialPosition = { lat: lat, lng: lng};
-        var iconBase = 'https://maps.google.com/mapfiles/';       
+        var iconBase = 'https://maps.google.com/mapfiles/';
         var mapOptions = {
             center: initialPosition,
             zoom: 14,
@@ -66,11 +114,10 @@
                 geocodeAddress(geocoder, map);
             }
         });
-
         addMarkers(map);
     }
 
-    function addMarkers(map) {       
+    function addMarkers(map) {
         var crimes = [[]];
         var infowindow = new google.maps.InfoWindow();
         var marker = [], i;
@@ -78,28 +125,28 @@
         var backBtn = document.getElementById('backBtn');
         var searchField = document.getElementById('addressSearch2');
         var autocomplete = new google.maps.places.Autocomplete(searchField);
-        @foreach(var crime in Model) {        
-            @: crimes.push(["@crime.Latitude", "@crime.Longitude", "@crime.Type", "@crime.Location", "@crime.Outcome"]);
+        @foreach(var crime in Model) {
+            @: crimes.push(["@crime.Location.Latitude", "@crime.Location.Longitude", "@crime.Category", "@crime.Location.Street.Name", "@crime.OutcomeStatus.Category"]);
         }
-        var types = []; 
+        var types = [];
         for (i = 0; i < crimes.length; i++) {
             var count = 0;
-            types.length = 0;            
+            types.length = 0;
             var counter = 0;
             for (var j = 0; j < crimes.length; j++) {
                 if (crimes[j][0] == crimes[i][0] && crimes[j][1] == crimes[i][1]) {
-                    count++;                    
-                }                
-            }     
+                    count++;
+                }
+            }
             var label = String(count);
-            marker[i] = new google.maps.Marker({                
+            marker[i] = new google.maps.Marker({
                 position: new google.maps.LatLng(crimes[i][0], crimes[i][1]),
                 map: map,
                 label:label
             });
             google.maps.event.addListener(marker[i], 'click', (function (marker, i) {
                 return function () {
-                    infowindow.setContent("<br><p><b>Crime Type: </b> " + crimes[i][2] + "</p><p><b>Location:</b> " + crimes[i][3] + "</p><p><b>Outcome:</b> " + crimes[i][4]);
+                    infowindow.setContent("<br><p><b>Category: </b> " + crimes[i][2] + "</p><p><b>Location:</b> " + crimes[i][3] + "</p><p><b>Outcome:</b> " + crimes[i][4]);
                     infowindow.open(map, marker[i]);
                 }
             })(marker, i));
@@ -120,68 +167,16 @@
                 if (status === 'OK') {
                     resultsMap.zoom = 17;
                     resultsMap.setCenter(results[0].geometry.location);
-                   
-                } else {
-                    alert('The location could not be found.');
-                }
+                } 
             });
         }
     }
-
 </script>
-<script src="~/Scripts/markerClustering.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD_rXEE2-a_KrNsOkLH0sxMr96NVZjaiTI&libraries=places&callback=initializeMap"></script>
-<link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
 
-<button id="backBtn" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> <span class="glyphicon glyphicon-th"></span> User Portal</button>
-<br /><br />
 
-<div id="loading_div">
-    <h1 class="title" style="color:white">Loading Map...</h1>
-    <br /><br />
-    <img src="~/Content/Images/progress_ring.gif" id="progress_ring" />
-</div>
-
-<div id="map"></div>
-
-<div class="container customCont" id="filterContainer">
-    <form action="/Map/Map" method="post">
-        <h3 class="title">Search</h3>
-        <br />
-        <div class="form-group">
-            <p><b>1.</b> Postcode / Address</p>
-            <input id="addressSearch2" name="address" type="text" class="form-control" placeholder="@ViewBag.address" value="@ViewBag.address">
-        </div>
-        <div class="form-group">
-            <p>2. Date</p>
-            <select class="form-control" name="date"> 
-                 <option>
-                        @ViewBag.date
-                 </option>
-                 @foreach (var date in ViewBag.dateDD) {
-                    <option> 
-                        @date
-                  </option>
-                  }
-            </select>
-        </div>
-        <div class="form-group">
-            <p>3. Crime Categories</p>
-              <select class="form-control centeredElement" name="type">
-                   @if (ViewBag.type != "All Types") {
-                    <option>
-                        @ViewBag.type
-                    </option>
-                   }                   
-                   @foreach (var type in ViewBag.typeDD) {
-                        <option> 
-                            @type
-                        </option>
-                    }
-            </select>
-        </div>         
-        <input type="submit" class="btn btn-default" value="Submit">
-        <br /><br />
-    </form>
-</div>
-
+<style>
+    body {
+        background: black;
+        height: 100%;
+    }
+</style>

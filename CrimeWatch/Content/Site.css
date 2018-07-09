@@ -5,11 +5,18 @@
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
     color: white;
     background-image: url("Images/map.PNG");
-    /*max-height: none;*/
+}
+
+h1, h2, h3, h4, h5, p {
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
 }
 
 .centeredElement {
-margin:0 auto;
+    margin: 0 auto;
+}
+
+.centeredText {
+    text-align: center
 }
 
 .navbar {
@@ -26,42 +33,24 @@ margin:0 auto;
     width: 110px;
 }
 
-/* Set padding to keep content from hitting the edges */
+.inline {
+display:inline
+}
+
 .body-content {
     padding-left: 15px;
     padding-right: 15px;
 }
 
-/* Override the default bootstrap behavior where horizontal description lists 
-   will truncate terms that are too long to fit in the left column 
-*/
 .dl-horizontal dt {
     white-space: normal;
 }
 
-/* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
 textarea {
     max-width: 280px;
 }
-
-.backBtn {
-    margin-left: 10px;
-    margin-top: 25px;
-    position: relative;
-    width: auto;
-    height: auto;
-    font-size: 17px;
-    background-color: white;
-    color: black;
-    border: 1px solid lightgray;
-}
-
-    .backBtn:hover {
-        background-color: black;
-        color: white;
-    }
 
 .menuBtn {
     background-color: transparent;
@@ -72,32 +61,100 @@ textarea {
     border: none;
 }
 
-    .menuBtn:hover {
-        transition: all 0.3s linear;
-        background-color: #dee3e8;
-        border: none;
-    }
+.menuBtn:hover {
+    transition: all 0.3s linear;
+    background-color: #dee3e8;
+    border: none;
+}
+
+.submitParamsBtn {
+    margin-top: 35px;
+    margin-right: 25px;
+    text-align: left;
+    height: 45px;
+    font-weight: bold;
+}
+
+.parameter {
+    text-align: center;
+    color: black;
+    font-family: Verdana
+}
 
 .customCont {
     height: auto;
-    border: 1px solid lightgray;
+    border: 1px solid #d8dee2;
     background-color: white;
     box-shadow: rgb(136, 136, 136) 3px 3px 10px;
 }
 
+
 #backBtn {
-    color:black;
+    color: black;
     margin-top: 1%;
     margin-left: 1%;
 }
 
 .title {
     font-family: 'Allerta Stencil', sans-serif;
-    text-align:center;
-    color:black;
+    text-align: center;
+    color: black;
 }
 
-/*--------------------------------MAP VIEW--------------------------------*/
+.blackTxt {
+color:black
+}
+
+.blackTxt:hover {
+    color: black
+}
+
+/*--------------------------------Account--------------------------------*/
+
+#registerBtn {
+width:47%
+}
+
+#loginLink {
+    font-size: 14px;
+    padding-bottom: 10px;
+}
+
+#createAccountLink {
+    font-size: 14px;
+    padding-bottom: 10px
+}
+
+#loginCont {
+    margin-top: 4%;
+    width: 310px;
+}
+
+
+#registerCont {
+    width: 50%;
+}
+
+#forgotPassword {
+    font-size: 13px;
+    float: right;
+}
+
+#changeContactDetailsCont {
+    width: 330px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#changeLoginDetailsCont {
+    width: 650px;
+}
+
+
+/*--------------------------------Map Views--------------------------------*/
+#mapParametersCont {
+    margin-top:7%
+}
 
 #loading_div {
     margin-top: 8%;
@@ -108,6 +165,7 @@ textarea {
     width: 150px;
     height: 150px;
 }
+
 #map {
     position: absolute;
     width: 100%;
@@ -121,11 +179,238 @@ textarea {
 
 #filterContainer {
     display: none;
-    margin-left:15px;
+    margin-left: 15px;
     width: 250px;
     font-size: 14px;
 }
 
-#statsParametersCont {
-    width: 310px;
+/*----------------------------------------------Graphs Views------------------------------------*/
+
+.graphHeader {
+    margin-left: 15%;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
+}
+
+#graphParametersCont {
+    width: 200px;
+    position: absolute;
+    top: 120px;
+    right: 110px;
+    background:white;
+    border:1px solid lightgray
+}
+
+#countiesListCont {
+    width: 500px;
+    padding-bottom: 20px;
+}
+
+#countiesList {
+    height: 350px;
+    width: 400px;
+    overflow-y: scroll;
+    margin: 0 auto;
+}
+
+.graphCont {
+    padding-bottom:20px;
+}
+
+/*----------------------------------------------Clustering Views------------------------------------*/
+
+#counties_cluster_table {
+    text-align: center;
+    border: 1px solid black;
+}
+
+#counties_cluster_table thead tr th{
+    text-align: center;
+    font-size: 18px;
+    height: 50px;
+    background: lightgray;
+    text-align:center;
+    border-bottom: 1px solid black;
+}
+
+
+/*----------------------------------------------Stats Views------------------------------------*/
+.largeFont {
+    font-size: 15px;
+}
+
+.header {
+    background-color: lightblue;
+}
+
+/*----------------------------------------------Home Views------------------------------------*/
+
+
+.backToTopBtn {
+    right: 15px;
+    bottom: 40px;
+    color: black;
+    position: fixed;
+    font-size: 20px;
+    width: 50px;
+    height: 40px;
+    border: 1px solid gray;
+}
+
+.layoutBtn {
+    color: white;
+    font-size: 17px;
+    border: none;
+    background: none;
+    position: relative;
+    margin-top: 3%;
+}
+
+    .layoutBtn:hover {
+        color: white;
+        text-shadow: 0px 0px 2px white;
+        outline: none;
+    }
+
+.radioBtn:checked {
+    border: none;
+    outline: none;
+    box-shadow: inset 0 1px 2px rgba(246, 118, 9, 0.80),0 0 0 0.2em rgba(212,126,32,0.4);
+}
+
+
+#footer {
+    position: absolute;
+    height: auto;
+    left: 0;
+    background: #242729;
+    width: 100%;
+    text-align: center;
+    font-size: 16px;
+    color: #fff;
+    margin-top: 130px;
+    border-top: 2px solid lightgray;
+}
+
+#homeMainCont {
+    margin-top: 3%;
+    position: relative;
+    background: black;
+    opacity: 0.9;
+    border: 1px solid lightgray;
+    box-shadow: rgb(136, 136, 136) 3px 3px 10px;
+    border: 1px solid rgb(153, 153, 153);
+}
+
+#img1 {
+    margin-left: 10%;
+}
+
+#logo {
+    margin-left: 5%;
+    height: 200px;
+    width: 360px;
+    text-align: center;
+}
+
+.homepageImage {
+    margin-top: 10%;
+    width: 530px;
+    height: 300px;
+    border: 1px solid gray;
+}
+
+.infoCont {
+    color: black;
+    text-align: justify;
+    position: relative;
+    box-shadow: rgb(136, 136, 136) 3px 3px 10px;
+    border: 1px solid rgb(153, 153, 153);
+    background: rgb(255, 255, 255) none repeat scroll 0% 0%;
+}
+
+#one {
+    margin-top: 100px;
+}
+
+#two {
+    margin-top: 100px;
+}
+
+#three {
+    margin-top: 100px;
+}
+
+.homeDescription {
+    color: white;
+    font-size: 20px;
+    text-align: justify
+}
+
+
+
+/*----------------------------------------------My Portal Views------------------------------------*/
+
+
+#notVerifiedMsg {
+    background: white;
+    border: 2px solid lightcoral;
+}
+
+.portalGlyph {
+    font-size: 55px;
+}
+
+.menuBtn {
+    background-color: transparent;
+    color: black;
+    height: 130px;
+    width: 150px;
+    font-size: 20px;
+    border: none;
+}
+
+.menuBtn:hover {
+    transition: all 0.3s linear;
+    background-color: #dee3e8;
+    border: none;
+    color: black;
+}
+
+.accountSection {
+    border: 2px solid lightgray;
+    background: white;
+    font-size: 15px;
+}
+
+.userDetails {
+    height: 35px;
+}
+
+.list-group-item {
+    border-radius: 0;
+    border: none;
+    outline: none;
+}
+
+.portalLink {
+    height: 39px;
+    color: black
+}
+
+.portalLink:hover {
+    color: black;
+    background: lightgray;
+    border-radius: 0;
+    height: 39px;
+    border: none;
+    outline: none;
+}
+
+.deleteAccountLink:hover {
+    background-color: lightcoral;
+}
+
+#sendConfirmationEmailBtn {
+    margin-left: 50px;
+    color: black
 }

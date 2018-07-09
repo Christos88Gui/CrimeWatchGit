@@ -4,90 +4,7 @@
     <title>@ViewBag.Title</title>
     @Styles.Render("~/Content/css")
     @Scripts.Render("~/bundles/modernizr")
-    <link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">
-
-<style>
-    .layoutBtn {
-        color: white;
-        font-size: 17px;
-        border: none;
-        background: none;
-        position: relative;
-        margin-top: 3%;
-    }
-
-    .layoutBtn:hover {
-        color: white;
-        text-shadow: 0px 0px 2px white;
-        outline: none;
-    }
-
-    .layoutBtn:focus {
-        color: white;
-        outline: none;
-    }
-
-
-    #dropdownContainer {
-        position: absolute;
-        top: 50px;
-        color: black;
-    }
-
-    .dropdown-item {
-        font-size: 15px;
-        color: black;
-        display: block;
-        margin-top: 10px;
-        margin-left: 10px;
-    }
-
-        .dropdown-item:hover {
-            font-size: 15px;
-            color: black;
-            display: block;
-            margin-top: 10px;
-            margin-left: 10px;
-        }
-
-    .layoutLogin {
-        font-weight: 600;
-        color: #fff !important;
-        text-decoration: none;
-        font-size: 16px !important;
-        background-color: transparent;
-    }
-
-    
-    .backToTopBtn {
-        right: 15px;
-        bottom: 40px;
-        color: black;
-        position: fixed;
-        font-size: 20px;
-        width: 50px;
-        height: 40px;
-        border: 1px solid gray;
-    }
-
-    .backToTopBtn:hover {
-        outline: none;
-        color: black;
-        font-size: 20px;
-        border: 1px solid gray;
-        box-shadow: rgb(136, 136, 136) 3px 3px 10px;        
-        background-color:white;
-    }
-
-    .backToTopBtn:focus {
-        outline:none;        
-        color: black;
-        font-size: 20px;
-        border: 1px solid gray;
-        background-color:white;
-        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
-    }
-</style>
+    <link href="https://fonts.googleapis.com/css?family=Allerta+Stencil" rel="stylesheet">  
 </head>
 
 <body>
@@ -101,32 +18,17 @@
                 <div style="float:right">
                     @if (Request.IsAuthenticated)
                     {
-                        @*<a class="layoutBtn btn" onclick="location.href='@Url.Action("Index", "Map")'">Map</a>
-                            <div class="dropdown" style="display:inline">
-                                <button class="btn layoutBtn dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    My Account
-                                </button>
-                                <div id="dropdownContainer" class="dropdown-menu container" aria-labelledby="dropdownMenuButton">
-                                    <a class="dropdown-item" href="#">Change Email</a>
-                                    <a class="dropdown-item" href="#">Change Password</a>
-                                    <a class="dropdown-item" style="padding-bottom:10px;" href="#">My Data</a>
-                                </div>
-                            </div>
-                            using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", style = "display:inline;" }))
-                            {
-
-                                @Html.AntiForgeryToken()
-                                <a class="layoutBtn btn" style="color:lightcoral" href="javascript:document.getElementById('logoutForm').submit()">Log Out</a>
-
-                            }*@
-
-                    <a class="btn layoutLogin" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal <span class="glyphicon glyphicon-th"></span></a>
+                        <a class="btn layoutBtn" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal <span class="glyphicon glyphicon-th"></span></a>
+                        if (User.IsInRole("Administrators"))
+                        {
+                            <a class="btn layoutBtn" onclick="location.href='@Url.Action("AdminPage", "Account")'">Admin Page<span class="glyphicon glyphicon-user"></span></a>
+                        }
                     }
                     else
                     {
-                        <button class="btn layoutLogin" onclick="location.href='@Url.Action("Login", "Account")'"> Login </button>
-                        <p style="display:inline; position:relative;top:4px;">or</p>
-                        <button class="btn layoutLogin" onclick="location.href='@Url.Action("Register", "Account")'"> Register </button>
+                        <button class="btn layoutBtn" onclick="location.href='@Url.Action("Login", "Account")'"> Login </button>
+                        <p class="inline" style="position:relative;top:4px;">or</p>
+                        <button class="btn layoutBtn" onclick="location.href='@Url.Action("Register", "Account")'"> Register </button>
                     }
                 </div>
             </div>
@@ -134,57 +36,18 @@
                 <div style="float:left">
                     <a class="layoutBtn btn" id="What">What is CrimeWatch ?</a>
                     <a class="layoutBtn btn" id="How">How does it work ?</a>
-                    <a class="layoutBtn btn" id="Faq">FAQ</a>
                     <a class="layoutBtn btn" id="Contact">Contact Us</a>
                 </div>
             </div>
         </div>
     </div>
     <button class="btn backToTopBtn btn-default"><span class="glyphicon glyphicon-arrow-up"></span></button>
-
     <div class="container body-content">
         @RenderBody()
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/homepage.js")
     @RenderSection("scripts", required: false)
 </body>
-
-
-<script>
-
-    $("#What").click(function () {
-        $('html, body').animate({
-            scrollTop: $("#one").offset().top - 200
-        }, 1000);
-    });
-
-    $("#How").click(function () {
-        $('html, body').animate({
-            scrollTop: $("#two").offset().top - 200
-        }, 1000);
-    });
-
-    $("#Faq").click(function () {
-        $('html, body').animate({
-            scrollTop: $("#three").offset().top - 200
-        }, 1000);
-    });
-
-    $("#Contact").click(function () {
-        $('html, body').animate({
-            scrollTop: $("#footer").offset().top
-        }, 1000);
-    });
-
-    $(".backToTopBtn").click(function () {
-        $('html, body').animate({
-            scrollTop: 0
-        }, 1000);
-    });
-
-    $('.dropdown-toggle').click(function () {
-        $(this).next('.dropdown-menu').slideToggle(300);
-    });
-</script>

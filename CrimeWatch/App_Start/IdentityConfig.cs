@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
@@ -19,10 +15,10 @@ namespace CrimeWatch
     {
         public Task SendAsync(IdentityMessage message)
         {
-            var from = ConstantStrings.EmailConstants.websiteAddress;
-            var pass = ConstantStrings.EmailConstants.websitePassword;
+            var from = ConstantStrings.EmailConstants.WebsiteAddress;
+            var pass = ConstantStrings.EmailConstants.WebsitePassword;
 
-            SmtpClient client = new SmtpClient(ConstantStrings.EmailConstants.Host, 587);
+            var client = new SmtpClient(ConstantStrings.EmailConstants.Host, 587);
             client.DeliveryMethod = SmtpDeliveryMethod.Network;
             client.UseDefaultCredentials = false;
             client.Credentials = new System.Net.NetworkCredential(from, pass);

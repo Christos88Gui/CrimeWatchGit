@@ -1,0 +1,67 @@
+﻿@model CrimeWatch.Models.ChangeLoginDetailsViewModel
+@{
+    ViewBag.Title = "Change Login Details";
+    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+}
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+<button class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'"> User Portal</button>
+
+<div id="changeLoginDetailsCont" class="container customCont centeredElement">
+    <br />
+    <div class="row">
+        <div class="col-lg-6">
+            @using (Html.BeginForm("ChangeLoginDetails", "Account", FormMethod.Post, new { role = "form", name = "my-form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h3 class="title">Change Email</h3>
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.OldEmail, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.OldEmail, new { @class = "form-control", @placeholder = "Type your current email here." })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.NewEmail, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.NewEmail, new { @class = "form-control", @placeholder = "Type your new email here." })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmEmail, new { @class = "control-label" })
+                @Html.TextBoxFor(m => m.ConfirmEmail, new { @class = "form-control", @placeholder = "Confirm your new email here." })
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="submit" class="btn btn-success" id="sbmt">Change Email</button>
+            </div>
+    }
+        </div>
+        <div class="col-lg-6">
+            @using (Html.BeginForm("ChangeLoginDetails", "Account", FormMethod.Post, new { role = "form", name = "my-form" }))
+        {
+            @Html.AntiForgeryToken()
+            <h3 class="title">Change Password</h3>
+            <hr />
+            @Html.ValidationSummary("", new { @class = "text-danger" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.OldPassword, new { @class = "control-label" })
+                @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control", @placeholder = "Type your current password here.", @value = "" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.NewPassword, new { @class = "control-label" })
+                @Html.PasswordFor(m => m.NewPassword, new { @class = "form-control", @placeholder = "Type your new password here.", @value = "" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword, new { @class = "control-label" })
+                @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", @placeholder = "Confirm your new password here.", @value = "" })
+            </div>
+            <br />
+            <div class="form-group">
+                <button type="submit" class="btn btn-success" id="sbmt">Change Password</button>
+            </div>
+    }
+        </div>
+    </div>
+</div>
+
+

@@ -2,13 +2,12 @@
     ViewBag.Title = "Home Page";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-@model List<CrimeWatch.Models.Police_Departments>
-
+@model List<CrimeWatch.Models.PoliceDepartment>
 <body onload="startTimer()">
     <br /><br />
     <br /><br />
 
-    <div class="row cont">
+    <div class="container" id="homeMainCont">
         <div class="col-lg-6">
             <img src="~/Content/Images/img1.png" id="img1" class="homepageImage" />
             <br /><br />
@@ -17,21 +16,18 @@
                 <input name="field" type="radio" id="radioBtn2" class="radioBtn">
                 <input name="field" type="radio" id="radioBtn3" class="radioBtn">
             </form>
-        </div>       
+        </div>
         <div class="col-lg-6">
             <div class="container" style="width:420px;">
-                <img id="logo" src="~/Content/Images/logo.png"/>       
-                @if (Request.IsAuthenticated)
-                {
-                <div class="container" style="color:white; font-size:20px; text-align:justify">
+                <img id="logo" src="~/Content/Images/logo.png" />
+                <div class="container homeDescription">
                     CrimeWatch allows you to explore the current and future criminality rates of your neighbourhood or greater area using interactive features and accurate prediction models.
-                </div>             
-                }
-                else {
-                <div class="container" style="color:white; font-size:20px; text-align:justify">
-                    CrimeWatch allows you to discover the criminality of a place and estimate future crime numbers. CrimeWatch implements prediction algorithms and the latest data visualization tools. <a href="#" onclick="location.href='@Url.Action("Login", "Account")'">Log in</a> to get started.
-                </div>                
-                }
+                    @if (!Request.IsAuthenticated)
+                    { 
+                    <br /><br />
+                    <p class="homeDescription"><a href="#" onclick="location.href='@Url.Action("Login", "Account")'">Log in</a> to get started.</p>
+                    }
+                </div>               
             </div>
         </div>
     </div>
@@ -46,9 +42,9 @@
             <br /><br />
         </div>
         <div class="col-lg-6">
-            <img id="img2" src="~/Content/Images/img1.png" class="homepageImage"/>
+            <img id="img2" src="~/Content/Images/img1.png" class="homepageImage" />
             <br /><br />
-            <form style="text-align:center">
+            <form class="centeredText">
                 <input name="field" type="radio" id="radioBtn4" class="radioBtn">
                 <input name="field" type="radio" id="radioBtn5" class="radioBtn">
                 <input name="field" type="radio" id="radioBtn6" class="radioBtn">
@@ -56,7 +52,7 @@
         </div>
     </div>
 
-    <div class="row infoCont" id="two">        
+    <div class="row infoCont" id="two">
         <div class="col-lg-6">
             <h2>How does it work ?</h2>
             <div style="overflow-y:scroll; height:280px">
@@ -69,31 +65,10 @@
         <div class="col-lg-6">
             <img id="img3" src="~/Content/Images/map.png" class="homepageImage" />
             <br /><br />
-            <form style="text-align:center">
+            <form class="centeredText">
                 <input name="field" type="radio" id="radioBtn7" class="radioBtn">
                 <input name="field" type="radio" id="radioBtn8" class="radioBtn">
                 <input name="field" type="radio" id="radioBtn9" class="radioBtn">
-            </form>
-        </div>
-    </div>
-
-    <div class="row infoCont" id="three">
-        <div class="col-lg-6">
-            <h2>FAQ's</h2>
-            <br />
-            <h4>
-                Crimewatch (formerly Crimewatch UK) was a British television programme produced by the BBC, that reconstructs major unsolved crimes in order to gain information from the public which may assist in solving the case. The programme was originally broadcast once a month on BBC One, although in more recent years it was usually broadcast roughly once every two months.
-                Crimewatch was first broadcast on 7 June 1984, and is based on the German TV show Aktenzeichen XY … ungelöst (which translates as File Reference XY … Unsolved). Nick Ross and Sue Cook presented the show for the first 11 years, until Cook's departure in June 1995. Cook was replaced by Jill Dando. After Dando was murdered in April 1999, Ross hosted Crimewatch alone until January 2000 when Fiona Bruce subsequently joined the show.[1]
-            </h4>
-            <br /><br />
-        </div>
-        <div class="col-lg-6">
-            <img id="img4" src="~/Content/Images/map.png" class="homepageImage" />
-            <br /><br />
-            <form style="text-align:center">
-                <input name="field" type="radio" id="radioBtn10" class="radioBtn">
-                <input name="field" type="radio" id="radioBtn11" class="radioBtn">
-                <input name="field" type="radio" id="radioBtn12" class="radioBtn">
             </form>
         </div>
     </div>
@@ -108,125 +83,3 @@
         </address>
     </div>
 </body>
-
-<script>
-
-
-    function displayNextImage() {
-        var image = document.getElementById('img1');
-        if (document.getElementById('radioBtn1').checked == true) {
-            document.getElementById('radioBtn2').checked = true;
-            image.src = '../Content/Images/img2.png';
-        }
-        else if (document.getElementById('radioBtn2').checked == true) {
-            document.getElementById('radioBtn3').checked = true;
-            image.src = '../Content/Images/map.png';
-        }
-        else {
-            document.getElementById('radioBtn1').checked = true;
-            image.src = '../Content/Images/img1.png';
-        }
-    }
-
-    function startTimer() {
-        setRadioBtnHandlers();
-        setInterval(displayNextImage, 7000);
-        document.getElementById('radioBtn1').checked = true;
-        document.getElementById('radioBtn4').checked = true;
-        document.getElementById('radioBtn7').checked = true;
-        document.getElementById('radioBtn10').checked = true;
-    }
-
-    function setRadioBtnHandlers() {
-        $("#radioBtn1").click(function () { document.getElementById("img1").src = '../Content/Images/img1.png' });
-        $("#radioBtn2").click(function () { document.getElementById("img1").src = '../Content/Images/img2.png' });
-        $("#radioBtn3").click(function () { document.getElementById("img1").src = '../Content/Images/map.png' });
-
-        $("#radioBtn4").click(function () { document.getElementById("img2").src = '../Content/Images/img1.png' });
-        $("#radioBtn5").click(function () { document.getElementById("img2").src = '../Content/Images/img2.png' });
-        $("#radioBtn6").click(function () { document.getElementById("img2").src = '../Content/Images/map_Blurry.png' });
-
-        $("#radioBtn7").click(function () { document.getElementById("img3").src = '../Content/Images/map.png' });
-        $("#radioBtn8").click(function () { document.getElementById("img3").src = '../Content/Images/logo.png' });
-        $("#radioBtn9").click(function () { document.getElementById("img3").src = '../Content/Images/map_Blurry.png' });
-
-        $("#radioBtn10").click(function () { document.getElementById("img4").src = '../Content/Images/map.png' });
-        $("#radioBtn11").click(function () { document.getElementById("img4").src = '../Content/Images/logo.png' });
-        $("#radioBtn12").click(function () { document.getElementById("img4").src = '../Content/Images/map_Blurry.png' });
-    }
-</script>
-<style>
-
-    .radioBtn:checked {
-        border: none;
-        outline: none;
-        box-shadow: inset 0 1px 2px rgba(246, 118, 9, 0.80),0 0 0 0.2em rgba(212,126,32,0.4);
-    }
-
-    h2 {
-        font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol"
-    }
-
-
-    #footer {
-        position: absolute;
-        height: auto;
-        left: 0;
-        background: #242729;
-        width: 100%;
-        text-align: center;
-        font-size: 16px;
-        color: #fff;
-        margin-top: 130px;
-        border-top: 2px solid lightgray;
-    }
-
-    .cont {
-        margin-top: 3%;
-        position: relative;
-        background: black;
-        opacity: 0.9;
-        border: 1px solid lightgray;
-        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
-        border: 1px solid rgb(153, 153, 153);
-    }
-
-    #img1 {
-        margin-left: 10%;
-    }
-
-    #logo {
-        margin-left: 5%;
-        height: 200px;
-        width: 360px;
-        text-align: center;
-    }
-
-    .homepageImage {
-        margin-top: 10%;
-        width: 530px;
-        height: 300px;
-        border: 1px solid gray;
-    }
-
-    .infoCont {
-        color: black;
-        text-align: justify;
-        position: relative;
-        box-shadow: rgb(136, 136, 136) 3px 3px 10px;
-        border: 1px solid rgb(153, 153, 153);
-        background: rgb(255, 255, 255) none repeat scroll 0% 0%;
-    }
-
-    #one {
-        margin-top: 100px;
-    }
-
-    #two {
-        margin-top: 100px;
-    }
-
-    #three {
-        margin-top: 100px;
-    }
-</style>

@@ -1,17 +1,18 @@
 ﻿@using CrimeWatch.Models
-@model List<Crimes_pm>
+@model List<Record>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
 
 @{
     ViewBag.Title = "Stats";
-    Layout = "~/Views/Shared/_LayoutPortal.cshtml";
+    Layout = "~/Views/Shared/_LayoutFullscreen.cshtml";
 }
 
 <br />
 <div class="row">
     <button style="float:left;" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
-    <select class="form-control" style="float:right">
+    <h2 class="title" style="display:inline; margin-left:32%">Crime Statistics</h2>
+    <select class="form-control" style="float:right; display:inline">
         <option href="#" onclick="location.href='@Url.Action("Stats", "Stats", new { period=1 })'">@ViewBag.datesDD[0]</option>
         <option href="#" onclick="location.href='@Url.Action("Stats", "Stats", new { period=2 })'">@ViewBag.datesDD[1]</option>
         <option href="#" onclick="location.href='@Url.Action("Stats", "Stats", new { period=3 })'">@ViewBag.datesDD[2]</option>
@@ -19,9 +20,10 @@
 </div>
 <br />
 
-<h2 class="title">Crime Statistics</h2>
-<h4 class="title"> Period @ViewBag.firstDate - @ViewBag.lastDate</h4>
+
+<h4 class="title"> Period: @ViewBag.firstDate - @ViewBag.lastDate</h4><br />
 <div class="container customCont">
+    <br />
     <div id="table"></div>
     <br /><br />
 </div>
@@ -33,22 +35,22 @@
         google.charts.setOnLoadCallback(drawTable);
 
         function drawTable() {
-            var table_data = new google.visualization.DataTable();
-            table_data.addColumn('string', 'County');
-            table_data.addColumn('string', 'Policed by');
-            table_data.addColumn('number', 'Total Population');
-            table_data.addColumn('number', 'Total Crimes');
-            table_data.addColumn('number', 'Crimes / 1000 residents');
-            @for (int i = 0; i < Model.Count(); i++) {
-                Crimes_pm record = Model.ElementAt(i);
-                @:table_data.addRow(['@record.County.Name','@record.County.Police_Departments.Name',@record.County.Population,@record.All_crimes,@record.All_crimes * 1000 / @record.County.Population ]);
+            var tableData = new google.visualization.DataTable();
+            tableData.addColumn('string', 'County');
+            tableData.addColumn('string', 'Policed by');
+            tableData.addColumn('number', 'Total Population');
+            tableData.addColumn('number', 'Total Crimes');
+            tableData.addColumn('number', 'Crimes / 1000 residents');
+            @for (var i = 0; i < Model.Count(); i++) {
+                var record = Model.ElementAt(i);
+                @:tableData.addRow(['@record.County.Name','@record.County.PoliceDepartment.Name',@record.County.Population,@record.AllCrimes,@record.AllCrimes * 1000 / @record.County.Population ]);
             }
             var cssClassNames = {
                 'tableCell': 'largeFont',
                 'headerRow': 'largeFont header',
             }
 
-            var table_options = {
+            var tableOptions = {
                 allowHtml: true,
                 sortColumn: 4,
                 sortAscending: false,
@@ -58,29 +60,7 @@
                 'cssClassNames': cssClassNames
             };
 
-            //HOW TO CHANGE BACKGROUND COLOR
-            //table_data.setProperty(0,0,'style', 'background-color: red;');
-
             var table = new google.visualization.Table(document.getElementById('table'));
-
-            table.draw(table_data, table_options);
+            table.draw(tableData, tableOptions);
         }
-
 </script>
-
-<style>
-    body {
-        color: black;
-        background: #f4f4f4;
-        font-size: 15px;
-        margin-top: 5%;
-    }
-
-    .largeFont {
-        font-size: 15px;
-    }
-
-    .header {
-        background-color: lightblue;
-    }
-</style>

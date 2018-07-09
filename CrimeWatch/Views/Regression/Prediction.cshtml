@@ -1,7 +1,174 @@
-﻿
+﻿@using CrimeWatch.Models;
+@model List<Record>
+
 @{
-    ViewBag.Title = "Prediction";
+    Layout = "~/Views/Shared/_LayoutFullscreen.cshtml";
 }
 
-<h2>Prediction</h2>
+<div class="container customCont">
+    <br />
+    <button style="float:left; margin-left:10px" class="btn btn-warning" onclick="location.href='@Url.Action("MyPortal", "Home")'">User Portal</button>
+    <h2 class="title" style="margin-right:5%">@ViewBag.title</h2>
+    <br />
+    <div class="container centeredElement" style="width:40%">
+        <form action="/Regression/Prediction" style="height:90px;" role="form">
+            <div class="col-lg-12 centeredText">
+                <h4>Select County</h4>
+                <select class="form-control centeredElement" name="countyName">
+                    @if (ViewBag.countyName != "")
+                    {
+                        <option style="color:transparent">@ViewBag.countyName</option>
+                    }
+                    @foreach (var county in ViewBag.countiesDD)
+                    {
+                        <option>
+                            @county
+                        </option>
+                    }
+                </select>
+                <br /><button class="btn btn-default" id="submitMapParamsBtn" onclick="submitForm()">Submit</button>
 
+            </div>
+
+            <div class="col-lg-2">
+            </div>
+        </form>
+    </div>
+    <hr /><br />
+    @if (ViewBag.countyName != "")
+    {
+
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <h4><u>Records of past year</u></h4>
+                    <table class="table-bordered table">
+                        <tr>
+                            <th>Date</th>
+                            <th>Number of crimes</th>
+                        </tr>
+                        @foreach (var record in Model.Take(12).OrderBy(x => x.Date))
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        string parameterValue = record.Date.ToString("MMMM yyyy");
+                                    }
+                                    @Html.DisplayFor(modelItem => parameterValue)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => record.AllCrimes)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => record.CrimeRate.Name)                                    
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <div class="col-lg-6">
+                    <h4><u>Estimations for the next 12 months</u></h4>
+                    <table class="table-bordered table">
+                        <tr>
+                            <th>Date</th>
+                            <th>Number of crimes</th>
+                        </tr>
+                        @foreach (var record in Model.Skip(12))
+                        {
+                            <tr>
+                                <td>
+                                    @{
+                                        string parameterValue = record.Date.ToString("MMMM yyyy");
+                                    }
+                                    @Html.DisplayFor(modelItem => parameterValue)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => record.AllCrimes)                                    
+                                </td>
+                                
+                                <td>
+                                    @if (record.CrimeRateId == 2)
+                                    {                                     
+                                        @:Low
+                                    }
+                                    else if (record.CrimeRateId == 3)
+                                    {                                        
+                                        @:Medium
+                                    }
+                                    else
+                                    {                                        
+                                        @:High
+                                    }
+                                </td>
+                            </tr>
+                        }
+
+                    </table>
+                </div>
+            </div>
+            <hr />
+            <div id="chart_div" style="width: 100%; height: 500px; float:left; position:relative;"></div>
+        </div>
+    }
+    else
+    {
+        <h3 class="centeredText">Please choose the parameters from the form and press submit.</h3>
+    }
+    <br /><br />
+</div>
+
+<script type="text/javascript">
+    google.charts.load('current', { 'packages': ['corechart'] });
+    google.charts.setOnLoadCallback(drawChart);
+
+    @*function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+            ['Month', 'Past rimes'],
+            [@ViewBag.table[0][0], @ViewBag.table[0][1]]
+        ]);
+        @for (var r = 1; r < ViewBag.table.GetLength(0); r++)
+        {
+            @:data.addRow([@ViewBag.table[r][0], @ViewBag.table[r][1]]);
+        }
+        var options = {
+            title: 'Scatter Chart: Crimes since 2013 in @ViewBag.countyName',
+            hAxis: { title: 'Time index: Days' },
+            vAxis: { title: 'Crimes' },
+            legend: 'none',
+
+            curveType: 'function',
+            pointShape: 'square',
+            pointSize: 10                
+        };
+        var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }*@
+
+    
+    function drawChart() {
+        var data = new google.visualization.DataTable();
+        data.addColumn('number', 'Index: Days');
+        data.addColumn('number', 'Past Crimes');
+        data.addColumn('number', 'Predicted Crimes');
+
+        @for (var r = 0; r < ViewBag.crimes.GetLength(0); r++)
+        {
+            @:data.addRow([@ViewBag.crimes[r][0], @ViewBag.crimes[r][1], @ViewBag.crimes[r][2]]);
+        }
+ 
+        var options = {
+            title: 'Scatter Chart: Crimes since 2013 in @ViewBag.countyName',
+            curveType: 'function',
+            pointShape: 'circle',
+            pointSize: 5,
+            vAxis: {
+                viewWindowMode: 'explicit',
+                viewWindow: {
+                    min: 1000
+                }
+            },
+        };
+        var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
+        chart.draw(data, options);
+    }
+</script>

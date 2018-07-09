@@ -11,28 +11,34 @@ namespace CrimeWatch.Models
 {
     using System;
     using System.Collections.Generic;
-    
+    using System.ComponentModel;
+
     public partial class County
     {
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
         public County()
         {
-            this.Crimes_pm = new HashSet<Crimes_pm>();
-            this.Crimes = new HashSet<Crime>();
+            this.Records = new HashSet<Record>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public Nullable<int> Police_Department_Id { get; set; }
         public Nullable<int> Population { get; set; }
-        public Nullable<int> Total_Crimes { get; set; }
-        public Nullable<int> Violent_Crimes { get; set; }
-        public Nullable<int> Cluster_Id { get; set; }
+        public Nullable<bool> Included { get; set; }
+        public Nullable<int> PoliceDepartmentId { get; set; }
+
+        [DisplayName("Total crimes")]
+        public Nullable<int> TotalCrimes { get; set; }
+
+        public Nullable<int> CrimeRateId { get; set; }
+
+        [DisplayName("Crimes per 1000 residents (past 12 months)")]
+        public Nullable<int> CrimesPer1000 { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Crimes_pm> Crimes_pm { get; set; }
-        public virtual Police_Departments Police_Departments { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<Crime> Crimes { get; set; }
+        public virtual ICollection<Record> Records { get; set; }
+        public virtual PoliceDepartment PoliceDepartment { get; set; }
+        [DisplayName("Crime rate")]
+        public virtual CrimeRate CrimeRate { get; set; }
     }
 }
